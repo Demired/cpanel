@@ -1,14 +1,15 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"strconv"
 	"text/template"
-        "database/sql"
-        _ "github.com/mattn/go-sqlite3"
+
+	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/Demired/rpwd"
 	libvirt "github.com/libvirt/libvirt-go"
@@ -27,7 +28,7 @@ func main() {
 	http.HandleFunc("/", index)
 	http.HandleFunc("/list", listVM)
 	http.HandleFunc("/list_b", list)
-	http.HandleFunc("/create", createApi)
+	http.HandleFunc("/create", createAPI)
 	http.HandleFunc("/create.html", create)
 	http.ListenAndServe(":8100", nil)
 }
@@ -43,33 +44,25 @@ func create(w http.ResponseWriter, req *http.Request) {
 }
 
 func list(w http.ResponseWriter, req *http.Request) {
-
-        db,err := sql.Open("sqlite3", "./db/cpanel.db")
-
-	rows, err := db.Query("SELECT Vname,IPv4,IPv6,LocalIP,Vcpu,Vmemory,Ctime,Utime,Status FROM vm LIMIT 10;")
-
-        if err != nil {
-            fmt.Println(err.Error())
-            return
-        }
-
-        defer rows.Close()
-
+	db, err := sql.Open("sqlite3", "./db/cpanel.db")
+	rows, err := db.Query("SELECT Vname,IPv4,IPv6,LocalIP,Vcpu,Vmemory,Status,Ctime,Utime FROM vm LIMIT 10;")
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	defer rows.Close()
 	var vvvm []vm
 	for rows.Next() {
 		var vvm vm
-                err := rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Vcpu, &vvm.Vmemory, &vvm.Ctime, &vvm.Utime, &vvm.Status)
+		err := rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Vcpu, &vvm.Vmemory, &vvm.Ctime, &vvm.Utime, &vvm.Status)
 		if err != nil {
 			fmt.Println(err.Error())
 			return
 		}
 		vvvm = append(vvvm, vvm)
-
-
 	}
-
 	t, _ := template.ParseFiles("html/list_bak.html")
-        t.Execute(w, vvvm)
+	t.Execute(w, vvvm)
 }
 
 func listVM(w http.ResponseWriter, req *http.Request) {
@@ -88,7 +81,7 @@ func listVM(w http.ResponseWriter, req *http.Request) {
 	}
 	t, _ := template.ParseFiles("html/list.html")
 
-        t.Execute(w, nil)
+	t.Execute(w, nil)
 }
 
 func createSysDisk(vname string) (w int64, err error) {
@@ -107,7 +100,7 @@ func createSysDisk(vname string) (w int64, err error) {
 	return io.Copy(desFile, srcFile)
 }
 
-func createApi(w http.ResponseWriter, req *http.Request) {
+func createAPI(w http.ResponseWriter, req *http.Request) {
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/create.html", http.StatusFound)
 		return
@@ -209,17 +202,17 @@ func rmac() string {
 }
 
 type vm struct {
-		ID      int    `json:"id"`
-		IPv4    string `json:"ipv4"`
-		IPv6    string `json:"ipv6"`
-		LocalIP string `json:"local"`
-		Ctime   string `json:"ctime"`
-		Utime   string `json:"utime"`
-		Vcpu    int    `json:"vcpu"`
-		Status  int    `json:"status"`
-		Vmemory int    `json:"vmemory"` //GiB
-		Passwd  string `json:"vpasswd"`
-		Vname   string `json:"vname"`
-		Br      string `json:"br"`
-		Mac     string `json:"mac"`
-	}
+	ID      int    `json:"id"`
+	IPv4    string `json:"ipv4"`
+	IPv6    string `json:"ipv6"`
+	LocalIP string `json:"local"`
+	Ctime   string `json:"ctime"`
+	Utime   string `json:"utime"`
+	Vcpu    int    `json:"vcpu"`
+	Status  int    `json:"status"`
+	Vmemory int    `json:"vmemory"` //GiB
+	Passwd  string `json:"vpasswd"`
+	Vname   string `json:"vname"`
+	Br      string `json:"br"`
+	Mac     string `json:"mac"`
+}

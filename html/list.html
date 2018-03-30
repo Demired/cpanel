@@ -44,11 +44,16 @@
                 {{range $index,$v := .}}
                 <tr>
                     <td>{{$index}}</td>
-<td>{{$v.Vname}}</td>
-<td>{{$v.IP}}</td>
-<td>{{$v.Create}}</td>
-<td>{{$v.Vcpu}}</td>
-<td>{{$v.Vmemory}}</td>
+
+                    <tr>
+                            <td>{{$index}}</td>
+                            <td>{{$v.Vname}}</td>
+                            <td>{{$v.IPv4}}</td>
+                            <td>{{$v.IPv6}}</td>
+                            <td>{{$v.LocalIP}}</td>
+                            <td>{{$v.Ctime}}</td>
+                            <td>{{$v.Utime}}</td>
+                            </tr>
                     <td>{{$v.Status}}</td>
 
                     <td>
