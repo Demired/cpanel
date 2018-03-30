@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -116,6 +117,68 @@ func createSysDisk(vname string) (w int64, err error) {
 	//入库
 
 	return io.Copy(desFile, srcFile)
+}
+
+func startVM(w http.ResponseWriter, req *http.Request) {
+	if req.Method != "POST" {
+		http.Redirect(w, req, "/", http.StatusFound)
+		return
+	}
+	defer req.Body.Close()
+	vname, err := req.PostFormValue("vname")
+	if err != nil {
+		fmt.Println("vm name err")
+		w.Write([]byte("vm name err"))
+		return
+	}
+	dom, err := connect().LookupDomainByName(vname)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+}
+
+type er struct {
+	Msg string `json:"msg"`
+}
+
+func shutdown(w http.ResponseWriter, req *http.Request) {
+	if req.Method != "POST" {
+		http.Redirect(w, req, "/", http.StatusFound)
+		return
+	}
+	defer req.Body.Close()
+	vname, err := req.PostFormValue("vname")
+	if err != nil {
+		fmt.Println("vm name err")
+		w.Write([]byte("vm name err"))
+		return
+	}
+	dom, err := connect().LookupDomainByName(vname)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	err = dom.Shutdown()
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	msg, err := json.Marshal(er{Msg: "ok"})
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	w.Write(msg)
+}
+
+func resetPWD(w http.ResponseWriter, req *http.Request) {
+	if req.Method != "POST" {
+		http.Redirect(w, req, "/", http.StatusFound)
+		return
+	}
+	defer req.Body.Close()
 }
 
 func createAPI(w http.ResponseWriter, req *http.Request) {
