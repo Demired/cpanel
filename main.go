@@ -29,6 +29,7 @@ func main() {
 	http.HandleFunc("/", index)
 	http.HandleFunc("/list", list)
 	http.HandleFunc("/shutdown", shutdown)
+	http.HandleFunc("/reboot", reboot)
 	http.HandleFunc("/list_b", listVM)
 	http.HandleFunc("/create", createAPI)
 	http.HandleFunc("/create.html", create)
@@ -162,6 +163,39 @@ func shutdown(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	w.Write(msg)
+}
+
+func reboot(w http.ResponseWriter, req *http.Request) {
+	if req.Method != "POST" {
+		http.Redirect(w, req, "/", http.StatusFound)
+		return
+	}
+	defer req.Body.Close()
+	vname := req.PostFormValue("vname")
+	err := contrl(vname, 3)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	w.Write([]byte("{ret:'v',msg:'ok'}")])
+}
+
+func contrl(id string, c int) error {
+	dom, err := connect().LookupDomainByName(vname)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	if c == 1 {
+		err = nil
+	} else if c == 2 {
+		err = dom.Shutdown()
+	} else if c == 3 {
+		err = dom.Reboot()
+	} else if c == 4 {
+		err = dom.Destroy()
+	}
+	return err
 }
 
 func resetPWD(w http.ResponseWriter, req *http.Request) {
