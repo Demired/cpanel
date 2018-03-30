@@ -59,7 +59,11 @@ func list(w http.ResponseWriter, req *http.Request) {
 			fmt.Println(err.Error())
 			return
 		}
-		dom := connect().LookupDomainByName(vvm.Vname)
+		dom, err := connect().LookupDomainByName(vvm.Vname)
+		if err != nil {
+			fmt.Println(err.Error())
+			continue
+		}
 		_, sss, err := dom.GetState()
 		if err != nil {
 			fmt.Println(err.Error())
