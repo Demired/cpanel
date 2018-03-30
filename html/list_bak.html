@@ -55,12 +55,9 @@
                 <td>{{$v.Status}}</td>
                 <td>——</td>
                 <td>
-                    {{if $v.Status == "1" }}
                     <a class="ajax" href="/shutdown/{{$v.Vname}}">关机</a>
                     <a class="ajax" href="/断电/{{$v.Vname}}">强制关机</a>
-                    {{else}}
                     <a class="ajax" href="/start/{{$v.Vname}}">开机</a>
-                    {{end}}
                     <a class="ajax" href="/reboot/{{$v.Vname}}">重启</a>
                     <a class="ajax" href="/edit/{{$v.Vname}}">修改配置</a>
                 </td>
