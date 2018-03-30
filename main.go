@@ -79,12 +79,12 @@ func listVM(w http.ResponseWriter, req *http.Request) {
 			fmt.Println(err.Error())
 			continue
 		}
-		state, err := dom.GetState()
+		state, sss, err := dom.GetState()
 		if err != nil {
 			fmt.Println(err.Error())
 			continue
 		}
-		fmt.Printf("vm name is %s,vm state is %d\n", name, state)
+		fmt.Printf("vm name is %s,vm state is %d hhhh %s\n", name, sss, state)
 		dom.Free()
 	}
 }
