@@ -126,18 +126,12 @@ func startVM(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	defer req.Body.Close()
-	vname, err := req.PostFormValue("vname")
-	if err != nil {
-		fmt.Println("vm name err")
-		w.Write([]byte("vm name err"))
-		return
-	}
+	vname := req.PostFormValue("vname")
 	dom, err := connect().LookupDomainByName(vname)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-
 }
 
 type er struct {
@@ -151,12 +145,7 @@ func shutdown(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	defer req.Body.Close()
-	vname, err := req.PostFormValue("vname")
-	if err != nil {
-		fmt.Println("vm name err")
-		w.Write([]byte("vm name err"))
-		return
-	}
+	vname := req.PostFormValue("vname")
 	dom, err := connect().LookupDomainByName(vname)
 	if err != nil {
 		fmt.Println(err.Error())
