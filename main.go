@@ -67,7 +67,7 @@ func list(w http.ResponseWriter, req *http.Request) {
 }
 
 func listVM(w http.ResponseWriter, req *http.Request) {
-	doms, err := connect().ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_AUTOSTART)
+	doms, err := connect().ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_NO_AUTOSTART)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
