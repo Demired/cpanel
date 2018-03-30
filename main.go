@@ -28,6 +28,7 @@ func connect() *libvirt.Connect {
 func main() {
 	http.HandleFunc("/", index)
 	http.HandleFunc("/list", list)
+	http.HandleFunc("/shutdown", shutdown)
 	http.HandleFunc("/list_b", listVM)
 	http.HandleFunc("/create", createAPI)
 	http.HandleFunc("/create.html", create)
@@ -140,6 +141,7 @@ func startVM(w http.ResponseWriter, req *http.Request) {
 }
 
 type er struct {
+	Ret string `json:"ret"`
 	Msg string `json:"msg"`
 }
 
@@ -165,7 +167,7 @@ func shutdown(w http.ResponseWriter, req *http.Request) {
 		fmt.Println(err.Error())
 		return
 	}
-	msg, err := json.Marshal(er{Msg: "ok"})
+	msg, err := json.Marshal(er{Ret: "v", Msg: "ok"})
 	if err != nil {
 		fmt.Println(err.Error())
 		return

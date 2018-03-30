@@ -56,10 +56,10 @@
                 <td>{{$v.Status}}</td>
                 <td>—</td>
                 <td>—</td>
-                <td>
+                <td ret="{{$v.Vname}}">
                     {{if eq $v.Status 1}}
-                    <a class="ajax" href="/shutdown/{{$v.Vname}}">关机</a>
-                    <a class="ajax" href="/断电/{{$v.Vname}}">强制关机</a>
+                    <a class="ajax" href="/shutdown">关机</a>
+                    <!-- <a class="ajax" href="/undfin">强制关机</a> -->
                     {{else}}
                     <a class="ajax" href="/start/{{$v.Vname}}">开机</a>
                     {{end}}
@@ -71,6 +71,17 @@
         </tbody>
     </table>
 </div>
+<script>
+    $(".ajax").click(function () {
+        var vname = $(this).parent("td").attr("ret")
+        $.post(this.href,{vname:vname},function (d) {
+            if(d.ret == "v"){
+                alert("状态修改成功");
+            }
+        },"json");
+        return false;
+    });
+ </script>
 </body>
 </html>
 
