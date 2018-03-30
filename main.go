@@ -62,15 +62,6 @@ func list(w http.ResponseWriter, req *http.Request) {
 		vvvm = append(vvvm, vvm)
 	}
 
-	doms, err := connect().ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_ACTIVE)
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-	for _, dom := range doms {
-
-	}
-
 	t, _ := template.ParseFiles("html/list_bak.html")
 	t.Execute(w, vvvm)
 }
