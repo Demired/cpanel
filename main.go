@@ -127,7 +127,7 @@ func startVM(w http.ResponseWriter, req *http.Request) {
 	}
 	defer req.Body.Close()
 	vname := req.PostFormValue("vname")
-	dom, err := connect().LookupDomainByName(vname)
+	_, err := connect().LookupDomainByName(vname)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
