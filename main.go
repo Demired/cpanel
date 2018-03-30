@@ -180,7 +180,7 @@ func reboot(w http.ResponseWriter, req *http.Request) {
 	w.Write([]byte("{ret:'v',msg:'ok'}"))
 }
 
-func contrl(id string, c int) error {
+func contrl(vname string, c int) error {
 	dom, err := connect().LookupDomainByName(vname)
 	if err != nil {
 		fmt.Println(err.Error())
