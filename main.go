@@ -66,13 +66,12 @@ func list(w http.ResponseWriter, req *http.Request) {
 			fmt.Println(err.Error())
 			continue
 		}
-		s, sint, err := dom.GetState()
+		s, _, err := dom.GetState()
 		if err != nil {
 			fmt.Println(err.Error())
 			continue
 		}
-		fmt.Println(vvm.Vname, s)
-		vvm.Status = sint
+		vvm.Status = s
 		vvvm = append(vvvm, vvm)
 	}
 
