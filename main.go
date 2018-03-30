@@ -59,6 +59,13 @@ func list(w http.ResponseWriter, req *http.Request) {
 			fmt.Println(err.Error())
 			return
 		}
+		dom := connect().LookupDomainByName(vvm.Vname)
+		_, sss, err := dom.GetState()
+		if err != nil {
+			fmt.Println(err.Error())
+			continue
+		}
+		vvm.Status = sss
 		vvvm = append(vvvm, vvm)
 	}
 
@@ -73,7 +80,6 @@ func listVM(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	for _, dom := range doms {
-
 		name, err := dom.GetName()
 		if err != nil {
 			fmt.Println(err.Error())
