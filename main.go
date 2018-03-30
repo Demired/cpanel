@@ -26,8 +26,8 @@ func connect() *libvirt.Connect {
 
 func main() {
 	http.HandleFunc("/", index)
-	http.HandleFunc("/list", listVM)
-	http.HandleFunc("/list_b", list)
+	http.HandleFunc("/list", list)
+	http.HandleFunc("/list_b", listVM)
 	http.HandleFunc("/create", createAPI)
 	http.HandleFunc("/create.html", create)
 	http.ListenAndServe(":8100", nil)
@@ -61,12 +61,22 @@ func list(w http.ResponseWriter, req *http.Request) {
 		}
 		vvvm = append(vvvm, vvm)
 	}
+
+	doms, err := connect().ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_ACTIVE)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	for _, dom := range doms {
+
+	}
+
 	t, _ := template.ParseFiles("html/list_bak.html")
 	t.Execute(w, vvvm)
 }
 
 func listVM(w http.ResponseWriter, req *http.Request) {
-	doms, err := connect().ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_ACTIVE)
+	doms, err := connect().ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_AUTOSTART)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -74,14 +84,10 @@ func listVM(w http.ResponseWriter, req *http.Request) {
 	for _, dom := range doms {
 		name, err := dom.GetName()
 		if err == nil {
-			//  w.Write([]byte(fmt.Sprintf("%s\n",name)))
 			fmt.Println(name)
 		}
 		dom.Free()
 	}
-	t, _ := template.ParseFiles("html/list.html")
-
-	t.Execute(w, nil)
 }
 
 func createSysDisk(vname string) (w int64, err error) {
@@ -96,6 +102,9 @@ func createSysDisk(vname string) (w int64, err error) {
 		fmt.Println(err)
 	}
 	defer desFile.Close()
+
+	//开机
+	//入库
 
 	return io.Copy(desFile, srcFile)
 }
@@ -210,6 +219,7 @@ type vm struct {
 	Utime   string `json:"utime"`
 	Vcpu    int    `json:"vcpu"`
 	Status  int    `json:"status"`
+	Etime   string `json:"etime"`   //Expire time
 	Vmemory int    `json:"vmemory"` //GiB
 	Passwd  string `json:"vpasswd"`
 	Vname   string `json:"vname"`

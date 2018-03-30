@@ -37,7 +37,8 @@
                 <td>LocalIP</td>
                 <td>核心数</td>
                 <td>内存</td>
-                <td>状态</td>
+                <td>运行状态</td>
+                <td>到期时间</td>
                 <td>创建时间</td>
                 <td>操作</td>
             </tr>   
@@ -53,7 +54,8 @@
                 <td>{{$v.Vcpu}}</td>
                 <td>{{$v.Vmemory}}</td>
                 <td>{{$v.Status}}</td>
-                <td>——</td>
+                <td>—</td>
+                <td>—</td>
                 <td>
                     {{if eq $v.Status 1}}
                     <a class="ajax" href="/shutdown/{{$v.Vname}}">关机</a>
