@@ -57,9 +57,10 @@
                 <td>—</td>
                 <td>—</td>
                 <td ret="{{$v.Vname}}">
+                    
                     {{if eq $v.Status 1}}
                     <a class="ajax" href="/shutdown">关机</a>
-                    <!-- <a class="ajax" href="/undfin">强制关机</a> -->
+                    <!-- <a class="ajax" href="/{{$v.Status}}">强制关机</a> -->
                     {{else}}
                     <a class="ajax" href="/start/{{$v.Vname}}">开机</a>
                     {{end}}
