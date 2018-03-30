@@ -71,7 +71,7 @@ func list(w http.ResponseWriter, req *http.Request) {
 			fmt.Println(err.Error())
 			continue
 		}
-		vvm.Status = s
+		vvm.Status = int(s)
 		vvvm = append(vvvm, vvm)
 	}
 
