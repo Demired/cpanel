@@ -177,7 +177,7 @@ func reboot(w http.ResponseWriter, req *http.Request) {
 		fmt.Println(err.Error())
 		return
 	}
-	w.Write([]byte("{ret:'v',msg:'ok'}")])
+	w.Write([]byte("{ret:'v',msg:'ok'}"))
 }
 
 func contrl(id string, c int) error {
