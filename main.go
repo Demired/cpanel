@@ -45,7 +45,7 @@ func create(w http.ResponseWriter, req *http.Request) {
 
 func list(w http.ResponseWriter, req *http.Request) {
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
-	rows, err := db.Query("SELECT Vname,IPv4,IPv6,LocalIP,Vcpu,Vmemory,Status,Ctime,Utime FROM vm LIMIT 10;")
+	rows, err := db.Query("SELECT Vname,IPv4,IPv6,LocalIP,Vcpu,Vmemory,Status FROM vm LIMIT 10;")
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -54,7 +54,7 @@ func list(w http.ResponseWriter, req *http.Request) {
 	var vvvm []vm
 	for rows.Next() {
 		var vvm vm
-		err := rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Vcpu, &vvm.Vmemory, &vvm.Ctime, &vvm.Utime, &vvm.Status)
+		err := rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Vcpu, &vvm.Vmemory, &vvm.Status)
 		if err != nil {
 			fmt.Println(err.Error())
 			return
