@@ -55,7 +55,7 @@
                 <td>{{$v.Status}}</td>
                 <td>——</td>
                 <td>
-                    {{if $v.Status == 1}}
+                    {{if eq $v.Status 1}}
                     <a class="ajax" href="/shutdown/{{$v.Vname}}">关机</a>
                     <a class="ajax" href="/断电/{{$v.Vname}}">强制关机</a>
                     {{else}}
