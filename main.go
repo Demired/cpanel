@@ -188,7 +188,7 @@ func contrl(vname string, c int) error {
 		return nil
 	}
 	if c == 1 {
-		err = nil
+		err = dom.SetAutostart(true)
 	} else if c == 2 {
 		err = dom.Shutdown()
 	} else if c == 3 {
