@@ -75,8 +75,8 @@
     $(".ajax").click(function () {
         var vname = $(this).parent("td").attr("ret")
         $.post(this.href,{vname:vname},function (d) {
+            console.log(d);
             if(d.ret == "v"){
-                console.log(d);
                 alert(d.msg);
                 location.reload('get');
             }

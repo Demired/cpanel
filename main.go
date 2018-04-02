@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -153,7 +154,12 @@ func shutdown(w http.ResponseWriter, req *http.Request) {
 		fmt.Println(err.Error())
 		return
 	}
-	w.Write([]byte("{ret:'v',msg:'正在关机'}"))
+	msg, err := json.Marshal(er{Ret: "v", Msg: "正在关机"})
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	w.Write(msg)
 }
 
 func reboot(w http.ResponseWriter, req *http.Request) {
