@@ -48,6 +48,7 @@ func create(w http.ResponseWriter, req *http.Request) {
 }
 
 func list(w http.ResponseWriter, req *http.Request) {
+	defer req.Body.Close()
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
 	rows, err := db.Query("SELECT Vname,IPv4,IPv6,LocalIP,Vcpu,Vmemory,Status FROM vm LIMIT 10;")
 	if err != nil {
@@ -82,6 +83,7 @@ func list(w http.ResponseWriter, req *http.Request) {
 }
 
 func listVM(w http.ResponseWriter, req *http.Request) {
+	defer req.Body.Close()
 	doms, err := connect().ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_NO_AUTOSTART)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -123,6 +125,7 @@ func createSysDisk(vname string) (w int64, err error) {
 }
 
 func start(w http.ResponseWriter, req *http.Request) {
+	defer req.Body.Close()
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/", http.StatusFound)
 		return
