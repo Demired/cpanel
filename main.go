@@ -184,7 +184,8 @@ func reboot(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		fmt.Println(err.Error())
 		return
-	}	w.Write(msg)
+	}
+	w.Write(msg)
 }
 
 func contrl(vname string, c int) error {
