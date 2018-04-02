@@ -166,6 +166,7 @@ func shutdown(w http.ResponseWriter, req *http.Request) {
 }
 
 func reboot(w http.ResponseWriter, req *http.Request) {
+	fmt.Println("reboot")
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/", http.StatusFound)
 		return
@@ -184,14 +185,14 @@ func contrl(vname string, c int) error {
 	dom, err := connect().LookupDomainByName(vname)
 	if err != nil {
 		fmt.Println(err.Error())
-		return
+		return nil
 	}
 	if c == 1 {
 		err = nil
 	} else if c == 2 {
 		err = dom.Shutdown()
 	} else if c == 3 {
-		err = dom.Reboot()
+		err = dom.Reboot(libvirt.DOMAIN_REBOOT_DEFAULT)
 	} else if c == 4 {
 		err = dom.Destroy()
 	}
