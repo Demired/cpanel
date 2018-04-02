@@ -76,7 +76,8 @@
         var vname = $(this).parent("td").attr("ret")
         $.post(this.href,{vname:vname},function (d) {
             if(d.ret == "v"){
-                alert("状态修改成功");
+                alert(d.msg);
+                location.reload('get');
             }
         },"json");
         return false;

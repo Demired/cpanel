@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -134,7 +133,7 @@ func start(w http.ResponseWriter, req *http.Request) {
 		fmt.Println(err.Error())
 		return
 	}
-	w.Write([]byte("{ret:'v',msg:'ok'}"))
+	w.Write([]byte("{ret:'v',msg:'正在开机'}"))
 }
 
 type er struct {
@@ -149,22 +148,12 @@ func shutdown(w http.ResponseWriter, req *http.Request) {
 	}
 	defer req.Body.Close()
 	vname := req.PostFormValue("vname")
-	dom, err := connect().LookupDomainByName(vname)
+	err := contrl(vname, 2)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-	err = dom.Shutdown()
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-	msg, err := json.Marshal(er{Ret: "v", Msg: "ok"})
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-	w.Write(msg)
+	w.Write([]byte("{ret:'v',msg:'正在关机'}"))
 }
 
 func reboot(w http.ResponseWriter, req *http.Request) {
@@ -180,7 +169,7 @@ func reboot(w http.ResponseWriter, req *http.Request) {
 		fmt.Println(err.Error())
 		return
 	}
-	w.Write([]byte("{ret:'v',msg:'ok'}"))
+	w.Write([]byte("{ret:'v',msg:'正在重启'}"))
 }
 
 func contrl(vname string, c int) error {
