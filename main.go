@@ -28,6 +28,7 @@ func connect() *libvirt.Connect {
 func main() {
 	http.HandleFunc("/", index)
 	http.HandleFunc("/list", list)
+	http.HandleFunc("/start", start)
 	http.HandleFunc("/shutdown", shutdown)
 	http.HandleFunc("/reboot", reboot)
 	http.HandleFunc("/list_b", listVM)
@@ -121,18 +122,19 @@ func createSysDisk(vname string) (w int64, err error) {
 	return io.Copy(desFile, srcFile)
 }
 
-func startVM(w http.ResponseWriter, req *http.Request) {
+func start(w http.ResponseWriter, req *http.Request) {
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/", http.StatusFound)
 		return
 	}
 	defer req.Body.Close()
 	vname := req.PostFormValue("vname")
-	_, err := connect().LookupDomainByName(vname)
+	err := contrl(vname, 1)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
+	w.Write([]byte("{ret:'v',msg:'ok'}"))
 }
 
 type er struct {
