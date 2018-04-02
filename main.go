@@ -190,7 +190,7 @@ func contrl(vname string, c int) error {
 		return nil
 	}
 	if c == 1 {
-		err = dom.SetAutostart(true)
+		err = dom.Create()
 	} else if c == 2 {
 		err = dom.Shutdown()
 	} else if c == 3 {
