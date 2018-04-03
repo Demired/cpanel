@@ -167,6 +167,7 @@ func passwdAPI(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 		w.Write(msg)
+		return
 	}
 	msg, err := json.Marshal(er{Ret: "v", Msg: "密码修改失败"})
 	if err != nil {
