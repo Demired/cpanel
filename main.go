@@ -259,7 +259,6 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	dom.Create()
 	_, err = createSysDisk(tvm.Vname)
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机硬盘失败", Data: err.Error()})
@@ -292,6 +291,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 //创建完毕修改密码
 func setPasswdQueue(vname string, passwd string) {
 	dom, err := connect().LookupDomainByName(vname)
+	dom.Create()
 	if err != nil {
 		fmt.Println(err.Error())
 		return
