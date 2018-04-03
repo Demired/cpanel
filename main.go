@@ -257,7 +257,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	_, err := createSysDisk(tvm.Vname)
+	_, err = createSysDisk(tvm.Vname)
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机硬盘失败"})
 		w.Write(msg)
@@ -270,12 +270,13 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	sql := fmt.Sprintf("insert into vm (Vname, Vcpu, Vmemory,Status) values('%s',%d,%d,%d);", tvm.Vname, tvm.Vcpu, tvm.Vmemory, 1)
-	_, err := db.Query(sql)
+	_, err = db.Query(sql)
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "数据库写入失败"})
 		w.Write(msg)
 		return
 	}
+	go setPasswdQueue(tvm.Vname, tvm.Passwd)
 	msg, _ := json.Marshal(er{Ret: "v", Msg: fmt.Sprintf("你的虚拟机密码是：%s", tvm.Passwd)})
 	w.Write(msg)
 }
@@ -285,16 +286,14 @@ func setPasswdQueue(vname string, passwd string) {
 	dom, err := connect().LookupDomainByName(vname)
 	if err != nil {
 		fmt.Println(err.Error())
-		return nil
+		return
 	}
-	go func() {
-
-	}()
-
 	ticker := time.NewTicker(time.Second * 20)
+	i := 0
 	for _ = range ticker.C {
+		i++
 		s, _, err := dom.GetState()
-		if int(s) == 1 {
+		if int(s) == 1 || i > 5 {
 			ticker.Stop()
 		}
 	}
