@@ -254,7 +254,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	xml := createKvmXML(tvm)
 	_, err = connect().DomainDefineXML(xml)
 	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机失败", Data: xml})
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机失败", Data: err.Error()})
 		w.Write(msg)
 		return
 	}
