@@ -41,8 +41,8 @@
     //页面加载完毕
     $("#submit").click(function(){
         var p = {}
-        p.Vpasswd = $("#vpasswd").val()
-        p.Vname = $("#vname").val()
+        p.passwd = $("#vpasswd").val()
+        p.vname = $("#vname").val()
         $.post("/passwd",p,function(d){
             alert(d.msg);
             if(d.ret=="v"){
