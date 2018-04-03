@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math/rand"
 	"net/http"
 	"os"
 	"strconv"
@@ -353,15 +354,17 @@ func createKvmXML(tvm vm) string {
 }
 
 func rmac() string {
-	s := rpwd.Init(12, true, false, true, false)
-	var ss []byte
-	for k, v := range s {
-		if k%2 == 0 && k != 0 {
-			ss = append(ss, ':')
+	str := "0123456789abcdef"
+	bytes := []byte(str)
+	result := []byte{}
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	for i := 0; i < 12; i++ {
+		if i%2 == 0 && i != 0 {
+			result = append(result, ':')
 		}
-		ss = append(ss, v)
+		result = append(result, bytes[r.Intn(len(bytes))])
 	}
-	return string(ss)
+	return string(result)
 }
 
 type vm struct {
