@@ -297,6 +297,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	str := fmt.Sprintf("%s/%s", tvm.Vname, tvm.Passwd)
+	fmt.Println(str)
 	q <- str
 	msg, _ := json.Marshal(er{Ret: "v", Msg: fmt.Sprintf("你的虚拟机密码是：%s", tvm.Passwd)})
 	w.Write(msg)
