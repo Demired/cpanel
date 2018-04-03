@@ -315,6 +315,7 @@ func setPasswdQueue(vname string, passwd string) {
 			ticker.Stop()
 		}
 	}
+	time.Sleep(time.Minute * 1)
 	err = dom.SetUserPassword("root", passwd, libvirt.DOMAIN_PASSWORD_ENCRYPTED)
 	if err != nil {
 		fmt.Println(err.Error())
