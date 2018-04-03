@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"text/template"
 	"time"
 
@@ -293,13 +294,46 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	go setPasswdQueue(tvm.Vname, tvm.Passwd)
+	q <- fmt.Sprintf("%s/%s", tvm.Vname, tvm.Passwd)
+	setPasswdQueue(tvm.Vname, tvm.Passwd)
 	msg, _ := json.Marshal(er{Ret: "v", Msg: fmt.Sprintf("你的虚拟机密码是：%s", tvm.Passwd)})
 	w.Write(msg)
 }
 
+var q = make(chan string)
+
+func workQueue() {
+	for {
+		select {
+		case str := <-q:
+			by := strings.Split(str, "/")
+			dom, err := connect().LookupDomainByName(by[0])
+			dom.Create()
+			if err != nil {
+				fmt.Println(err.Error())
+				return
+			}
+			ticker := time.NewTicker(time.Second * 20)
+			i := 0
+			for _ = range ticker.C {
+				i++
+				s, _, _ := dom.GetState()
+				if int(s) == 1 || i > 5 {
+					ticker.Stop()
+				}
+			}
+			time.Sleep(time.Minute * 1)
+			err = dom.SetUserPassword("root", by[1], libvirt.DOMAIN_PASSWORD_ENCRYPTED)
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+		}
+	}
+}
+
 //创建完毕修改密码
 func setPasswdQueue(vname string, passwd string) {
+
 	dom, err := connect().LookupDomainByName(vname)
 	dom.Create()
 	if err != nil {
