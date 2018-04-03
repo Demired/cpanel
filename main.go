@@ -142,8 +142,9 @@ func start(w http.ResponseWriter, req *http.Request) {
 }
 
 type er struct {
-	Ret string `json:"ret"`
-	Msg string `json:"msg"`
+	Ret  string `json:"ret"`
+	Msg  string `json:"msg"`
+	Data string `json:"data"`
 }
 
 func shutdown(w http.ResponseWriter, req *http.Request) {
@@ -253,7 +254,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	xml := createKvmXML(tvm)
 	_, err = connect().DomainDefineXML(xml)
 	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机失败"})
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机失败", Data: xml})
 		w.Write(msg)
 		return
 	}
