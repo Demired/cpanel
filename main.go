@@ -46,7 +46,7 @@ func index(w http.ResponseWriter, req *http.Request) {
 	t.Execute(w, nil)
 }
 
-func ipv4(w http.ResponseWriter, req *http.Request) {
+func localIP(w http.ResponseWriter, req *http.Request) {
 	ip, _, ok := net.SplitHostPort(req.RemoteAddr)
 	if ok == nil {
 		w.WriteHeader(http.StatusOK)
