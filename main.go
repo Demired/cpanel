@@ -39,8 +39,9 @@ func main() {
 	http.HandleFunc("/start", start)
 	http.HandleFunc("/shutdown", shutdown)
 	http.HandleFunc("/reboot", reboot)
-	http.HandleFunc("/list_b", listVM)
 	http.HandleFunc("/create", createAPI)
+	http.HandleFunc("/passwd.html", passwd)
+	http.HandleFunc("/passwd", passwdAPI)
 	http.HandleFunc("/create.html", create)
 	http.ListenAndServe(":8100", nil)
 }
@@ -61,6 +62,16 @@ func localIP(w http.ResponseWriter, req *http.Request) {
 func create(w http.ResponseWriter, req *http.Request) {
 	t, _ := template.ParseFiles("html/create.html")
 	t.Execute(w, nil)
+}
+
+func passwd(w http.ResponseWriter, req *http.Request) {
+	vname := req.URL.Query().Get("vname")
+	db, err := sql.Open("sqlite3", "./db/cpanel.db")
+	rows, err := db.Query("SELECT id FROM vm WHERE Vname = vname;")
+	fmt.Println(err)
+	fmt.Println(rows)
+	t, _ := template.ParseFiles("html/passwd.html")
+	t.Execute(w, vname)
 }
 
 func list(w http.ResponseWriter, req *http.Request) {
@@ -98,29 +109,6 @@ func list(w http.ResponseWriter, req *http.Request) {
 	t.Execute(w, vvvm)
 }
 
-func listVM(w http.ResponseWriter, req *http.Request) {
-	defer req.Body.Close()
-	doms, err := connect().ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_NO_AUTOSTART)
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-	for _, dom := range doms {
-		name, err := dom.GetName()
-		if err != nil {
-			fmt.Println(err.Error())
-			continue
-		}
-		_, sss, err := dom.GetState()
-		if err != nil {
-			fmt.Println(err.Error())
-			continue
-		}
-		fmt.Printf("vm name is %s,vm state is %d \n", name, sss)
-		dom.Free()
-	}
-}
-
 func createSysDisk(vname string) (w int64, err error) {
 	srcFile, err := os.Open("/virt/disk/centos.qcow2")
 	if err != nil {
@@ -149,6 +137,37 @@ func start(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	msg, err := json.Marshal(er{Ret: "v", Msg: "正在开机"})
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	w.Write(msg)
+}
+
+func passwdAPI(w http.ResponseWriter, req *http.Request) {
+	if req.Method != "POST" {
+		http.Redirect(w, req, "/", http.StatusFound)
+		return
+	}
+	defer req.Body.Close()
+	vname := req.PostFormValue("vname")
+	passwd := req.PostFormValue("passwd")
+	dom, err := connect().LookupDomainByName(vname)
+	s, _, err := dom.GetState()
+	if int(s) == 1 {
+		err = dom.SetUserPassword("root", passwd, libvirt.DOMAIN_PASSWORD_ENCRYPTED)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		msg, err := json.Marshal(er{Ret: "v", Msg: "密码修改成功"})
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		w.Write(msg)
+	}
+	msg, err := json.Marshal(er{Ret: "v", Msg: "密码修改失败"})
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -219,14 +238,6 @@ func contrl(vname string, c int) error {
 		err = dom.Destroy()
 	}
 	return err
-}
-
-func resetPWD(w http.ResponseWriter, req *http.Request) {
-	if req.Method != "POST" {
-		http.Redirect(w, req, "/", http.StatusFound)
-		return
-	}
-	defer req.Body.Close()
 }
 
 //创建虚拟机

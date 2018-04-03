@@ -76,8 +76,10 @@
         var vname = $(this).parent("td").attr("ret")
         $.post(this.href,{vname:vname},function (d) {
             console.log(d);
+            console.log(d)
             if(d.ret == "v"){
                 alert(d.msg);
+                
                 location.reload('get');
             }
         },"json");
