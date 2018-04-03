@@ -20,6 +20,8 @@ import (
 	libvirt "github.com/libvirt/libvirt-go"
 )
 
+var q = make(chan string)
+
 func connect() *libvirt.Connect {
 	conn, err := libvirt.NewConnect("qemu:///session")
 	if err != nil {
@@ -294,12 +296,11 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	q <- fmt.Sprintf("%s/%s", tvm.Vname, tvm.Passwd)
+	str := fmt.Sprintf("%s/%s", tvm.Vname, tvm.Passwd)
+	q <- str
 	msg, _ := json.Marshal(er{Ret: "v", Msg: fmt.Sprintf("你的虚拟机密码是：%s", tvm.Passwd)})
 	w.Write(msg)
 }
-
-var q = make(chan string)
 
 func workQueue() {
 	for {
