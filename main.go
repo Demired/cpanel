@@ -261,25 +261,30 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	}
 	_, err = createSysDisk(tvm.Vname)
 	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机硬盘失败"})
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机硬盘失败", Data: err.Error()})
 		w.Write(msg)
 		return
 	}
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
 	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "数据看打开失败"})
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "数据看打开失败", Data: err.Error()})
 		w.Write(msg)
 		return
 	}
-	sql := fmt.Sprintf("insert into vm (Vname, Vcpu, Vmemory,Status) values('%s',%d,%d,%d);", tvm.Vname, tvm.Vcpu, tvm.Vmemory, 1)
-	_, err = db.Query(sql)
+	stmt, err := db.Prepare("INSERT INTO vm(Vname, Vcpu, Vmemory, Status) values(?,?,?,?)")
 	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "数据库写入失败"})
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "数据库写入失败", Data: err.Error()})
+		w.Write(msg)
+		return
+	}
+	res, err := stmt.Exec(tvm.Vname, tvm.Vcpu, tvm.Vmemory, 1)
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "数据库写入失败", Data: err.Error()})
 		w.Write(msg)
 		return
 	}
 	go setPasswdQueue(tvm.Vname, tvm.Passwd)
-	msg, _ := json.Marshal(er{Ret: "v", Msg: fmt.Sprintf("你的虚拟机密码是：%s", tvm.Passwd)})
+	msg, _ := json.Marshal(er{Ret: "v", Msg: fmt.Sprintf("你的虚拟机密码是：%s", tvm.Passwd), Data: err.Error()})
 	w.Write(msg)
 }
 
