@@ -259,7 +259,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	dom.SetAutostart(true)
+	dom.Create()
 	_, err = createSysDisk(tvm.Vname)
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机硬盘失败", Data: err.Error()})
