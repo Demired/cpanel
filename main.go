@@ -277,14 +277,14 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	res, err := stmt.Exec(tvm.Vname, tvm.Vcpu, tvm.Vmemory, 1)
+	_, err := stmt.Exec(tvm.Vname, tvm.Vcpu, tvm.Vmemory, 1)
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "数据库写入失败", Data: err.Error()})
 		w.Write(msg)
 		return
 	}
 	go setPasswdQueue(tvm.Vname, tvm.Passwd)
-	msg, _ := json.Marshal(er{Ret: "v", Msg: fmt.Sprintf("你的虚拟机密码是：%s", tvm.Passwd), Data: err.Error()})
+	msg, _ := json.Marshal(er{Ret: "v", Msg: fmt.Sprintf("你的虚拟机密码是：%s", tvm.Passwd)})
 	w.Write(msg)
 }
 
