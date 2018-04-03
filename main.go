@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"math/rand"
+	"net"
 	"net/http"
 	"os"
 	"strconv"
@@ -29,6 +30,7 @@ func connect() *libvirt.Connect {
 
 func main() {
 	http.HandleFunc("/", index)
+	http.HandleFunc("/ipv4", localIP)
 	http.HandleFunc("/list", list)
 	http.HandleFunc("/start", start)
 	http.HandleFunc("/shutdown", shutdown)
@@ -42,6 +44,14 @@ func main() {
 func index(w http.ResponseWriter, req *http.Request) {
 	t, _ := template.ParseFiles("html/index.html")
 	t.Execute(w, nil)
+}
+
+func ipv4(w http.ResponseWriter, req *http.Request) {
+	ip, _, ok := net.SplitHostPort(req.RemoteAddr)
+	if ok == nil {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(ip))
+	}
 }
 
 func create(w http.ResponseWriter, req *http.Request) {
@@ -307,7 +317,7 @@ func setPasswdQueue(vname string, passwd string) {
 	}
 	err = dom.SetUserPassword("root", passwd, libvirt.DOMAIN_PASSWORD_ENCRYPTED)
 	if err != nil {
-		//记录初始化密码失败
+		fmt.Println(err.Error())
 	}
 	return
 }
