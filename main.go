@@ -32,6 +32,7 @@ func connect() *libvirt.Connect {
 }
 
 func main() {
+	go workQueue()
 	http.HandleFunc("/", index)
 	http.HandleFunc("/ipv4", localIP)
 	http.HandleFunc("/list", list)
