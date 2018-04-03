@@ -351,7 +351,7 @@ func createKvmXML(tvm vm) string {
 				<target type='virtio' port='1'/>
 			</console>
 			<channel type='unix'>
-				<target type='virtio' name='org.qemu.guest_agent.0'/>
+				<target type='virtio' name='org.qemu.guest_agent.0' state='connected'/>
 				<address type='virtio-serial' controller='0' bus='0' port='1'/>
 			</channel>
 		</devices>
