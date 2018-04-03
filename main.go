@@ -251,7 +251,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	tvm.Vname = string(rpwd.Init(8, true, true, true, false))
 
 	xml := createKvmXML(tvm)
-	dom, err := connect().DomainDefineXML(xml)
+	_, err := connect().DomainDefineXML(xml)
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机失败"})
 		w.Write(msg)
@@ -292,7 +292,7 @@ func setPasswdQueue(vname string, passwd string) {
 	i := 0
 	for _ = range ticker.C {
 		i++
-		s, _, err := dom.GetState()
+		s, _, _ := dom.GetState()
 		if int(s) == 1 || i > 5 {
 			ticker.Stop()
 		}
