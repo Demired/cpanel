@@ -9,6 +9,7 @@ import (
 	"os"
 	"strconv"
 	"text/template"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 
@@ -117,15 +118,10 @@ func createSysDisk(vname string) (w int64, err error) {
 		fmt.Println(err)
 	}
 	defer desFile.Close()
-
-	//开机
-	//入库
-
 	return io.Copy(desFile, srcFile)
 }
 
 func start(w http.ResponseWriter, req *http.Request) {
-	defer req.Body.Close()
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/", http.StatusFound)
 		return
@@ -217,6 +213,7 @@ func resetPWD(w http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
 }
 
+//创建虚拟机
 func createAPI(w http.ResponseWriter, req *http.Request) {
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/create.html", http.StatusFound)
@@ -228,21 +225,20 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	vmemory, err := strconv.Atoi(req.PostFormValue("vmemory"))
 
 	if err != nil {
-		fmt.Println("vmemory value err")
-		w.Write([]byte("vm memory value err"))
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "内存大小必须为整数"})
+		w.Write(msg)
 		return
 	}
 
 	vcpu, err := strconv.Atoi(req.PostFormValue("vcpu"))
 	if err != nil {
-		fmt.Println("vm cpu number value err")
-		w.Write([]byte("vm cpu number value err"))
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "cpu个数必须为整数"})
+		w.Write(msg)
 		return
 	}
 	vpasswd := req.PostFormValue("vpasswd")
 	if vpasswd == "" {
-		vpasswd = string(rpwd.Init(16, true, true, true, true))
-		w.Write([]byte(fmt.Sprintf("you passwd is:%s\n", vpasswd)))
+		vpasswd = string(rpwd.Init(16, true, true, true, false))
 	}
 
 	var tvm vm
@@ -257,14 +253,53 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	xml := createKvmXML(tvm)
 	dom, err := connect().DomainDefineXML(xml)
 	if err != nil {
-		w.Write([]byte(err.Error()))
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机失败"})
+		w.Write(msg)
 		return
 	}
-	rname, _ := dom.GetName()
+	_, err := createSysDisk(tvm.Vname)
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机硬盘失败"})
+		w.Write(msg)
+		return
+	}
+	db, err := sql.Open("sqlite3", "./db/cpanel.db")
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "数据看打开失败"})
+		w.Write(msg)
+		return
+	}
+	sql := fmt.Sprintf("insert into vm (Vname, Vcpu, Vmemory,Status) values('%s',%d,%d,%d);", tvm.Vname, tvm.Vcpu, tvm.Vmemory, 1)
+	_, err := db.Query(sql)
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "数据库写入失败"})
+		w.Write(msg)
+		return
+	}
+	msg, _ := json.Marshal(er{Ret: "v", Msg: fmt.Sprintf("你的虚拟机密码是：%s", tvm.Passwd)})
+	w.Write(msg)
+}
 
-	createSysDisk(rname)
-	fmt.Println(rname)
-	w.Write([]byte(fmt.Sprintf("you vm name is:%s\n", rname)))
+//创建完毕修改密码
+func setPasswdQueue(vname string, passwd string) {
+	dom, err := connect().LookupDomainByName(vname)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil
+	}
+	go func() {
+
+	}()
+
+	ticker := time.NewTicker(time.Second * 20)
+	for _ = range ticker.C {
+		s, _, err := dom.GetState()
+		if int(s) == 1 {
+			ticker.Stop()
+		}
+	}
+	err := dom.SetUserPassword("root", passwd, libvirt.DOMAIN_PASSWORD_ENCRYPTED)
+	return err
 }
 
 func createKvmXML(tvm vm) string {
@@ -315,7 +350,15 @@ func createKvmXML(tvm vm) string {
 }
 
 func rmac() string {
-	return "1e:16:3e:77:e2:ed"
+	s := rpwd.Init(12, true, false, true, false)
+	var ss []byte
+	for k, v := range s {
+		if k%2 == 0 && k != 0 {
+			ss = append(ss, ':')
+		}
+		ss = append(ss, v)
+	}
+	return string(ss)
 }
 
 type vm struct {

@@ -27,27 +27,6 @@
         </div>
     </div>
 </nav>
-<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="protocol">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel">加入ipip网络协同监控的几个条件！</h4>
-            </div>
-            <div class="modal-body">
-                1.开启icmp<br>
-                2.开启icmp路由追踪<br>
-                3.赋予root权限<br>
-            </div>
-            <div class="modal-footer">
-                <label for="notice" style="position: fixed; left: 20px; font-size: 12px;font-weight:500;">
-                    <input type="checkbox" id="notice"> 不再提示
-                </label>
-                <button type="button" class="btn btn-default" data-dismiss="modal" id="refuse">拒绝</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" id="agree">接受</button>
-            </div>
-        </div>
-    </div>
-</div>
 <div class="container" style="padding: 80px 0;">
     <form class="col-md-8 col-md-offset-2" action="#">
         <div class="alert alert-success" id="add" hidden>
@@ -103,9 +82,11 @@
         p.vcpu = $("#vcpu").val()
         p.vmemory = $("#vmemory").val() 
         p.vpasswd = $("#vpasswd").val()
-	console.log(p);
         $.post("/create",p,function(d){
-            alert(d.message);
+            alert(d.msg);
+            if(d.ret=="v"){
+                location.href("/list")
+            }
         },"json")
    });
 </script>
