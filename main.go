@@ -297,8 +297,11 @@ func setPasswdQueue(vname string, passwd string) {
 			ticker.Stop()
 		}
 	}
-	err := dom.SetUserPassword("root", passwd, libvirt.DOMAIN_PASSWORD_ENCRYPTED)
-	return err
+	err = dom.SetUserPassword("root", passwd, libvirt.DOMAIN_PASSWORD_ENCRYPTED)
+	if err != nil {
+		//记录初始化密码失败
+	}
+	return
 }
 
 func createKvmXML(tvm vm) string {
