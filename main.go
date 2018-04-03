@@ -67,7 +67,7 @@ func create(w http.ResponseWriter, req *http.Request) {
 func passwd(w http.ResponseWriter, req *http.Request) {
 	vname := req.URL.Query().Get("vname")
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
-	sql := fmt.Sprintf("SELECT id FROM vm WHERE Vname = %s;", vname)
+	sql := fmt.Sprintf("SELECT id FROM vm WHERE Vname = '%s';", vname)
 	rows, err := db.Query(sql)
 	fmt.Println(err)
 	fmt.Println(rows)
