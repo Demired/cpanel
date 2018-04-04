@@ -12,8 +12,7 @@ func Start(vname string) error {
 		fmt.Println(err.Error())
 		return nil
 	}
-	err := dom.Create()
-	return err
+	return dom.Create()
 }
 
 func Connect() *libvirt.Connect {
