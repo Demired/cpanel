@@ -132,12 +132,12 @@ func start(w http.ResponseWriter, req *http.Request) {
 	}
 	defer req.Body.Close()
 	vname := req.PostFormValue("vname")
-	err := contrl(vname, 1)
+	err = contrl.Start(vname)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-	msg, err := json.Marshal(er{Ret: "v", Msg: "正在开机"})
+	msg, err := json.Marshal(er{Ret: "v", Msg: "正在开机", Data: err.Error()})
 	if err != nil {
 		fmt.Println(err.Error())
 		return
