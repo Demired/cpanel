@@ -187,7 +187,7 @@ func shutdown(w http.ResponseWriter, req *http.Request) {
 	}
 	defer req.Body.Close()
 	vname := req.PostFormValue("vname")
-	err := contrl(vname, 2)
+	err := control.Shutdown()
 	if err != nil {
 		fmt.Println(err.Error())
 		return
