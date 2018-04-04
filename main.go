@@ -60,11 +60,14 @@ func passwd(w http.ResponseWriter, req *http.Request) {
 	vname := req.URL.Query().Get("vname")
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
 	sql := fmt.Sprintf("SELECT id FROM vm WHERE Vname = '%s';", vname)
-	rows, err := db.Query(sql)
-	fmt.Println(err)
-	fmt.Println(rows.Next())
-	t, _ := template.ParseFiles("html/passwd.html")
-	t.Execute(w, vname)
+	rows, _ := db.Query(sql)
+	if rows.Next() == true {
+		t, _ := template.ParseFiles("html/passwd.html")
+		t.Execute(w, vname)
+		return
+	}
+	http.Redirect(w, req, "/list", http.StatusFound)
+	return
 }
 
 func list(w http.ResponseWriter, req *http.Request) {
