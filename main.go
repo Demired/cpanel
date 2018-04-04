@@ -154,6 +154,8 @@ func passwdAPI(w http.ResponseWriter, req *http.Request) {
 	dom, err := control.Connect().LookupDomainByName(vname)
 	s, _, err := dom.GetState()
 	if int(s) == 1 {
+		t := fmt.Sprintf("vm:%s,passwd:%s", vname, passwd)
+		fmt.Println(t)
 		err = dom.SetUserPassword("root", passwd, libvirt.DOMAIN_PASSWORD_ENCRYPTED)
 		if err != nil {
 			fmt.Println(err.Error())
