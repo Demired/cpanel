@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cpanel/control"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -132,7 +133,7 @@ func start(w http.ResponseWriter, req *http.Request) {
 	}
 	defer req.Body.Close()
 	vname := req.PostFormValue("vname")
-	err = contrl.Start(vname)
+	err := control.Start(vname)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -224,23 +225,23 @@ func reboot(w http.ResponseWriter, req *http.Request) {
 	w.Write(msg)
 }
 
-func contrl(vname string, c int) error {
-	dom, err := connect().LookupDomainByName(vname)
-	if err != nil {
-		fmt.Println(err.Error())
-		return nil
-	}
-	if c == 1 {
-		err = dom.Create()
-	} else if c == 2 {
-		err = dom.Shutdown()
-	} else if c == 3 {
-		err = dom.Reboot(libvirt.DOMAIN_REBOOT_DEFAULT)
-	} else if c == 4 {
-		err = dom.Destroy()
-	}
-	return err
-}
+// func contrl(vname string, c int) error {
+// 	dom, err := connect().LookupDomainByName(vname)
+// 	if err != nil {
+// 		fmt.Println(err.Error())
+// 		return nil
+// 	}
+// 	if c == 1 {
+// 		err = dom.Create()
+// 	} else if c == 2 {
+// 		err = dom.Shutdown()
+// 	} else if c == 3 {
+// 		err = dom.Reboot(libvirt.DOMAIN_REBOOT_DEFAULT)
+// 	} else if c == 4 {
+// 		err = dom.Destroy()
+// 	}
+// 	return err
+// }
 
 //创建虚拟机
 func createAPI(w http.ResponseWriter, req *http.Request) {
