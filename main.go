@@ -23,15 +23,6 @@ import (
 
 var q = make(chan string)
 
-func connect() *libvirt.Connect {
-	conn, err := libvirt.NewConnect("qemu:///session")
-	if err != nil {
-		fmt.Println(err.Error())
-		return nil
-	}
-	return conn
-}
-
 func main() {
 	go workQueue()
 	http.HandleFunc("/", index)
@@ -93,7 +84,7 @@ func list(w http.ResponseWriter, req *http.Request) {
 			fmt.Println(err.Error())
 			return
 		}
-		dom, err := connect().LookupDomainByName(vvm.Vname)
+		dom, err := control.Connect().LookupDomainByName(vvm.Vname)
 		if err != nil {
 			fmt.Println(err.Error())
 			continue
@@ -154,7 +145,7 @@ func passwdAPI(w http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
 	vname := req.PostFormValue("vname")
 	passwd := req.PostFormValue("passwd")
-	dom, err := connect().LookupDomainByName(vname)
+	dom, err := control.Connect().LookupDomainByName(vname)
 	s, _, err := dom.GetState()
 	if int(s) == 1 {
 		err = dom.SetUserPassword("root", passwd, libvirt.DOMAIN_PASSWORD_ENCRYPTED)
@@ -281,7 +272,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	tvm.Vname = string(rpwd.Init(8, true, true, true, false))
 
 	xml := createKvmXML(tvm)
-	_, err = connect().DomainDefineXML(xml)
+	_, err = control.Connect().DomainDefineXML(xml)
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机失败", Data: err.Error()})
 		w.Write(msg)
@@ -324,7 +315,7 @@ func workQueue() {
 		case str := <-q:
 			fmt.Println(str)
 			by := strings.Split(str, "/")
-			dom, err := connect().LookupDomainByName(by[0])
+			dom, err := control.Connect().LookupDomainByName(by[0])
 			dom.Create()
 			if err != nil {
 				fmt.Println(err.Error())
