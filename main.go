@@ -140,7 +140,6 @@ func start(w http.ResponseWriter, req *http.Request) {
 		fmt.Println(err.Error())
 		return
 	}
-
 }
 
 func passwdAPI(w http.ResponseWriter, req *http.Request) {
