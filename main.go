@@ -62,7 +62,7 @@ func passwd(w http.ResponseWriter, req *http.Request) {
 	sql := fmt.Sprintf("SELECT id FROM vm WHERE Vname = '%s';", vname)
 	rows, err := db.Query(sql)
 	fmt.Println(err)
-	fmt.Println(rows)
+	fmt.Println(rows.Columns())
 	t, _ := template.ParseFiles("html/passwd.html")
 	t.Execute(w, vname)
 }
