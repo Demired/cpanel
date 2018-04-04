@@ -187,7 +187,7 @@ func shutdown(w http.ResponseWriter, req *http.Request) {
 	}
 	defer req.Body.Close()
 	vname := req.PostFormValue("vname")
-	err := control.Shutdown()
+	err := control.Shutdown(vname)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -208,7 +208,7 @@ func reboot(w http.ResponseWriter, req *http.Request) {
 	}
 	defer req.Body.Close()
 	vname := req.PostFormValue("vname")
-	err := contrl(vname, 3)
+	err := contrl.Reboot(vname)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
