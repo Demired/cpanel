@@ -1,7 +1,7 @@
 package control
 
 import (
-	crypt "github.com/go-crypt"
+	"github.com/amoghe/go-crypt"
 	libvirt "github.com/libvirt/libvirt-go"
 )
 
