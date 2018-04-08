@@ -2,8 +2,8 @@ package control
 
 import (
 	"fmt"
-	"rpwd"
 
+	"github.com/Demired/rpwd"
 	"github.com/amoghe/go-crypt"
 	libvirt "github.com/libvirt/libvirt-go"
 )
