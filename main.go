@@ -154,17 +154,9 @@ func passwdAPI(w http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
 	vname := req.PostFormValue("vname")
 	passwd := req.PostFormValue("passwd")
-	dom, err := control.Connect().LookupDomainByName(vname)
-	s, _, err := dom.GetState()
-	if int(s) == 1 {
-		t := fmt.Sprintf("vm:%s,passwd:%s", vname, passwd)
-		fmt.Println(t)
-		err = dom.SetUserPassword("root", passwd, libvirt.DOMAIN_PASSWORD_ENCRYPTED)
-		if err != nil {
-			fmt.Println(err.Error())
-			return
-		}
-		msg, err := json.Marshal(er{Ret: "v", Msg: "密码修改成功"})
+	err := control.SetPsswd(vname, "root", passwd)
+	if err != nil {
+		msg, err := json.Marshal(er{Ret: "e", Msg: err.Error()})
 		if err != nil {
 			fmt.Println(err.Error())
 			return
@@ -172,7 +164,7 @@ func passwdAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	msg, err := json.Marshal(er{Ret: "v", Msg: "密码修改失败"})
+	msg, err := json.Marshal(er{Ret: "v", Msg: "密码已重置"})
 	if err != nil {
 		fmt.Println(err.Error())
 		return

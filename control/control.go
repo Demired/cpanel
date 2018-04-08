@@ -1,8 +1,12 @@
 package control
 
 import (
+	"cpanel/control"
+	"encoding/json"
 	"fmt"
 
+	"github.com/Demired/rpwd"
+	"github.com/amoghe/go-crypt"
 	libvirt "github.com/libvirt/libvirt-go"
 )
 
@@ -37,4 +41,28 @@ func Reboot(vname string) error {
 		return err
 	}
 	return dom.Reboot(libvirt.DOMAIN_REBOOT_DEFAULT)
+}
+
+func SetPsswd(vname string, username string, passwd string) error {
+	salt := fmt.Sprintf("$6$%s", string(rpwd.Init(8, true, true, true, false)))
+	encryptPasswd, err := crypt.Crypt(passwd, salt)
+	if err != nil {
+		return err
+	}
+	dom, err := control.Connect().LookupDomainByName(vname)
+	s, _, err := dom.GetState()
+	if int(s) == 1 {
+		t := fmt.Sprintf("vm:%s,passwd:%s", vname, encryptPasswd)
+		fmt.Println(t)
+		err = dom.SetUserPassword(username, encryptPasswd, libvirt.DOMAIN_PASSWORD_ENCRYPTED)
+		if err != nil {
+			return err
+		}
+		msg, err := json.Marshal(er{Ret: "v", Msg: "密码修改成功"})
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+	return errors.new("vps not run")
 }
