@@ -85,7 +85,7 @@
         $.post("/create",p,function(d){
             alert(d.msg);
             if(d.ret=="v"){
-                windows.location.href = "/list"
+                location.href = "/list"
             }
         },"json")
    });
