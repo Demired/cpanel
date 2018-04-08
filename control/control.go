@@ -1,6 +1,9 @@
 package control
 
 import (
+	"cpanel/control"
+
+	crypt "github.com/go-crypt"
 	libvirt "github.com/libvirt/libvirt-go"
 )
 
@@ -36,7 +39,7 @@ func Reboot(vname string) error {
 	return dom.Reboot(libvirt.DOMAIN_REBOOT_DEFAULT)
 }
 
-func SetPasswd(vname string,userName string passwd string) error {
+func SetPasswd(vname string, userName string, passwd string) error {
 	encryptPasswd, err := crypt.Crypt(passwd, "$6$Pk3YRrQamkzbN6wY")
 	if err != nil {
 		return err
