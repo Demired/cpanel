@@ -2,8 +2,6 @@ package control
 
 import (
 	"cpanel/control"
-	"encoding/json"
-	"fmt"
 
 	"github.com/amoghe/go-crypt"
 	libvirt "github.com/libvirt/libvirt-go"
@@ -20,7 +18,6 @@ func Start(vname string) error {
 func Connect() *libvirt.Connect {
 	conn, err := libvirt.NewConnect("qemu:///session")
 	if err != nil {
-		fmt.Println(err.Error())
 		return nil
 	}
 	return conn
@@ -48,15 +45,12 @@ func SetPsswd(vname string, username string, passwd string) error {
 		return err
 	}
 	dom, err := control.Connect().LookupDomainByName(vname)
+	if err != nil {
+		return err
+	}
 	s, _, err := dom.GetState()
 	if int(s) == 1 {
-		t := fmt.Sprintf("vm:%s,passwd:%s", vname, encryptPasswd)
-		fmt.Println(t)
 		err = dom.SetUserPassword(username, encryptPasswd, libvirt.DOMAIN_PASSWORD_ENCRYPTED)
-		if err != nil {
-			return err
-		}
-		msg, err := json.Marshal(er{Ret: "v", Msg: "密码修改成功"})
 		if err != nil {
 			return err
 		}
