@@ -1,6 +1,9 @@
 package control
 
 import (
+	"fmt"
+	"rpwd"
+
 	"github.com/amoghe/go-crypt"
 	libvirt "github.com/libvirt/libvirt-go"
 )
@@ -38,7 +41,8 @@ func Reboot(vname string) error {
 }
 
 func SetPasswd(vname string, userName string, passwd string) error {
-	encryptPasswd, err := crypt.Crypt(passwd, "$6$Pk3YRrQamkzbN6wY")
+	salt := fmt.Sprintf("$6$%s", rpwd.Init(12, true, true, true, false))
+	encryptPasswd, err := crypt.Crypt(passwd, salt)
 	if err != nil {
 		return err
 	}
