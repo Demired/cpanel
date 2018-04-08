@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/Demired/rpwd"
 	"github.com/amoghe/go-crypt"
 	libvirt "github.com/libvirt/libvirt-go"
 )
@@ -44,8 +43,7 @@ func Reboot(vname string) error {
 }
 
 func SetPsswd(vname string, username string, passwd string) error {
-	salt := fmt.Sprintf("$6$%s", string(rpwd.Init(8, true, true, true, false)))
-	encryptPasswd, err := crypt.Crypt(passwd, salt)
+	encryptPasswd, err := crypt.Crypt(passwd, "$6$Pk3YRrQamkzbN6wY")
 	if err != nil {
 		return err
 	}
