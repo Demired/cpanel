@@ -154,22 +154,22 @@ func passwdAPI(w http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
 	vname := req.PostFormValue("vname")
 	passwd := req.PostFormValue("passwd")
-	err := control.SetPsswd(vname, "root", passwd)
-	if err != nil {
-		msg, err := json.Marshal(er{Ret: "e", Msg: err.Error()})
-		if err != nil {
-			fmt.Println(err.Error())
-			return
-		}
-		w.Write(msg)
-		return
-	}
-	msg, err := json.Marshal(er{Ret: "v", Msg: "密码已重置"})
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-	w.Write(msg)
+	// err := control.SetPsswd(vname, "root", passwd)
+	// if err != nil {
+	// 	msg, err := json.Marshal(er{Ret: "e", Msg: err.Error()})
+	// 	if err != nil {
+	// 		fmt.Println(err.Error())
+	// 		return
+	// 	}
+	// 	w.Write(msg)
+	// 	return
+	// }
+	// msg, err := json.Marshal(er{Ret: "v", Msg: "密码已重置"})
+	// if err != nil {
+	// 	fmt.Println(err.Error())
+	// 	return
+	// }
+	// w.Write(msg)
 }
 
 type er struct {
