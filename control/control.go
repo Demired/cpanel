@@ -36,6 +36,26 @@ func Reboot(vname string) error {
 	return dom.Reboot(libvirt.DOMAIN_REBOOT_DEFAULT)
 }
 
+func SetPsswd(vname string,userName string passwd string) error {
+	encryptPasswd, err := crypt.Crypt(passwd, "$6$Pk3YRrQamkzbN6wY")
+	if err != nil {
+		return err
+	}
+	dom, err := control.Connect().LookupDomainByName(vname)
+	if err != nil {
+		return err
+	}
+	s, _, err := dom.GetState()
+	if int(s) == 1 {
+		err = dom.SetUserPassword(userName, encryptPasswd, libvirt.DOMAIN_PASSWORD_ENCRYPTED)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+	return nil
+}
+
 // func SetPsswd(vname string, username string, passwd string) error {
 // 	encryptPasswd, err := crypt.Crypt(passwd, "$6$Pk3YRrQamkzbN6wY")
 // 	if err != nil {

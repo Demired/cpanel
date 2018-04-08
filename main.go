@@ -152,9 +152,9 @@ func passwdAPI(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	defer req.Body.Close()
-	// vname := req.PostFormValue("vname")
-	// passwd := req.PostFormValue("passwd")
-	// err := control.SetPsswd(vname, "root", passwd)
+	vname := req.PostFormValue("vname")
+	passwd := req.PostFormValue("passwd")
+	err := control.SetPsswd(vname, "root", passwd)
 	// if err != nil {
 	// 	msg, err := json.Marshal(er{Ret: "e", Msg: err.Error()})
 	// 	if err != nil {
