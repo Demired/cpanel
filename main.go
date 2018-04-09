@@ -314,7 +314,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 
 func deleteAPI(w http.ResponseWriter, req *http.Request) {
 	vname := req.PostFormValue("vname")
-	disk := fmt.Sprintf("/virt/disk/%s.qcow2",vname)
+	disk := fmt.Sprintf("/virt/disk/%s.qcow2", vname)
 	os.Remove(disk)
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
 	if err != nil {
@@ -334,8 +334,8 @@ func deleteAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	err := control.Undefine(vname)
-	msg, _ := json.Marshal(er{Ret: "v", Msg: "已删除")
+	err = control.Undefine(vname)
+	msg, _ := json.Marshal(er{Ret: "v", Msg: "已删除"})
 	w.Write(msg)
 }
 
