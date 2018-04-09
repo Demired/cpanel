@@ -34,6 +34,7 @@ func main() {
 	http.HandleFunc("/create", createAPI)
 	http.HandleFunc("/passwd.html", passwd)
 	http.HandleFunc("/passwd", passwdAPI)
+	http.HandleFunc("/undefine", undefine)
 	http.HandleFunc("/create.html", create)
 	http.ListenAndServe(":8100", nil)
 }
@@ -312,7 +313,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	w.Write(msg)
 }
 
-func deleteAPI(w http.ResponseWriter, req *http.Request) {
+func undefine(w http.ResponseWriter, req *http.Request) {
 	vname := req.PostFormValue("vname")
 	disk := fmt.Sprintf("/virt/disk/%s.qcow2", vname)
 	os.Remove(disk)
