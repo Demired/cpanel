@@ -24,12 +24,29 @@ func Connect() *libvirt.Connect {
 	return conn
 }
 
+func GetState(vname string) (int, error) {
+	dom, err := Connect().LookupDomainByName(vname)
+	if err != nil {
+		return nil, err
+	}
+	s, _, _ := dom.GetState()
+	return int(s), nil
+}
+
 func Shutdown(vname string) error {
 	dom, err := Connect().LookupDomainByName(vname)
 	if err != nil {
 		return err
 	}
 	return dom.Shutdown()
+}
+
+func Undefine(vname string) error {
+	dom, err := Connect().LookupDomainByName(vname)
+	if err != nil {
+		return err
+	}
+	return dom.Undefine()
 }
 
 func Reboot(vname string) error {

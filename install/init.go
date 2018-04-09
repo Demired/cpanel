@@ -25,6 +25,7 @@ func Init() {
         Vcpu INT NOT NULL,
         Vmemory INT NOT NULL,
         Status INT NOT NULL,
+        Mac CHAR(20),
         Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         Utime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         );

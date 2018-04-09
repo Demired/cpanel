@@ -101,7 +101,7 @@ func list(w http.ResponseWriter, req *http.Request) {
 		vvvm = append(vvvm, vvm)
 	}
 
-	t, _ := template.ParseFiles("html/list_bak.html")
+	t, _ := template.ParseFiles("html/list.html")
 	t.Execute(w, vvvm)
 }
 
@@ -289,19 +289,19 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	}
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
 	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "数据看打开失败", Data: err.Error()})
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "打开失败", Data: err.Error()})
 		w.Write(msg)
 		return
 	}
-	stmt, err := db.Prepare("INSERT INTO vm(Vname, Vcpu, Vmemory, Status, IPv4, IPv6, LocalIP) values(?,?,?,?,?,?,?)")
+	stmt, err := db.Prepare("INSERT INTO vm(Vname, Vcpu, Vmemory, Mac, Status, IPv4, IPv6, LocalIP) values(?,?,?,?,?,?,?,?)")
 	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "数据库写入失败", Data: err.Error()})
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
 		w.Write(msg)
 		return
 	}
-	_, err = stmt.Exec(tvm.Vname, tvm.Vcpu, tvm.Vmemory, 1, "", "", "")
+	_, err = stmt.Exec(tvm.Vname, tvm.Vcpu, tvm.Vmemory, tvm.Mac, 1, "", "", "")
 	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "数据库写入失败", Data: err.Error()})
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
 		w.Write(msg)
 		return
 	}
@@ -309,6 +309,33 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	fmt.Println(str)
 	q <- str
 	msg, _ := json.Marshal(er{Ret: "v", Msg: fmt.Sprintf("你的虚拟机密码是：%s", tvm.Passwd)})
+	w.Write(msg)
+}
+
+func deleteAPI(w http.ResponseWriter, req *http.Request) {
+	vname := req.PostFormValue("vname")
+	disk := fmt.Sprintf("/virt/disk/%s.qcow2",vname)
+	os.Remove(disk)
+	db, err := sql.Open("sqlite3", "./db/cpanel.db")
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "打开失败", Data: err.Error()})
+		w.Write(msg)
+		return
+	}
+	stmt, err := db.Prepare("UPDATE  vm SET Status = 0 WHERE Vname = ?")
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
+		w.Write(msg)
+		return
+	}
+	_, err = stmt.Exec(vname)
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
+		w.Write(msg)
+		return
+	}
+	err := control.Undefine(vname)
+	msg, _ := json.Marshal(er{Ret: "v", Msg: "已删除")
 	w.Write(msg)
 }
 
