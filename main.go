@@ -334,7 +334,12 @@ func deleteAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	err = control.Undefine(vname)
+	control.Undefine(vname)
+	// if err != nil {
+	// 	msg, _ := json.Marshal(er{Ret: "e", Msg: "删除失败", Data: err.Error()})
+	// 	w.Write(msg)
+	// 	return
+	// }
 	msg, _ := json.Marshal(er{Ret: "v", Msg: "已删除"})
 	w.Write(msg)
 }
