@@ -27,7 +27,7 @@ func Connect() *libvirt.Connect {
 func GetState(vname string) (int, error) {
 	dom, err := Connect().LookupDomainByName(vname)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 	s, _, _ := dom.GetState()
 	return int(s), nil
