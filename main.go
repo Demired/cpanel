@@ -335,7 +335,7 @@ func workQueue() {
 			fmt.Println(str)
 			by := strings.Split(str, "/")
 			control.Start(by[0])
-			time.Sleep(1 * time.Second())
+			time.Sleep(1 * time.Minute)
 			control.SetPasswd(by[0], "root", by[1])
 		}
 	}
@@ -391,7 +391,7 @@ func createKvmXML(tvm vm) string {
 func rmac() string {
 	str := "0123456789abcdef"
 	bytes := []byte(str)
-	result := []byte{"cc:71:"}
+	result := []byte("cc:71:")
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	for i := 0; i < 8; i++ {
 		if i%2 == 0 && i != 0 {
