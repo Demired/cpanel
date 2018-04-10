@@ -18,14 +18,15 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/Demired/rpwd"
-	libvirt "github.com/libvirt/libvirt-go"
 )
 
 var q = make(chan string)
 
+var mac = make(chan string)
+
 func main() {
 	go workQueue()
-	http.HandleFunc("/", index)
+	go http.HandleFunc("/", index)
 	http.HandleFunc("/ipv4", localIP)
 	http.HandleFunc("/list", list)
 	http.HandleFunc("/start", start)
@@ -220,24 +221,6 @@ func reboot(w http.ResponseWriter, req *http.Request) {
 	w.Write(msg)
 }
 
-// func contrl(vname string, c int) error {
-// 	dom, err := connect().LookupDomainByName(vname)
-// 	if err != nil {
-// 		fmt.Println(err.Error())
-// 		return nil
-// 	}
-// 	if c == 1 {
-// 		err = dom.Create()
-// 	} else if c == 2 {
-// 		err = dom.Shutdown()
-// 	} else if c == 3 {
-// 		err = dom.Reboot(libvirt.DOMAIN_REBOOT_DEFAULT)
-// 	} else if c == 4 {
-// 		err = dom.Destroy()
-// 	}
-// 	return err
-// }
-
 //创建虚拟机
 func createAPI(w http.ResponseWriter, req *http.Request) {
 	if req.Method != "POST" {
@@ -351,26 +334,9 @@ func workQueue() {
 		case str := <-q:
 			fmt.Println(str)
 			by := strings.Split(str, "/")
-			dom, err := control.Connect().LookupDomainByName(by[0])
-			dom.Create()
-			if err != nil {
-				fmt.Println(err.Error())
-				return
-			}
-			ticker := time.NewTicker(time.Second * 20)
-			i := 0
-			for _ = range ticker.C {
-				i++
-				s, _, _ := dom.GetState()
-				if int(s) == 1 || i > 5 {
-					ticker.Stop()
-				}
-			}
-			time.Sleep(time.Minute * 1)
-			err = dom.SetUserPassword("root", by[1], libvirt.DOMAIN_PASSWORD_ENCRYPTED)
-			if err != nil {
-				fmt.Println(err.Error())
-			}
+			control.Start(by[0])
+			time.Sleep(1 * time.Second())
+			control.SetPasswd(by[0], "root", by[1])
 		}
 	}
 }
@@ -425,9 +391,9 @@ func createKvmXML(tvm vm) string {
 func rmac() string {
 	str := "0123456789abcdef"
 	bytes := []byte(str)
-	result := []byte{}
+	result := []byte{"cc:71:"}
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	for i := 0; i < 12; i++ {
+	for i := 0; i < 8; i++ {
 		if i%2 == 0 && i != 0 {
 			result = append(result, ':')
 		}
