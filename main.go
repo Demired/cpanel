@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cpanel/arp"
 	"cpanel/control"
 	"database/sql"
 	"encoding/json"
@@ -25,6 +26,7 @@ var q = make(chan string)
 var mac = make(chan string)
 
 func main() {
+
 	go workQueue()
 	go http.HandleFunc("/", index)
 	http.HandleFunc("/ipv4", localIP)
@@ -74,6 +76,7 @@ func passwd(w http.ResponseWriter, req *http.Request) {
 
 func list(w http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
+	fmt.Println(arp.Get())
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
 	rows, err := db.Query("SELECT Vname,IPv4,IPv6,LocalIP,Vcpu,Vmemory,Status FROM vm WHERE Status = 1 LIMIT 100;")
 	if err != nil {
@@ -337,6 +340,7 @@ func workQueue() {
 			control.Start(by[0])
 			time.Sleep(1 * time.Minute)
 			control.SetPasswd(by[0], "root", by[1])
+
 		}
 	}
 }
