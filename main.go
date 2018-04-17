@@ -52,7 +52,7 @@ func watch() {
 	for {
 		select {
 		case <-w.C:
-			doms, err := conn.ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_ACTIVE)
+			doms, err := control.Connect().ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_ACTIVE)
 			if err != nil {
 				fmt.Println(err.Error())
 			}
