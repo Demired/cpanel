@@ -69,19 +69,20 @@ func create(w http.ResponseWriter, req *http.Request) {
 	t.Execute(w, nil)
 }
 
-func edit(w http.ResponseWriter, req *http.Request) {
-	vname := req.URL.Query().Get("vname")
-	db, _ := sql.Open("sqlite3", "./db/cpanel.db")
-	sql := fmt.Sprintf("SELECT Vname,IPv4,IPv6,LocalIP,Mac,Vcpu,Vmemory,Status FROM vm WHERE Vname = '%s';", vname)
-	rows, _ := db.Query(sql)
-	if rows.Next() == true {
-		var vvm vm
-		err := rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Mac, &vvm.Vcpu, &vvm.Vmemory, &vvm.Status)
-		// if
-	}
-	t, _ := template.ParseFiles("html/create.html")
-	t.Execute(w, nil)
-}
+// func edit(w http.ResponseWriter, req *http.Request) {
+// 	vname := req.URL.Query().Get("vname")
+// 	db, _ := sql.Open("sqlite3", "./db/cpanel.db")
+// 	sql := fmt.Sprintf("SELECT Vname,IPv4,IPv6,LocalIP,Mac,Vcpu,Vmemory,Status FROM vm WHERE Vname = '%s';", vname)
+// 	rows, _ := db.Query(sql)
+// 	if rows.Next() == true {
+// 		var vvm vm
+// 		// err := rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Mac, &vvm.Vcpu, &vvm.Vmemory, &vvm.Status)
+// 		// if
+
+// 	}
+// 	t, _ := template.ParseFiles("html/create.html")
+// 	t.Execute(w, nil)
+// }
 
 func info(w http.ResponseWriter, req *http.Request) {
 	w.Write([]byte("info"))
