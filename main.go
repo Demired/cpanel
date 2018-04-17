@@ -37,7 +37,7 @@ func main() {
 	http.HandleFunc("/passwd.html", passwd)
 	http.HandleFunc("/passwd", passwdAPI)
 	http.HandleFunc("/undefine", undefine)
-	http.HandleFunc("/edit.html", edit)
+	// http.HandleFunc("/edit.html", edit)
 	http.HandleFunc("/create.html", create)
 	http.ListenAndServe(":8100", nil)
 }
