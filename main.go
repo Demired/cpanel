@@ -284,7 +284,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	tvm.Vcpu = vcpu
 	tvm.Vmemory = vmemory
 	tvm.Passwd = vpasswd
-	tvm.Mac = Rmac()
+	tvm.Mac = tools.Rmac()
 	tvm.Br = "br1"
 	tvm.Vname = string(rpwd.Init(8, true, true, true, false))
 
