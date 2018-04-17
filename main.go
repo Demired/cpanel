@@ -71,6 +71,7 @@ func create(w http.ResponseWriter, req *http.Request) {
 
 func edit(w http.ResponseWriter, req *http.Request) {
 	vname := req.URL.Query().Get("vname")
+	db, _ := sql.Open("sqlite3", "./db/cpanel.db")
 	sql := fmt.Sprintf("SELECT Vname,IPv4,IPv6,LocalIP,Mac,Vcpu,Vmemory,Status FROM vm WHERE Vname = '%s';", vname)
 	rows, _ := db.Query(sql)
 	if rows.Next() == true {
