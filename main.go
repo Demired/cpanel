@@ -1,14 +1,12 @@
 package main
 
 import (
-	"cpanel/arp"
 	"cpanel/control"
+	"cpanel/tools"
 	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io"
-	"math/rand"
-	"net"
 	"net/http"
 	"os"
 	"strconv"
@@ -26,11 +24,11 @@ var q = make(chan string)
 var mac = make(chan string)
 
 func main() {
-
+	go watch()
 	go workQueue()
 	go http.HandleFunc("/", index)
-	http.HandleFunc("/ipv4", localIP)
 	http.HandleFunc("/list", list)
+	http.HandleFunc("/info", info)
 	http.HandleFunc("/start", start)
 	http.HandleFunc("/shutdown", shutdown)
 	http.HandleFunc("/reboot", reboot)
@@ -38,6 +36,7 @@ func main() {
 	http.HandleFunc("/passwd.html", passwd)
 	http.HandleFunc("/passwd", passwdAPI)
 	http.HandleFunc("/undefine", undefine)
+	http.HandleFunc("/edit.html", edit)
 	http.HandleFunc("/create.html", create)
 	http.ListenAndServe(":8100", nil)
 }
@@ -47,17 +46,41 @@ func index(w http.ResponseWriter, req *http.Request) {
 	t.Execute(w, nil)
 }
 
-func localIP(w http.ResponseWriter, req *http.Request) {
-	ip, _, ok := net.SplitHostPort(req.RemoteAddr)
-	if ok == nil {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(ip))
+func watch() {
+	w := time.NewTimer(time.Second * 20)
+	for {
+	case <-w.C:
+		doms, err := conn.ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_ACTIVE)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+		for _, dom := range doms {
+			fmt.Println(dom.GetState())
+			dom.Free()
+		}
 	}
 }
 
 func create(w http.ResponseWriter, req *http.Request) {
 	t, _ := template.ParseFiles("html/create.html")
 	t.Execute(w, nil)
+}
+
+func edit(w http.ResponseWriter, req *http.Request) {
+	vname := req.URL.Query().Get("vname")
+	sql := fmt.Sprintf("SELECT Vname,IPv4,IPv6,LocalIP,Mac,Vcpu,Vmemory,Status FROM vm WHERE Vname = '%s';", vname)
+	rows, _ := db.Query(sql)
+	if rows.Next() == true {
+		var vvm vm
+		err := rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Mac, &vvm.Vcpu, &vvm.Vmemory, &vvm.Status)
+		// if
+	}
+	t, _ := template.ParseFiles("html/create.html")
+	t.Execute(w, nil)
+}
+
+func info(w http.ResponseWriter, req *http.Request) {
+	w.Write([]byte("info"))
 }
 
 func passwd(w http.ResponseWriter, req *http.Request) {
@@ -76,9 +99,8 @@ func passwd(w http.ResponseWriter, req *http.Request) {
 
 func list(w http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
-	fmt.Println(arp.Get())
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
-	rows, err := db.Query("SELECT Vname,IPv4,IPv6,LocalIP,Vcpu,Vmemory,Status FROM vm WHERE Status = 1 LIMIT 100;")
+	rows, err := db.Query("SELECT Vname,IPv4,IPv6,LocalIP,Mac,Vcpu,Vmemory,Status FROM vm WHERE Status = 1 LIMIT 100;")
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -87,11 +109,12 @@ func list(w http.ResponseWriter, req *http.Request) {
 	var vvvm []vm
 	for rows.Next() {
 		var vvm vm
-		err := rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Vcpu, &vvm.Vmemory, &vvm.Status)
+		err := rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Mac, &vvm.Vcpu, &vvm.Vmemory, &vvm.Status)
 		if err != nil {
 			fmt.Println(err.Error())
 			return
 		}
+		vvm.LocalIP = tools.Arp(vvm.Mac)
 		dom, err := control.Connect().LookupDomainByName(vvm.Vname)
 		if err != nil {
 			fmt.Println(err.Error())
@@ -257,7 +280,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	tvm.Vcpu = vcpu
 	tvm.Vmemory = vmemory
 	tvm.Passwd = vpasswd
-	tvm.Mac = rmac()
+	tvm.Mac = Rmac()
 	tvm.Br = "br1"
 	tvm.Vname = string(rpwd.Init(8, true, true, true, false))
 
@@ -370,6 +393,9 @@ func createKvmXML(tvm vm) string {
 				<source file="/virt/disk/` + tvm.Vname + `.qcow2"/>
 				<target dev="hdb" bus="ide"/>
 			</disk>
+			<interface type='network'>
+				<source network='default'/>
+			</interface>
 			<interface type='bridge'>
 				<mac address='` + tvm.Mac + `'/>
 				<source bridge='` + tvm.Br + `'/>
@@ -390,20 +416,6 @@ func createKvmXML(tvm vm) string {
 		</devices>
 	</domain>`
 	return templateXML
-}
-
-func rmac() string {
-	str := "0123456789abcdef"
-	bytes := []byte(str)
-	result := []byte("cc:71:")
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	for i := 0; i < 8; i++ {
-		if i%2 == 0 && i != 0 {
-			result = append(result, ':')
-		}
-		result = append(result, bytes[r.Intn(len(bytes))])
-	}
-	return string(result)
 }
 
 type vm struct {

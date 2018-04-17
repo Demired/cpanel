@@ -30,15 +30,13 @@ func Init() {
                 Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 Utime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
-            // CREATE TABLE IF NOT EXISTS user (
-            //     ID INTEGER PRIMARY KEY AUTOINCREMENT,
-            //     uname CHAR(20),
-            //     Email CHAR(20),
-            //     Passwd CHAR(32),
-            //     Tel CHAR(20),
-            //     Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            //     Utime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-            // );
+            CREATE TABLE IF NOT EXISTS watch (
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                VID INT NOT NULL,
+                CPU INT NOT NULL,
+                Memory INT NOT NULL,
+                Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+            );
             // CREATE TABLE IF NOT EXISTS billing (
             //     ID INTEGER PRIMARY KEY AUTOINCREMENT,
             //     UID INT NOT NULL,
