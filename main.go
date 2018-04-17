@@ -48,7 +48,7 @@ func index(w http.ResponseWriter, req *http.Request) {
 }
 
 func watch() {
-	w := time.NewTimer(time.Second * 20)
+	w := time.NewTicker(time.Second * 20)
 	for {
 		select {
 		case <-w.C:
