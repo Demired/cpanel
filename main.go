@@ -14,6 +14,7 @@ import (
 	"text/template"
 	"time"
 
+	libvirt "github.com/libvirt/libvirt-go"
 	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/Demired/rpwd"
@@ -49,14 +50,16 @@ func index(w http.ResponseWriter, req *http.Request) {
 func watch() {
 	w := time.NewTimer(time.Second * 20)
 	for {
-	case <-w.C:
-		doms, err := conn.ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_ACTIVE)
-		if err != nil {
-			fmt.Println(err.Error())
-		}
-		for _, dom := range doms {
-			fmt.Println(dom.GetState())
-			dom.Free()
+		select {
+		case <-w.C:
+			doms, err := conn.ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_ACTIVE)
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+			for _, dom := range doms {
+				fmt.Println(dom.GetState())
+				dom.Free()
+			}
 		}
 	}
 }
