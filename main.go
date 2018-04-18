@@ -317,13 +317,13 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	stmt, err := db.Prepare("INSERT INTO vm(UID,Vname, Vcpu, Vmemory, Mac, Bandwidth, Status) values(?,?,?,?,?,?,?)")
+	stmt, err := db.Prepare("INSERT INTO vm(UID,Vname, Vcpu, Vmemory, Mac, Bandwidth, Status,IPv4,IPv6,LocalIP) values(?,?,?,?,?,?,?,?,?,?)")
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
 		w.Write(msg)
 		return
 	}
-	_, err = stmt.Exec(1, tvm.Vname, tvm.Vcpu, tvm.Vmemory, tvm.Mac, tvm.Bandwidth, 1)
+	_, err = stmt.Exec(1, tvm.Vname, tvm.Vcpu, tvm.Vmemory, tvm.Mac, tvm.Bandwidth, 1, "", "", "")
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入数据失败", Data: err.Error()})
 		w.Write(msg)
