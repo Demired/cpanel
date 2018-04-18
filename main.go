@@ -151,13 +151,17 @@ func info(w http.ResponseWriter, req *http.Request) {
 		}
 		if ww.CPU > 0 {
 			cpus = append(cpus, ww.CPU)
-			timeline = append(timeline,www.Ctime)
+			timeline = append(timeline, www.Ctime)
 		}
 	}
 	cpuj, _ := json.Marshal(cpus)
 	timej, _ := json.Marshal(timeline)
 	t, _ := template.ParseFiles("html/info.html")
-	t.Execute(w, map([string]string){"cput":string(cpuj),"time":string(timej)})
+	type Person struct {
+		cput string
+		time string
+	}
+	t.Execute(w, Person{"cput": string(cpuj), "time": string(timej)})
 }
 
 func passwd(w http.ResponseWriter, req *http.Request) {
