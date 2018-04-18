@@ -325,7 +325,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	}
 	_, err = stmt.Exec(tvm.Vname, tvm.Vcpu, tvm.Vmemory, tvm.Mac, tvm.Bandwidth, 1)
 	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入数据失败", Data: err.Error()})
 		w.Write(msg)
 		return
 	}
