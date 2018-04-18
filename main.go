@@ -56,7 +56,6 @@ func w(w http.ResponseWriter, req *http.Request) {
 	}
 	for _, dom := range doms {
 		fmt.Println(dom.GetName())
-		fmt.Println()
 		info, err := dom.GetInfo()
 		if err != nil {
 			fmt.Println(err.Error())
