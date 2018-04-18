@@ -64,7 +64,7 @@ func w(w http.ResponseWriter, req *http.Request) {
 		}
 		cpurate := 0
 		if lastCPUTime, ok := t[name]; ok {
-			diffTime = info.CpuTime - lastCPUTime
+			diffTime := info.CpuTime - lastCPUTime
 			fmt.Println(diffTime)
 			// cpurate = diffTime * 100 / (20*info.NrVirtCpu*10 ^ 9)
 		}
