@@ -86,6 +86,7 @@
         p.vcpu = $("#vcpu").val()
         p.vmemory = $("#vmemory").val() 
         p.vpasswd = $("#vpasswd").val()
+        p.bandwidth = $("#bandwidth").val()
         $.post("/create",p,function(d){
             alert(d.msg);
             if(d.ret=="v"){
