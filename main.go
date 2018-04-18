@@ -49,7 +49,7 @@ func index(w http.ResponseWriter, req *http.Request) {
 	t.Execute(w, nil)
 }
 
-type watch struct {
+type wa struct {
 	Vname  string
 	CPU    int
 	Memory int
@@ -142,7 +142,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 	rows, _ := db.Query(sql)
 	var cpus = make(map([int]int))
 	for rows.Next() {
-		var ww watch
+		var ww wa
 		err := rows.Scan(&ww.Vname, &ww.CPU, &ww.Memory, &ww.Ctime)
 		if err != nil {
 			fmt.Println(err.Error())
