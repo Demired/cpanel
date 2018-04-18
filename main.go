@@ -140,7 +140,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
 	sql := fmt.Sprintf("SELECT Vname,CPU,Ctime FROM watch WHERE Vname = '%s' LIMIT 100;", vname)
 	rows, _ := db.Query(sql)
-	var vvv [][]int
+	var vvv []int
 	for rows.Next() {
 		var ww wa
 		err := rows.Scan(&ww.Vname, &ww.CPU, &ww.Ctime)
@@ -149,7 +149,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 		if ww.CPU > 0 {
-			vvv = append(vvv, []int{ww.Ctime * 1000, ww.CPU})
+			vvv = append(vvv, ww.CPU)
 		}
 	}
 	vj, _ := json.Marshal(vvv)
