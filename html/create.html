@@ -47,7 +47,7 @@
         </div>
         <div class="form-group">
                 <label for="inputName"><h3>带宽大小</h3></label>
-                <input type="tel" class="form-control" id="bandwidth" name="bandwidth" value="{{with .bandwidth}}{{.bandwidth}}{{end}}" placeholder="单位：Mbps">
+                <input type="tel" class="form-control" id="vbandwidth" name="vbandwidth" value="{{with .vbandwidth}}{{.vbandwidth}}{{end}}" placeholder="单位：Mbps">
             </div>
         <div class="form-group">
             <label for="inputName"><h3>密码</h3></label>
@@ -86,7 +86,7 @@
         p.vcpu = $("#vcpu").val()
         p.vmemory = $("#vmemory").val() 
         p.vpasswd = $("#vpasswd").val()
-        p.bandwidth = $("#bandwidth").val()
+        p.vbandwidth = $("#bandwidth").val()
         $.post("/create",p,function(d){
             alert(d.msg);
             if(d.ret=="v"){
