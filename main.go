@@ -148,11 +148,11 @@ func info(w http.ResponseWriter, req *http.Request) {
 			fmt.Println(err.Error())
 			return
 		}
+		fmt.Println(ww.Ctime)
 		cpus[ww.Ctime] = ww.CPU
 	}
 	var vvv [][]int
 	for k, v := range cpus {
-		fmt.Println(k)
 		vvv = append(vvv, []int{k * 1000, v})
 	}
 	vj, _ := json.Marshal(vvv)
