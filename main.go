@@ -317,7 +317,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	stmt, err := db.Prepare("INSERT INTO vm(Vname, Vcpu, Vmemory, Mac, Bandwidth, Status,) values(?,?,?,?,?,?)")
+	stmt, err := db.Prepare("INSERT INTO vm(Vname, Vcpu, Vmemory, Mac, Bandwidth, Status) values(?,?,?,?,?,?)")
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
 		w.Write(msg)
