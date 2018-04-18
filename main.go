@@ -57,7 +57,7 @@ func w(w http.ResponseWriter, req *http.Request) {
 		Ctime  int
 	}
 	for _, dom := range doms {
-		name := dom.GetName()
+		name, _ := dom.GetName()
 		info, err := dom.GetInfo()
 		if err != nil {
 			fmt.Println(err.Error())
