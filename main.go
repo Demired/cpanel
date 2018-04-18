@@ -25,7 +25,7 @@ var q = make(chan string)
 var mac = make(chan string)
 
 func main() {
-	go watch()
+	// go watch()
 	go workQueue()
 	http.HandleFunc("/", index)
 	http.HandleFunc("/w", w)
