@@ -47,7 +47,7 @@
             {{range $index,$v := .}}
             <tr>
                 <td>{{$index}}</td>
-                <td>{{$v.Vname}}</td>
+                <td><a href="/info.html?vname={{$v.Vname}}">{{$v.Vname}}</a></td>
                 <td>{{$v.IPv4}}</td>
                 <td>{{$v.IPv6}}</td>
                 <td>{{$v.LocalIP}}</td>
