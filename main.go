@@ -157,7 +157,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 	cpuj, _ := json.Marshal(cpus)
 	timej, _ := json.Marshal(timeline)
 	t, _ := template.ParseFiles("html/info.html")
-	t.Execute(w, ["cpu":string(cpuj),"time":string(timej)])
+	t.Execute(w, map([string]string){"cput":string(cpuj),"time":string(timej)})
 }
 
 func passwd(w http.ResponseWriter, req *http.Request) {
