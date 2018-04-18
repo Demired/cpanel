@@ -34,7 +34,6 @@
 </body>
 <script>
     var timeline = {{.Timeline}}
-    // var timeline = {{.}}
     var cpus = {{.Cpus}}
      Highcharts.chart('cpu', {
         credits: {
@@ -66,8 +65,7 @@
             title: {
                 text: "百分比"
             },
-            min: 0,
-            max: 100
+            min: 0
         },
         xAxis: {
             type: 'datetime',
@@ -127,7 +125,9 @@
         series: [{
             type: 'area',
             name: 'cpu使用率',
-            data: cpus
+            data: cpus.map(function(item){
+                return item/100
+            })
         }]
     });
 </script>
