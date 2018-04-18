@@ -150,9 +150,14 @@ func info(w http.ResponseWriter, req *http.Request) {
 		}
 		cpus[ww.Ctime] = ww.CPU
 	}
-	fmt.Println(cpus)
+	var vvv [][]int
+	for k, v := range cpus {
+		vvv = append(vvv, []int{k, v})
+	}
+	vj, _ := json.Marshal(vvv)
+
 	t, _ := template.ParseFiles("html/info.html")
-	t.Execute(w, cpus)
+	t.Execute(w, vj)
 	// w.Write([]byte("info"))
 }
 
