@@ -161,7 +161,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 		cput string
 		time string
 	}
-	t.Execute(w, Person{"cput": string(cpuj), "time": string(timej)})
+	t.Execute(w, Person{cput: string(cpuj), time: string(timej)})
 }
 
 func passwd(w http.ResponseWriter, req *http.Request) {
