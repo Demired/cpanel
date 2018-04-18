@@ -64,7 +64,7 @@ func w(w http.ResponseWriter, req *http.Request) {
 		}
 		var cpurate float32
 		if lastCPUTime, ok := t[name]; ok {
-			cpurate = float32((info.CpuTime-lastCPUTime)*100) / float32(20*info.NrVirtCPU*1000000000)
+			cpurate = float32((info.CpuTime-lastCPUTime)*100) / float32(20*info.NrVirtCpu*1000000000)
 		}
 		fmt.Printf("max memory: %d,use memory: %d,vcpu num: %d,cpurate: %f\n", info.MaxMem, info.Memory, info.NrVirtCpu, cpurate)
 		t[name] = info.CpuTime
@@ -99,7 +99,7 @@ func watch() {
 				}
 				var cpurate float32
 				if lastCPUTime, ok := t[name]; ok {
-					cpurate = float32((info.CpuTime-lastCPUTime)*100) / float32(20*info.NrVirtCPU*1000000000)
+					cpurate = float32((info.CpuTime-lastCPUTime)*100) / float32(20*info.NrVirtCpu*1000000000)
 				}
 				fmt.Printf("max memory: %d,use memory: %d,vcpu num: %d,cpurate: %f\n", info.MaxMem, info.Memory, info.NrVirtCpu, cpurate)
 				t[name] = info.CpuTime
