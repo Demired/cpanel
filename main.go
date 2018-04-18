@@ -158,8 +158,8 @@ func info(w http.ResponseWriter, req *http.Request) {
 	timej, _ := json.Marshal(timeline)
 	t, _ := template.ParseFiles("html/info.html")
 	type Person struct {
-		cpus     string
-		timeline string
+		Cpus     string
+		Timeline string
 	}
 	t.Execute(w, Person{cpus: string(cpuj), timeline: string(timej)})
 }
