@@ -29,7 +29,7 @@ func main() {
 	go workQueue()
 	go http.HandleFunc("/", index)
 	http.HandleFunc("/list", list)
-	http.HandleFunc("/info", info)
+	http.HandleFunc("/info.html", info)
 	http.HandleFunc("/start", start)
 	http.HandleFunc("/shutdown", shutdown)
 	http.HandleFunc("/reboot", reboot)
@@ -86,6 +86,24 @@ func create(w http.ResponseWriter, req *http.Request) {
 // }
 
 func info(w http.ResponseWriter, req *http.Request) {
+	vname := req.URL.Query().Get("vname")
+	dom, err := control.Connect().LookupDomainByName(vname)
+	if err != nil {
+
+	} else {
+		s, _, err := dom.GetState()
+		if err != nil {
+			fmt.Println(err.Error())
+		} else {
+			if int(s) == 1 {
+				info, err := dom.GetInfo()
+				if err != nil {
+					fmt.Println(info)
+				}
+			}
+		}
+	}
+
 	w.Write([]byte("info"))
 }
 
