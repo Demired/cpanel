@@ -299,7 +299,6 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	tvm.Vname = string(rpwd.Init(8, true, true, true, false))
 
 	xml := createKvmXML(tvm)
-	fmt.Println(xml)
 	_, err = control.Connect().DomainDefineXML(xml)
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机失败", Data: err.Error()})
