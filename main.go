@@ -57,11 +57,7 @@ func w(w http.ResponseWriter, req *http.Request) {
 	for _, dom := range doms {
 		fmt.Println(dom.GetName())
 		fmt.Println(dom.GetInfo())
-		fmt.Println(dom.GetState())
-		fmt.Println(dom.GetMemoryParameters(libvirt.DOMAIN_AFFECT_CONFIG))
-		fmt.Println(dom.GetMemoryParameters(libvirt.DOMAIN_AFFECT_CURRENT))
-		fmt.Println(dom.GetMemoryParameters(libvirt.DOMAIN_AFFECT_LIVE))
-		// fmt.Println(dom.GetCPUStats())
+		fmt.Println(dom.GetCPUStats(1, 1, 1))
 		dom.Free()
 	}
 }
