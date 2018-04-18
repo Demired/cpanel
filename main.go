@@ -148,7 +148,9 @@ func info(w http.ResponseWriter, req *http.Request) {
 			fmt.Println(err.Error())
 			return
 		}
-		vvv = append(vvv, []int{ww.Ctime * 1000, ww.CPU})
+		if ww.CPU > 0 {
+			vvv = append(vvv, []int{ww.Ctime * 1000, ww.CPU})
+		}
 	}
 	vj, _ := json.Marshal(vvv)
 	t, _ := template.ParseFiles("html/info.html")
