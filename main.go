@@ -158,10 +158,10 @@ func info(w http.ResponseWriter, req *http.Request) {
 	timej, _ := json.Marshal(timeline)
 	t, _ := template.ParseFiles("html/info.html")
 	type Person struct {
-		cput string
-		time string
+		cpus     string
+		timeline string
 	}
-	t.Execute(w, Person{cput: string(cpuj), time: string(timej)})
+	t.Execute(w, Person{cpus: string(cpuj), timeline: string(timej)})
 }
 
 func passwd(w http.ResponseWriter, req *http.Request) {
