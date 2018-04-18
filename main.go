@@ -85,7 +85,7 @@ func watch() {
 			if err != nil {
 				fmt.Println(err.Error())
 			}
-			type vm struct {
+			type watch struct {
 				Vname  string
 				CPU    int
 				Memory int
@@ -99,9 +99,28 @@ func watch() {
 				}
 				var cpurate float32
 				if lastCPUTime, ok := t[name]; ok {
-					cpurate = float32((info.CpuTime-lastCPUTime)*100) / float32(20*info.NrVirtCpu*1000000000)
+					cpurate = float32((info.CpuTime-lastCPUTime)*100) / float32(20*info.NrVirtCpu*10000000)
 				}
 				fmt.Printf("max memory: %d,use memory: %d,vcpu num: %d,cpurate: %f\n", info.MaxMem, info.Memory, info.NrVirtCpu, cpurate)
+
+				db, err := sql.Open("sqlite3", "./db/cpanel.db")
+				if err != nil {
+					msg, _ := json.Marshal(er{Ret: "e", Msg: "打开失败", Data: err.Error()})
+					w.Write(msg)
+					return
+				}
+				stmt, err := db.Prepare("INSERT INTO watch(Vname,CPU,Memory,Ctime) values(?,?,?,?)")
+				if err != nil {
+					msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
+					w.Write(msg)
+					return
+				}
+				_, err = stmt.Exec(name, int(cpurate), info.memory, time.Now().Unix())
+				if err != nil {
+					msg, _ := json.Marshal(er{Ret: "e", Msg: "写入数据失败", Data: err.Error()})
+					w.Write(msg)
+					return
+				}
 				t[name] = info.CpuTime
 				dom.Free()
 			}
