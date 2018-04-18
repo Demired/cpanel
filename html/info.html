@@ -5,6 +5,7 @@
     <title>控制面板|服务器详情</title>
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.0/jquery.min.js" charset="UTF-8"></script>
+    <script src="https://img.hcharts.cn/highcharts/highcharts.js"></script>
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -28,12 +29,105 @@
         </div>
     </nav>
     <div class="container" style="padding: 60px 0;">
-        <!-- <div>
-            哈哈哈
-        </div> -->
-        //展示cpu使用情况
-        //展示内存使用情况
-        //展示硬盘使用情况
+        <div id="cpu" style="width:600px;height:400px"></div>
     </div>
 </body>
+<script>
+     Highcharts.chart('cpu', {
+        credits: {
+            text: ''
+        },
+        chart: {
+            zoomType: 'x',
+            resetZoomButton: {
+                theme: {
+                    fill: 'white',
+                    stroke: 'silver',
+                    r: 0,
+                    states: {
+                        hover: {
+                            fill: '#41739D',
+                            style: {
+                                color: 'white'
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        colors: ['#61A5E8'],
+        title: {
+            text: 'cpu使用率'
+        },
+        yAxis: {
+            title: {
+                text: "百分比"
+            },
+            min: 0
+        },
+        xAxis: {
+            type: 'datetime',
+            dateTimeLabelFormats: {
+                millisecond: '%H:%M:%S.%L',
+                second: '%H:%M:%S',
+                minute: '%H:%M',
+                hour: '%H:%M',
+                day: '%m-%d',
+                week: '%m-%d',
+                month: '%Y-%m',
+                year: '%Y'
+            }
+        },
+        tooltip: {
+            dateTimeLabelFormats: {
+                millisecond: '%H:%M:%S.%L',
+                second: '%H:%M:%S',
+                minute: '%H:%M',
+                hour: '%H:%M',
+                day: '%Y-%m-%d',
+                week: '%m-%d',
+                month: '%Y-%m',
+                year: '%Y'
+            }
+        },
+        legend: {
+            layout: 'veritcal',
+            align: 'right',
+            verticalAlign: 'top',
+            y: 30,
+            floating: true,
+            borderWidth: 1
+        },
+        plotOptions: {
+            area: {
+                fillColor: {
+                    linearGradient: {
+                        x1: 0,
+                        y1: 0,
+                        x2: 0,
+                        y2: 1
+                    },
+                    stops: [
+                    ]
+                },
+                marker: {
+                    radius: 2
+                },
+                lineWidth: 4,
+                states: {
+                    hover: {
+                        lineWidth: 1
+                    }
+                },
+                threshold: null
+            }
+        },
+        series: [{
+            type: 'area',
+            name: 'cpu使用率',
+            data: cpus
+        }]
+    });
+</script>
 </html>
+

@@ -151,7 +151,9 @@ func info(w http.ResponseWriter, req *http.Request) {
 		cpus[ww.Ctime] = ww.CPU
 	}
 	fmt.Println(cpus)
-	w.Write([]byte("info"))
+	t, _ := template.ParseFiles("html/info.html")
+	t.Execute(w, cpus)
+	// w.Write([]byte("info"))
 }
 
 func passwd(w http.ResponseWriter, req *http.Request) {
