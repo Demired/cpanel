@@ -28,10 +28,10 @@ func main() {
 	// go watch()
 	go workQueue()
 	http.HandleFunc("/", index)
+	http.HandleFunc("/w", w)
 	http.HandleFunc("/list", list)
 	http.HandleFunc("/info.html", info)
 	http.HandleFunc("/start", start)
-	http.HandleFunc("/w", w)
 	http.HandleFunc("/shutdown", shutdown)
 	http.HandleFunc("/reboot", reboot)
 	http.HandleFunc("/create", createAPI)
@@ -59,8 +59,9 @@ func w(w http.ResponseWriter, req *http.Request) {
 		fmt.Println()
 		info, err := dom.GetInfo()
 		if err != nil {
-			fmt.Printf("max memory: %s,use memory: %s,vcpu num: %s,cputime:%s\n", info.MaxMem, info.Memory, info.NrVirtCpu, info.CpuTime)
+			fmt.Println(err.Error())
 		}
+		fmt.Printf("max memory: %s,use memory: %s,vcpu num: %s,cputime:%s\n", info.MaxMem, info.Memory, info.NrVirtCpu, info.CpuTime)
 		// fmt.Println(dom.GetCPUStats(1, 1, 1))
 		dom.Free()
 	}
