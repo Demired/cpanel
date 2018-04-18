@@ -64,7 +64,9 @@ func w(w http.ResponseWriter, req *http.Request) {
 		}
 		cpurate := 0
 		if lastCPUTime, ok := t[name]; ok {
-			cpurate = (info.CpuTime - lastCPUTime) * 100 / (5*60*info.NrVirtCpu*10 ^ 9)
+			diffTime = info.CpuTime - lastCPUTime
+			fmt.Println(diffTime)
+			// cpurate = diffTime * 100 / (20*info.NrVirtCpu*10 ^ 9)
 		}
 		fmt.Printf("max memory: %d,use memory: %d,vcpu num: %d,cpurate:%d\n", info.MaxMem, info.Memory, info.NrVirtCpu, cpurate)
 		t[name] = info.CpuTime
