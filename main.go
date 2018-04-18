@@ -106,7 +106,7 @@ func passwd(w http.ResponseWriter, req *http.Request) {
 func list(w http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
-	rows, err := db.Query("SELECT Vname,IPv4,IPv6,LocalIP,Mac,Vcpu,Vmemory,Status FROM vm WHERE Status = 1 LIMIT 100;")
+	rows, err := db.Query("SELECT Vname,IPv4,IPv6,LocalIP,Mac,Vcpu,Bandwidth,Vmemory,Status FROM vm WHERE Status = 1 LIMIT 100;")
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -115,7 +115,7 @@ func list(w http.ResponseWriter, req *http.Request) {
 	var vvvm []vm
 	for rows.Next() {
 		var vvm vm
-		err := rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Mac, &vvm.Vcpu, &vvm.Vmemory, &vvm.Status)
+		err := rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Bandwidth, &vvm.Mac, &vvm.Vcpu, &vvm.Vmemory, &vvm.Status)
 		if err != nil {
 			fmt.Println(err.Error())
 			return
@@ -276,6 +276,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
+
 	vpasswd := req.PostFormValue("vpasswd")
 	if vpasswd == "" {
 		vpasswd = string(rpwd.Init(16, true, true, true, false))
@@ -316,7 +317,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	stmt, err := db.Prepare("INSERT INTO vm(Vname, Vcpu, Vmemory, Mac, Status, IPv4, IPv6, LocalIP) values(?,?,?,?,?,?,?,?)")
+	stmt, err := db.Prepare("INSERT INTO vm(Vname, Vcpu, Vmemory, Mac, Bandwidth, Status, IPv4, IPv6, LocalIP) values(?,?,?,?,?,?,?,?,?)")
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
 		w.Write(msg)
@@ -448,5 +449,5 @@ type vm struct {
 	Vname     string `json:"vname"`
 	Br        string `json:"br"`
 	Mac       string `json:"mac"`
-	Bandwidth string `json:"bandwidth"` //Mbps
+	Bandwidth int    `json:"bandwidth"` //Mbps
 }
