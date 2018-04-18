@@ -18,7 +18,7 @@ func Init() {
 
 	sql := `CREATE TABLE IF NOT EXISTS vm (
                 ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                UID INT,
+                UID INT NOT NULL,
                 Vname CHAR(20),
                 IPv4 CHAR(30),
                 IPv6 CHAR(50),
