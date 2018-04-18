@@ -56,8 +56,12 @@ func w(w http.ResponseWriter, req *http.Request) {
 	}
 	for _, dom := range doms {
 		fmt.Println(dom.GetName())
-		fmt.Println(dom.GetInfo())
-		fmt.Println(dom.GetCPUStats(1, 1, 1))
+		fmt.Println()
+		info, err := dom.GetInfo()
+		if err != nil {
+			fmt.Printf("max memory: %s,use memory: %s,vcpu num: %s,cputime:%s\n", info.MaxMem, info.Memory, info.NrVirtCpu, info.CpuTime)
+		}
+		// fmt.Println(dom.GetCPUStats(1, 1, 1))
 		dom.Free()
 	}
 }
