@@ -66,7 +66,7 @@ func watch() {
 				fmt.Println(dom.GetName())
 				fmt.Println(dom.GetInfo())
 				fmt.Println(dom.GetState())
-				fmt.Println(dom.GetCPUStats())
+				// fmt.Println(dom.GetCPUStats())
 				dom.Free()
 			}
 		}
