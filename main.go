@@ -25,7 +25,7 @@ var q = make(chan string)
 var mac = make(chan string)
 
 func main() {
-	// go watch()
+	go watch()
 	go workQueue()
 	http.HandleFunc("/", index)
 	http.HandleFunc("/w", w)
@@ -43,6 +43,8 @@ func main() {
 	http.ListenAndServe(":8100", nil)
 }
 
+var t = [string]uint64
+
 func w(w http.ResponseWriter, req *http.Request) {
 	doms, err := control.Connect().ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_ACTIVE)
 	if err != nil {
@@ -55,13 +57,17 @@ func w(w http.ResponseWriter, req *http.Request) {
 		Ctime  int
 	}
 	for _, dom := range doms {
-		fmt.Println(dom.GetName())
+		name := dom.GetName()
 		info, err := dom.GetInfo()
 		if err != nil {
 			fmt.Println(err.Error())
 		}
-		fmt.Printf("max memory: %d,use memory: %d,vcpu num: %d,cputime:%d\n", info.MaxMem, info.Memory, info.NrVirtCpu, info.CpuTime)
-		// fmt.Println(dom.GetCPUStats(1, 1, 1))
+		cpurate := 0
+		if lastCpuTime, ok := t[name];ok!=nil{
+			cpurate = (info.CpuTime - lastCpuTime)* 100 /(5*60*info.NrVirtCpu*10^9)
+		}
+		fmt.Printf("max memory: %d,use memory: %d,vcpu num: %d,cpurate:%d\n", info.MaxMem, info.Memory, info.NrVirtCpu, cpurate)
+		t[name] = info.CpuTime
 		dom.Free()
 	}
 }
@@ -87,11 +93,15 @@ func watch() {
 			}
 			for _, dom := range doms {
 				fmt.Println(dom.GetName())
-				fmt.Println(dom.GetInfo())
-				fmt.Println(dom.GetState())
-				// fmt.Println(dom.GetCPUStats())
+				info, err := dom.GetInfo()
+				if err != nil {
+					fmt.Println(err.Error())
+				}
+				fmt.Printf("max memory: %d,use memory: %d,vcpu num: %d,cputime:%d\n", info.MaxMem, info.Memory, info.NrVirtCpu, info.CpuTime)
+				// fmt.Println(dom.GetCPUStats(1, 1, 1))
 				dom.Free()
 			}
+
 		}
 	}
 }
