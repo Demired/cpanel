@@ -161,7 +161,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 		Cpus     string
 		Timeline string
 	}
-	t.Execute(w, Person{cpus: string(cpuj), timeline: string(timej)})
+	t.Execute(w, Person{Cpus: string(cpuj), Timeline: string(timej)})
 }
 
 func passwd(w http.ResponseWriter, req *http.Request) {
