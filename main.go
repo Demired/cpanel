@@ -61,7 +61,7 @@ func w(w http.ResponseWriter, req *http.Request) {
 		if err != nil {
 			fmt.Println(err.Error())
 		}
-		fmt.Printf("max memory: %s,use memory: %s,vcpu num: %s,cputime:%s\n", info.MaxMem, info.Memory, info.NrVirtCpu, info.CpuTime)
+		fmt.Printf("max memory: %d,use memory: %d,vcpu num: %d,cputime:%d\n", info.MaxMem, info.Memory, info.NrVirtCpu, info.CpuTime)
 		// fmt.Println(dom.GetCPUStats(1, 1, 1))
 		dom.Free()
 	}
