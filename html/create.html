@@ -39,15 +39,15 @@
         </div>
         <div class="form-group">
             <label for="inputName"><h3>核心数</h3></label>
-            <input type="tel" class="form-control" id="vcpu" name="vcpu" value="{{.vcpu}}" placeholder="单位：个">
+            <input type="tel" class="form-control" id="vcpu" name="vcpu" value="{{with .vcpu}}{{.vcpu}}{{end}}" placeholder="单位：个">
         </div>
         <div class="form-group">
             <label for="inputName"><h3>内存大小</h3></label>
-            <input type="tel" class="form-control" id="vmemory" name="vmemory" value="{{.vmemory}}" placeholder="单位：GiB">
+            <input type="tel" class="form-control" id="vmemory" name="vmemory" value="{{with .vmemory}}{{.vmemory}}{{end}}" placeholder="单位：GiB">
         </div>
         <div class="form-group">
             <label for="inputName"><h3>密码</h3></label>
-            <input type="text" class="form-control" id="vpasswd" name="vpasswd" value="{{.vpasswd}}" placeholder="可选">
+            <input type="text" class="form-control" id="vpasswd" name="vpasswd" value="{{with .vpasswd}}{{.vpasswd}}{{end}}" placeholder="可选">
         </div>
         <button type="button" class="btn btn-default" id="submit">创建虚拟机</button>
     </form>
