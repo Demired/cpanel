@@ -364,12 +364,13 @@ func workQueue() {
 	for {
 		select {
 		case str := <-q:
-			fmt.Println(str)
 			by := strings.Split(str, "/")
-			control.Start(by[0])
+			err := control.Start(by[0])
+			if err != nil {
+				fmt.Println(err.Error())
+			}
 			time.Sleep(1 * time.Minute)
 			control.SetPasswd(by[0], "root", by[1])
-
 		}
 	}
 }
