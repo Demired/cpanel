@@ -43,7 +43,7 @@ func main() {
 	http.ListenAndServe(":8100", nil)
 }
 
-var t = [string]uint64
+var t [string]uint64
 
 func w(w http.ResponseWriter, req *http.Request) {
 	doms, err := control.Connect().ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_ACTIVE)
@@ -63,8 +63,8 @@ func w(w http.ResponseWriter, req *http.Request) {
 			fmt.Println(err.Error())
 		}
 		cpurate := 0
-		if lastCpuTime, ok := t[name];ok!=nil{
-			cpurate = (info.CpuTime - lastCpuTime)* 100 /(5*60*info.NrVirtCpu*10^9)
+		if lastCPUTime, ok := t[name]; ok != nil {
+			cpurate = (info.CpuTime - lastCpuTime) * 100 / (5*60*info.NrVirtCpu*10 ^ 9)
 		}
 		fmt.Printf("max memory: %d,use memory: %d,vcpu num: %d,cpurate:%d\n", info.MaxMem, info.Memory, info.NrVirtCpu, cpurate)
 		t[name] = info.CpuTime
