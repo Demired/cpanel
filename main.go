@@ -31,6 +31,7 @@ func main() {
 	http.HandleFunc("/list", list)
 	http.HandleFunc("/info.html", info)
 	http.HandleFunc("/start", start)
+	http.HandleFunc("/w", w)
 	http.HandleFunc("/shutdown", shutdown)
 	http.HandleFunc("/reboot", reboot)
 	http.HandleFunc("/create", createAPI)
@@ -42,6 +43,25 @@ func main() {
 	http.ListenAndServe(":8100", nil)
 }
 
+func w(w http.ResponseWriter, req *http.Request) {
+	doms, err := control.Connect().ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_ACTIVE)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	type vm struct {
+		Vname  string
+		CPU    int
+		Memory int
+		Ctime  int
+	}
+	for _, dom := range doms {
+		fmt.Println(dom.GetName())
+		fmt.Println(dom.GetInfo())
+		fmt.Println(dom.GetState())
+		// fmt.Println(dom.GetCPUStats())
+		dom.Free()
+	}
+}
 func index(w http.ResponseWriter, req *http.Request) {
 	t, _ := template.ParseFiles("html/index.html")
 	t.Execute(w, nil)
