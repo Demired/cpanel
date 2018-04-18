@@ -151,7 +151,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 		}
 		if ww.CPU > 0 {
 			cpus = append(cpus, ww.CPU)
-			timeline = append(timeline, www.Ctime)
+			timeline = append(timeline, ww.Ctime)
 		}
 	}
 	cpuj, _ := json.Marshal(cpus)
