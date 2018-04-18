@@ -102,23 +102,22 @@ func watch() {
 					cpurate = float32((info.CpuTime-lastCPUTime)*100) / float32(20*info.NrVirtCpu*10000000)
 				}
 				fmt.Printf("max memory: %d,use memory: %d,vcpu num: %d,cpurate: %f\n", info.MaxMem, info.Memory, info.NrVirtCpu, cpurate)
-
 				db, err := sql.Open("sqlite3", "./db/cpanel.db")
 				if err != nil {
 					msg, _ := json.Marshal(er{Ret: "e", Msg: "打开失败", Data: err.Error()})
-					w.Write(msg)
+					fmt.Println(msg)
 					return
 				}
 				stmt, err := db.Prepare("INSERT INTO watch(Vname,CPU,Memory,Ctime) values(?,?,?,?)")
 				if err != nil {
 					msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
-					w.Write(msg)
+					fmt.Println(msg)
 					return
 				}
-				_, err = stmt.Exec(name, int(cpurate), info.memory, time.Now().Unix())
+				_, err = stmt.Exec(name, int(cpurate), info.Memory, time.Now().Unix())
 				if err != nil {
 					msg, _ := json.Marshal(er{Ret: "e", Msg: "写入数据失败", Data: err.Error()})
-					w.Write(msg)
+					fmt.Println(msg)
 					return
 				}
 				t[name] = info.CpuTime
