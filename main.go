@@ -28,7 +28,6 @@ func main() {
 	go watch()
 	go workQueue()
 	http.HandleFunc("/", index)
-	http.HandleFunc("/w", w)
 	http.HandleFunc("/list", list)
 	http.HandleFunc("/info.html", info)
 	http.HandleFunc("/start", start)
@@ -45,35 +44,16 @@ func main() {
 
 var t = make(map[string]uint64)
 
-func w(w http.ResponseWriter, req *http.Request) {
-	doms, err := control.Connect().ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_ACTIVE)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	type vm struct {
-		Vname  string
-		CPU    int
-		Memory int
-		Ctime  int
-	}
-	for _, dom := range doms {
-		name, _ := dom.GetName()
-		info, err := dom.GetInfo()
-		if err != nil {
-			fmt.Println(err.Error())
-		}
-		var cpurate float32
-		if lastCPUTime, ok := t[name]; ok {
-			cpurate = float32((info.CpuTime-lastCPUTime)*100) / float32(20*info.NrVirtCpu*1000000000)
-		}
-		fmt.Printf("max memory: %d,use memory: %d,vcpu num: %d,cpurate: %f\n", info.MaxMem, info.Memory, info.NrVirtCpu, cpurate)
-		t[name] = info.CpuTime
-		dom.Free()
-	}
-}
 func index(w http.ResponseWriter, req *http.Request) {
 	t, _ := template.ParseFiles("html/index.html")
 	t.Execute(w, nil)
+}
+
+type watch struct {
+	Vname  string
+	CPU    int
+	Memory int
+	Ctime  int
 }
 
 func watch() {
@@ -85,12 +65,7 @@ func watch() {
 			if err != nil {
 				fmt.Println(err.Error())
 			}
-			type watch struct {
-				Vname  string
-				CPU    int
-				Memory int
-				Ctime  int
-			}
+
 			for _, dom := range doms {
 				name, _ := dom.GetName()
 				info, err := dom.GetInfo()
@@ -101,7 +76,6 @@ func watch() {
 				if lastCPUTime, ok := t[name]; ok {
 					cpurate = float32((info.CpuTime-lastCPUTime)*100) / float32(20*info.NrVirtCpu*10000000)
 				}
-				fmt.Printf("max memory: %d,use memory: %d,vcpu num: %d,cpurate: %f\n", info.MaxMem, info.Memory, info.NrVirtCpu, cpurate)
 				db, err := sql.Open("sqlite3", "./db/cpanel.db")
 				if err != nil {
 					msg, _ := json.Marshal(er{Ret: "e", Msg: "打开失败", Data: err.Error()})
@@ -123,7 +97,6 @@ func watch() {
 				t[name] = info.CpuTime
 				dom.Free()
 			}
-
 		}
 	}
 }
@@ -152,20 +125,32 @@ func info(w http.ResponseWriter, req *http.Request) {
 	vname := req.URL.Query().Get("vname")
 	dom, err := control.Connect().LookupDomainByName(vname)
 	if err != nil {
-
-	} else {
-		s, _, err := dom.GetState()
+		fmt.Println(err.Error())
+	}
+	s, _, err := dom.GetState()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	if int(s) == 1 {
+		info, err := dom.GetInfo()
 		if err != nil {
-			fmt.Println(err.Error())
-		} else {
-			if int(s) == 1 {
-				info, err := dom.GetInfo()
-				if err != nil {
-					fmt.Println(info)
-				}
-			}
+			fmt.Println(info)
 		}
 	}
+	db, err := sql.Open("sqlite3", "./db/cpanel.db")
+	sql := fmt.Sprintf("SELECT Vname,CPU,Memory,Ctime FROM watch WHERE Vname = '%s' LIMIT 100;", vname)
+	rows, _ := db.Query(sql)
+	var cpus = make(map([int]int))
+	for rows.Next() {
+		var ww watch
+		err := rows.Scan(&ww.Vname, &ww.CPU, &ww.Memory, &ww.Ctime)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		cpus[ww.Ctime] = ww.CPU
+	}
+	fmt.Println(cpus)
 	w.Write([]byte("info"))
 }
 
