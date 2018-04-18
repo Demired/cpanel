@@ -157,7 +157,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 	vj, _ := json.Marshal(vvv)
 
 	t, _ := template.ParseFiles("html/info.html")
-	t.Execute(w, vj)
+	t.Execute(w, string(vj))
 	// w.Write([]byte("info"))
 }
 
