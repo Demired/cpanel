@@ -400,9 +400,6 @@ func createKvmXML(tvm vm) string {
 				<source file="/virt/disk/` + tvm.Vname + `.qcow2"/>
 				<target dev="hdb" bus="ide"/>
 			</disk>
-			<interface type='network'>
-				<source network='default'/>
-			</interface>
 			<interface type='bridge'>
 				<mac address='` + tvm.Mac + `'/>
 				<source bridge='` + tvm.Br + `'/>
