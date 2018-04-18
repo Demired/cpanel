@@ -140,7 +140,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
 	sql := fmt.Sprintf("SELECT Vname,CPU,Memory,Ctime FROM watch WHERE Vname = '%s' LIMIT 100;", vname)
 	rows, _ := db.Query(sql)
-	var cpus = make(map([int]int))
+	var cpus = make(map[int]int)
 	for rows.Next() {
 		var ww wa
 		err := rows.Scan(&ww.Vname, &ww.CPU, &ww.Memory, &ww.Ctime)
