@@ -403,6 +403,10 @@ func createKvmXML(tvm vm) string {
 			<interface type='bridge'>
 				<mac address='` + tvm.Mac + `'/>
 				<source bridge='` + tvm.Br + `'/>
+				<bandwidth>
+					<inbound average='1000' peak='5000' burst='1024'/>
+					<outbound average='128' peak='256' burst='256'/>
+				</bandwidth>
 			</interface>
 			<serial type='pty'>
 				<target port='1'/>
