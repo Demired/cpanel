@@ -48,16 +48,25 @@ func index(w http.ResponseWriter, req *http.Request) {
 }
 
 func watch() {
+	type d struct {
+		Vname
+	}
 	w := time.NewTicker(time.Second * 20)
 	for {
 		select {
 		case <-w.C:
-			fmt.Println("----")
 			doms, err := control.Connect().ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_ACTIVE)
 			if err != nil {
 				fmt.Println(err.Error())
 			}
+			type vm struct {
+				Vname  string
+				CPU    int
+				Memory int
+				Ctime  int
+			}
 			for _, dom := range doms {
+				dom.GetName()
 				fmt.Println(dom.GetInfo())
 				dom.Free()
 			}
@@ -103,7 +112,6 @@ func info(w http.ResponseWriter, req *http.Request) {
 			}
 		}
 	}
-
 	w.Write([]byte("info"))
 }
 
