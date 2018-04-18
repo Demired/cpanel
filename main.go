@@ -48,9 +48,6 @@ func index(w http.ResponseWriter, req *http.Request) {
 }
 
 func watch() {
-	type d struct {
-		Vname
-	}
 	w := time.NewTicker(time.Second * 20)
 	for {
 		select {
@@ -66,8 +63,10 @@ func watch() {
 				Ctime  int
 			}
 			for _, dom := range doms {
-				dom.GetName()
+				fmt.Println(dom.GetName())
 				fmt.Println(dom.GetInfo())
+				fmt.Println(dom.GetState())
+				fmt.Println(dom.GetCPUStats())
 				dom.Free()
 			}
 		}
