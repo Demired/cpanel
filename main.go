@@ -43,7 +43,7 @@ func main() {
 	http.ListenAndServe(":8100", nil)
 }
 
-var t [string]uint64
+var t = make(map[string]uint64)
 
 func w(w http.ResponseWriter, req *http.Request) {
 	doms, err := control.Connect().ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_ACTIVE)
