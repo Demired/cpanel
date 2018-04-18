@@ -281,6 +281,12 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		vpasswd = string(rpwd.Init(16, true, true, true, false))
 	}
 
+	vbandwidth, err := strconv.Atoi(req.PostFormValue("vbandwidth"))
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "带宽必须位整数"})
+		w.Write(msg)
+		return
+	}
 	var tvm vm
 
 	tvm.Vcpu = vcpu
@@ -288,6 +294,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	tvm.Passwd = vpasswd
 	tvm.Mac = tools.Rmac()
 	tvm.Br = "br1"
+	tvm.Bandwidth = vbandwidth
 	tvm.Vname = string(rpwd.Init(8, true, true, true, false))
 
 	xml := createKvmXML(tvm)
@@ -404,8 +411,8 @@ func createKvmXML(tvm vm) string {
 				<mac address='` + tvm.Mac + `'/>
 				<source bridge='` + tvm.Br + `'/>
 				<bandwidth>
-					<inbound average='1000' peak='5000' burst='1024'/>
-					<outbound average='128' peak='256' burst='256'/>
+					<inbound average='` + tvm.Bandwidth*0.8*1024 + `' peak='` + tvm.Bandwidth*3*1024 + `' burst='` + tvm.Bandwidth*1024 + `'/>
+					<outbound average='` + tvm.Bandwidth*0.8*1024 + `' peak='` + tvm.Bandwidth*3*1024 + `' burst='` + tvm.Bandwidth*1024 + `'/>
 				</bandwidth>
 			</interface>
 			<serial type='pty'>
@@ -427,18 +434,19 @@ func createKvmXML(tvm vm) string {
 }
 
 type vm struct {
-	ID      int    `json:"id"`
-	IPv4    string `json:"ipv4"`
-	IPv6    string `json:"ipv6"`
-	LocalIP string `json:"local"`
-	Ctime   string `json:"ctime"`
-	Utime   string `json:"utime"`
-	Vcpu    int    `json:"vcpu"`
-	Status  int    `json:"status"`
-	Etime   string `json:"etime"`   //Expire time
-	Vmemory int    `json:"vmemory"` //GiB
-	Passwd  string `json:"vpasswd"`
-	Vname   string `json:"vname"`
-	Br      string `json:"br"`
-	Mac     string `json:"mac"`
+	ID        int    `json:"id"`
+	IPv4      string `json:"ipv4"`
+	IPv6      string `json:"ipv6"`
+	LocalIP   string `json:"local"`
+	Ctime     string `json:"ctime"`
+	Utime     string `json:"utime"`
+	Vcpu      int    `json:"vcpu"`
+	Status    int    `json:"status"`
+	Etime     string `json:"etime"`   //Expire time
+	Vmemory   int    `json:"vmemory"` //GiB
+	Passwd    string `json:"vpasswd"`
+	Vname     string `json:"vname"`
+	Br        string `json:"br"`
+	Mac       string `json:"mac"`
+	Bandwidth string `json:"bandwidth"` //Mbps
 }

@@ -46,6 +46,10 @@
             <input type="tel" class="form-control" id="vmemory" name="vmemory" value="{{with .vmemory}}{{.vmemory}}{{end}}" placeholder="单位：GiB">
         </div>
         <div class="form-group">
+                <label for="inputName"><h3>带宽大小</h3></label>
+                <input type="tel" class="form-control" id="bandwidth" name="bandwidth" value="{{with .bandwidth}}{{.bandwidth}}{{end}}" placeholder="单位：Mbps">
+            </div>
+        <div class="form-group">
             <label for="inputName"><h3>密码</h3></label>
             <input type="text" class="form-control" id="vpasswd" name="vpasswd" value="{{with .vpasswd}}{{.vpasswd}}{{end}}" placeholder="可选">
         </div>
