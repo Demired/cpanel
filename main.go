@@ -282,7 +282,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		vpasswd = string(rpwd.Init(16, true, true, true, false))
 	}
 
-	vbandwidth, err := strconv.Atoi(req.PostFormValue("vbandwidth"))
+	bandwidth, err := strconv.Atoi(req.PostFormValue("bandwidth"))
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "带宽必须位整数"})
 		w.Write(msg)
@@ -295,7 +295,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	tvm.Passwd = vpasswd
 	tvm.Mac = tools.Rmac()
 	tvm.Br = "br1"
-	tvm.Bandwidth = vbandwidth
+	tvm.Bandwidth = bandwidth
 	tvm.Vname = string(rpwd.Init(8, true, true, true, false))
 
 	xml := createKvmXML(tvm)
