@@ -58,7 +58,7 @@ func watch() {
 				fmt.Println(err.Error())
 			}
 			for _, dom := range doms {
-				fmt.Println(dom.GetState())
+				fmt.Println(dom.GetInfo())
 				dom.Free()
 			}
 		}
