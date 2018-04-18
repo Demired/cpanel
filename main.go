@@ -413,8 +413,8 @@ func createKvmXML(tvm vm) string {
 				<mac address='` + tvm.Mac + `'/>
 				<source bridge='` + tvm.Br + `'/>
 				<bandwidth>
-					<inbound average='` + string(tvm.Bandwidth*1000) + `' peak='` + string(tvm.Bandwidth*3072) + `' burst='` + string(tvm.Bandwidth*1024) + `'/>
-					<outbound average='` + string(tvm.Bandwidth*1000) + `' peak='` + string(tvm.Bandwidth*3072) + `' burst='` + string(tvm.Bandwidth*1024) + `'/>
+					<inbound average='` + tvm.Bandwidth + `' peak='` + tvm.Bandwidth + `' burst='` + tvm.Bandwidth + `'/>
+					<outbound average='` + tvm.Bandwidth + `' peak='` + tvm.Bandwidth + `' burst='` + tvm.Bandwidth + `'/>
 				</bandwidth>
 			</interface>
 			<serial type='pty'>
