@@ -324,7 +324,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	_, err = stmt.Exec(tvm.Vname, tvm.Vcpu, tvm.Vmemory, tvm.Mac, 1, "", "", "")
+	_, err = stmt.Exec(tvm.Vname, tvm.Vcpu, tvm.Vmemory, tvm.Mac, tvm.Bandwidth, 1, "", "", "")
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
 		w.Write(msg)
@@ -347,7 +347,7 @@ func undefine(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	stmt, err := db.Prepare("UPDATE  vm SET Status = 0 WHERE Vname = ?")
+	stmt, err := db.Prepare("UPDATE vm SET Status = 0 WHERE Vname = ?")
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
 		w.Write(msg)
