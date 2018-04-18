@@ -152,7 +152,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 	}
 	var vvv [][]int
 	for k, v := range cpus {
-		vvv = append(vvv, []int{k, v})
+		vvv = append(vvv, []int{k * 1000, v})
 	}
 	vj, _ := json.Marshal(vvv)
 
