@@ -115,7 +115,7 @@ func list(w http.ResponseWriter, req *http.Request) {
 	var vvvm []vm
 	for rows.Next() {
 		var vvm vm
-		err := rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Bandwidth, &vvm.Mac, &vvm.Vcpu, &vvm.Vmemory, &vvm.Status)
+		err := rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Mac, &vvm.Vcpu, &vvm.Bandwidth, &vvm.Vmemory, &vvm.Status)
 		if err != nil {
 			fmt.Println(err.Error())
 			return
