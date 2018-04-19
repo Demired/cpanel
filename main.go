@@ -166,8 +166,8 @@ func info(w http.ResponseWriter, req *http.Request) {
 func loadJSON(w http.ResponseWriter, req *http.Request) {
 	vname := req.URL.Query().Get("vname")
 	db, _ := sql.Open("sqlite3", "./db/cpanel.db")
-	startTime, err := strconv.Atoi(req.URL.Query().Get("start")
-	if err != nil{
+	startTime, err := strconv.Atoi(req.URL.Query().Get("start"))
+	if err != nil {
 		startTime := time.Now().Unix() - 3600
 	}
 	sql := fmt.Sprintf("SELECT Vname,CPU,Ctime FROM watch WHERE Vname = '%s' AND Ctime > '%d';", vname, startTime)
