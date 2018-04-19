@@ -137,11 +137,11 @@ func info(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
-	sql := fmt.Sprintf("SELECT Vname,IPv4,IPv6,LocalIP,Mac,Vcpu,Bandwidth,Vmemory,Status FROM vm WHERE vname = %s",vname)
+	sql := fmt.Sprintf("SELECT Vname,IPv4,IPv6,LocalIP,Mac,Vcpu,Bandwidth,Vmemory,Status FROM vm WHERE vname = %s", vname)
 	var vmInfo = make(map[string]string)
 	vmInfo["vname"] = vname
-	vmInfo["stat"] = fmt.Sprintf("%d",s)
-	vmInfo[]
+	vmInfo["stat"] = fmt.Sprintf("%d", s)
+	// vmInfo[""]
 	t, _ := template.ParseFiles("html/info.html")
 	vmInfoJ, _ := json.Marshal(vmInfo)
 	t.Execute(w, string(vmInfoJ))
@@ -163,7 +163,7 @@ func date(w http.ResponseWriter, req *http.Request) {
 			cpus = append(cpus, []int{ww.Ctime, ww.CPU})
 		}
 	}
-	var date = make(map[string]interface)
+	var date = make(map[string]interface{})
 	date["cpus"] = cpus
 	dj, _ := json.Marshal(date)
 	w.Write(cpus)
