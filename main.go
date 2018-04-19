@@ -141,7 +141,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 	rows, _ := db.Query(sql)
 	var ww vm
 	if rows.Next() {
-		err := rows.Scan(&ww.Vname, &ww.Vcpu, &ww.Bandwidth, &ww.Vmemory)
+		err := rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Mac, &vvm.Vcpu, &vvm.Bandwidth, &vvm.Vmemory, &vvm.Status)
 		if err != nil {
 			fmt.Println(err.Error())
 		}
