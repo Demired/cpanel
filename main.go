@@ -148,6 +148,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 }
 
 func date(w http.ResponseWriter, req *http.Request) {
+	vname := req.URL.Query().Get("vname")
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
 	sql := fmt.Sprintf("SELECT Vname,CPU,Ctime FROM watch WHERE Vname = '%s' AND Ctime > '%d';", vname, time.Now().Unix()-3600)
 	rows, _ := db.Query(sql)
