@@ -84,14 +84,14 @@ func watch() {
 				}
 				stmt, err := db.Prepare("INSERT INTO watch(Vname,CPU,Memory,Ctime) values(?,?,?,?)")
 				if err != nil {
-					msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
-					fmt.Println(msg)
+					msg, _ := json.Marshal(er{Ret: "e", Msg: "", Data: err.Error()})
+					fmt.Println("写入失败")
 					return
 				}
 				_, err = stmt.Exec(name, int(cpurate), info.Memory, time.Now().Unix())
 				if err != nil {
 					msg, _ := json.Marshal(er{Ret: "e", Msg: "写入数据失败", Data: err.Error()})
-					fmt.Println(msg)
+					fmt.Println("写入数据失败")
 					return
 				}
 				t[name] = info.CpuTime
