@@ -149,12 +149,14 @@
     </div>
 </body>
 <script>
+    var dd = [];
     Highcharts.setOptions({
         global: {
             useUTC: false
         }
     })
     $.post("/load.json?vname={{.Vname}}","",function(d){
+        dd = d;
         Highcharts.chart('cpu', {
             credits: {
                 text: ''
