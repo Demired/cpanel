@@ -136,6 +136,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 	db, _ := sql.Open("sqlite3", "./db/cpanel.db")
+	defer db.Close()
 	sql := fmt.Sprintf("SELECT Vname,IPv4,IPv6,LocalIP,Mac,Vcpu,Bandwidth,Vmemory,Status FROM vm WHERE vname = '%s';", vname)
 	rows, _ := db.Query(sql)
 	var vvm vm
@@ -161,6 +162,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 func loadJSON(w http.ResponseWriter, req *http.Request) {
 	vname := req.URL.Query().Get("vname")
 	db, _ := sql.Open("sqlite3", "./db/cpanel.db")
+	defer db.Close()
 	startTime, err := strconv.Atoi(req.URL.Query().Get("start"))
 	if err != nil {
 		startTime = int(time.Now().Unix()) - 3600
