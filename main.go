@@ -137,23 +137,14 @@ func info(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
-	sql := fmt.Sprintf("SELECT Vname,CPU,Ctime FROM watch WHERE Vname = '%s' AND Ctime > '%d';", vname, time.Now().Unix()-3600)
-	rows, _ := db.Query(sql)
-	var cpus [][]int
-	for rows.Next() {
-		var ww wa
-		err := rows.Scan(&ww.Vname, &ww.CPU, &ww.Ctime)
-		if err != nil {
-			fmt.Println(err.Error())
-			return
-		}
-		if ww.CPU > 0 {
-			cpus = append(cpus, []int{ww.Ctime, ww.CPU})
-		}
-	}
-	cpuj, _ := json.Marshal(cpus)
+	sql := fmt.Sprintf("SELECT Vname,IPv4,IPv6,LocalIP,Mac,Vcpu,Bandwidth,Vmemory,Status FROM vm WHERE vname = %s",vname)
+	var vmInfo = make(map[string]string)
+	vmInfo["vname"] = vname
+	vmInfo["stat"] = fmt.Sprintf("%d",s)
+	vmInfo[]
 	t, _ := template.ParseFiles("html/info.html")
-	t.Execute(w, string(cpuj))
+	vmInfoJ, _ := json.Marshal(vmInfo)
+	t.Execute(w, string(vmInfoJ))
 }
 
 func date(w http.ResponseWriter, req *http.Request) {
