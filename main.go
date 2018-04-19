@@ -255,6 +255,7 @@ func createSysDisk(vname string) (w int64, err error) {
 }
 
 func start(w http.ResponseWriter, req *http.Request) {
+	defer req.Body.Close()
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/", http.StatusFound)
 		return
@@ -281,6 +282,7 @@ func start(w http.ResponseWriter, req *http.Request) {
 }
 
 func passwdAPI(w http.ResponseWriter, req *http.Request) {
+	defer req.Body.Close()
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/", http.StatusFound)
 		return
@@ -313,11 +315,11 @@ type er struct {
 }
 
 func shutdown(w http.ResponseWriter, req *http.Request) {
+	defer req.Body.Close()
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/", http.StatusFound)
 		return
 	}
-	defer req.Body.Close()
 	vname := req.PostFormValue("vname")
 	err := control.Shutdown(vname)
 	if err != nil {
@@ -333,12 +335,11 @@ func shutdown(w http.ResponseWriter, req *http.Request) {
 }
 
 func reboot(w http.ResponseWriter, req *http.Request) {
-	fmt.Println("reboot")
+	defer req.Body.Close()
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/", http.StatusFound)
 		return
 	}
-	defer req.Body.Close()
 	vname := req.PostFormValue("vname")
 	err := control.Reboot(vname)
 	if err != nil {
@@ -355,13 +356,11 @@ func reboot(w http.ResponseWriter, req *http.Request) {
 
 //创建虚拟机
 func createAPI(w http.ResponseWriter, req *http.Request) {
+	defer req.Body.Close()
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/create.html", http.StatusFound)
 		return
 	}
-
-	defer req.Body.Close()
-
 	vmemory, err := strconv.Atoi(req.PostFormValue("vmemory"))
 
 	if err != nil {
