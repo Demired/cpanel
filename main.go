@@ -68,12 +68,12 @@ func watch() {
 			}
 			db, err := sql.Open("sqlite3", "./db/cpanel.db")
 			if err != nil {
-				fmt.Println("打开数据库失败")
+				fmt.Println("打开数据库失败", err.Error())
 				return
 			}
 			stmt, err := db.Prepare("INSERT INTO watch(Vname,CPU,Memory,Ctime) values(?,?,?,?)")
 			if err != nil {
-				fmt.Println("创建sql失败")
+				fmt.Println("创建sql失败", err.Error())
 				return
 			}
 			defer db.Close()
@@ -89,7 +89,7 @@ func watch() {
 				}
 				_, err = stmt.Exec(name, int(cpurate), info.Memory, time.Now().Unix())
 				if err != nil {
-					fmt.Println("写入数据失败")
+					fmt.Println("写入数据失败", err.Error())
 					return
 				}
 				t[name] = info.CpuTime
