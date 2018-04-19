@@ -123,29 +123,26 @@ func create(w http.ResponseWriter, req *http.Request) {
 
 func info(w http.ResponseWriter, req *http.Request) {
 	vname := req.URL.Query().Get("vname")
-	// dom, err := control.Connect().LookupDomainByName(vname)
-	// if err != nil {
-	// 	fmt.Println(err.Error())
-	// }
-	// s, _, err := dom.GetState()
-	// if err != nil {
-	// 	fmt.Println(err.Error())
-	// }
-	// if int(s) == 1 {
-	// 	info, err := dom.GetInfo()
-	// 	if err != nil {
-	// 		fmt.Println(info)
-	// 	}
-	// }
+	dom, err := control.Connect().LookupDomainByName(vname)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	s, _, err := dom.GetState()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	if int(s) == 1 {
+		info, err := dom.GetInfo()
+		if err != nil {
+			fmt.Println(info)
+		}
+	}
 	db, _ := sql.Open("sqlite3", "./db/cpanel.db")
 	sql := fmt.Sprintf("SELECT Vname,IPv4,IPv6,LocalIP,Mac,Vcpu,Bandwidth,Vmemory,Status FROM vm WHERE vname = '%s';", vname)
 	rows, _ := db.Query(sql)
 	var vvm vm
 	if rows.Next() {
-		err := rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Mac, &vvm.Vcpu, &vvm.Bandwidth, &vvm.Vmemory, &vvm.Status)
-		if err != nil {
-			fmt.Println(err.Error())
-		}
+		rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Mac, &vvm.Vcpu, &vvm.Bandwidth, &vvm.Vmemory, &vvm.Status)
 	}
 	var vmInfo = make(map[string]string)
 	vmInfo["vname"] = vvm.Vname
