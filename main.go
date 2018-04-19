@@ -69,19 +69,20 @@ func watch() {
 			db, err := sql.Open("sqlite3", "./db/cpanel.db")
 			if err != nil {
 				fmt.Println("打开数据库失败", err.Error())
-				return
+				continue
 			}
+			defer db.Close()
 			stmt, err := db.Prepare("INSERT INTO watch(Vname,CPU,Memory,Ctime) values(?,?,?,?)")
 			if err != nil {
 				fmt.Println("创建sql失败", err.Error())
-				return
+				continue
 			}
-			defer db.Close()
 			for _, dom := range doms {
 				name, _ := dom.GetName()
 				info, err := dom.GetInfo()
 				if err != nil {
 					fmt.Println(err.Error())
+					continue
 				}
 				var cpurate float32
 				if lastCPUTime, ok := t[name]; ok {
@@ -90,7 +91,7 @@ func watch() {
 				_, err = stmt.Exec(name, int(cpurate), info.Memory, time.Now().Unix())
 				if err != nil {
 					fmt.Println("写入数据失败", err.Error())
-					return
+					continue
 				}
 				t[name] = info.CpuTime
 				dom.Free()
