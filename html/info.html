@@ -72,7 +72,7 @@
                     配置信息
                 </div>
                 <div class="panel-body">
-                    <table class="table table-bordered table-striped data_detailId">
+                    <table class="table table-bordered table-striped">
                         <tbody>
                             <tr>
                                 <th>机房:</th>
@@ -81,7 +81,8 @@
                             <tr>
                                 <th>状态:</th>
                                 <td>
-                                    {{if eq .Status 1}}
+                                    {{$run := 1}}
+                                    {{if eq .Status $run}}
                                     运行中
                                     {{else}}
                                     关机
