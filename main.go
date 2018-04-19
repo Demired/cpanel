@@ -30,6 +30,7 @@ func main() {
 	http.HandleFunc("/", index)
 	http.HandleFunc("/list", list)
 	http.HandleFunc("/info.html", info)
+	http.HandleFunc("/load.json", loadJSON)
 	http.HandleFunc("/start", start)
 	http.HandleFunc("/shutdown", shutdown)
 	http.HandleFunc("/reboot", reboot)
@@ -162,10 +163,14 @@ func info(w http.ResponseWriter, req *http.Request) {
 	t.Execute(w, nil)
 }
 
-func date(w http.ResponseWriter, req *http.Request) {
+func loadJSON(w http.ResponseWriter, req *http.Request) {
 	vname := req.URL.Query().Get("vname")
 	db, _ := sql.Open("sqlite3", "./db/cpanel.db")
-	sql := fmt.Sprintf("SELECT Vname,CPU,Ctime FROM watch WHERE Vname = '%s' AND Ctime > '%d';", vname, time.Now().Unix()-3600)
+	startTime, err := strconv.Atoi(req.URL.Query().Get("start")
+	if err != nil{
+		startTime := time.Now().Unix() - 3600
+	}
+	sql := fmt.Sprintf("SELECT Vname,CPU,Ctime FROM watch WHERE Vname = '%s' AND Ctime > '%d';", vname, startTime)
 	rows, _ := db.Query(sql)
 	var cpus [][]int
 	for rows.Next() {
@@ -179,7 +184,6 @@ func date(w http.ResponseWriter, req *http.Request) {
 			cpus = append(cpus, []int{ww.Ctime, ww.CPU})
 		}
 	}
-	fmt.Println(cpus)
 	var date = make(map[string]interface{})
 	date["cpus"] = cpus
 	dj, _ := json.Marshal(date)

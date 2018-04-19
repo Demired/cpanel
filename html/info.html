@@ -30,109 +30,125 @@
     </nav>
     <div class="container" style="padding: 80px 0;">
         <div class="col-lg-4">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
                     <i class="fa fa-info-circle"></i>
                     详细信息
-                    </div>
-                    <div class="panel-body">
+                </div>
+                <div class="panel-body">
                     <table class="table table-bordered table-striped data_detailId">
                         <tbody>
-                        <tr>
-                            <th>ID:</th>
-                            <td>i-doasbfyh</td>
-                        </tr>
-                        <tr>
-                            <th>名称:</th>
-                            <td class="detial_name" style="word-wrap : break-word; max-width: 30px">
-                            <span>
-                                i-doasbfyh
-                            </span>
-                            <span class="func-icon pull-right" data-id="478" data-alias="" onclick="CloudServer.show_edit_alias_modal(this);" title="修改名称">
-                                <i class="fa fa-edit"></i>
-                            </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>分组:</th>
-                            <td style="word-wrap : break-word; max-width: 30px">
-                            <span>
-                                
-                                <span class="text-warning">未分组</span>
-                                
-                            </span>
-                            <span class="func-icon pull-right" data-group="" data-id="478" onclick="CloudServer.show_set_group_modal(this);" title="设置分组">
-                                <i class="fa fa-edit"></i>
-                            </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>标签:</th>
-                            <td style="word-wrap : break-word; max-width: 30px">
-                            
-                                杭州电信
-                            
-                            <span class="func-icon pull-right" data-id="478" data-tags="杭州电信" onclick="CloudServer.show_edit_tags_modal(this);" title="设置标签">
-                                <i class="fa fa-edit"></i>
-                            </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>创建日期:</th>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>监控图:</th>
-                            <td>
-                                <a href="https://hive.speedycloud.cn/api/status?name=i-doasbfyh&amp;lang=cn" target="_blank">
-                                点击查看
-                                </a>
-                            
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>报警设置:</th>
-                            <td>
-                            
-                                <a href="https://hive.speedycloud.cn/api/alerts/i-doasbfyh/cn" target="_blank">
-                                点击修改
-                                </a>
-                            
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>默认密码:</th>
-                            <td style="line-height: 35px;">
-                            <button class="btn btn-primary btn-sm" data-placement="right" data-title="默认密码" data-status="hide" data-id="478" onclick="CloudServer.get_default_password(this);" container="body" type="button">
-                                <i class="fa fa-key fa-sm"></i>
-                                点击查看
-                            </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>启动脚本:</th>
-                            <td>
-                            <button class="btn btn-primary btn-sm" onclick="CloudServer.show_bootscript_modal();">
-                                <i class="fa fa-sm fa-file-text-o"></i>
-                                点击查看
-                            </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>元数据:</th>
-                            <td>
-                            <button class="btn btn-primary btn-sm" data-id="478" type="button" onclick="CloudServer.show_metadata_modal(this);">
-                                <i class="fa fa-sm fa-file-text-o"></i>
-                                点击查看
-                            </button>
-                            </td>
-                        </tr>
+                            <tr>
+                                <th>ID:</th>
+                                <td>{{.Vname}}</td>
+                            </tr>
+                            <tr>
+                                <th>机房:</th>
+                                <td style="word-wrap : break-word; max-width: 30px">
+                                    北京联通
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>创建日期:</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>报警设置:</th>
+                                <td>
+                                    <a href="#" target="_blank">
+                                    点击设置
+                                    </a>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <i class="fa fa-info-circle"></i>
+                    配置信息
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered table-striped data_detailId">
+                        <tbody>
+                            <tr>
+                                <th>机房:</th>
+                                <td>北京姚家园机房</td>
+                            </tr>
+                            <tr>
+                                <th>状态:</th>
+                                <td>
+                                    {{if eq .status 1}}
+                                    开机
+                                    {{else}}
+                                    关机
+                                    {{end}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>cpu:</th>
+                                <td>{{.Vcpu}}</td>
+                            </tr>
+                            <tr>
+                                <th>内存:</th>
+                                <td>{{.Vmemeory}}</td>
+                            </tr>
+                            <tr>
+                                <th>磁盘:</th>
+                                <td>{{.Harddisk}}</td>
+                            </tr>
+                            <tr>
+                                <th>带宽:</th>
+                                <td>{{.Bandwidth}}</td>
+                            </tr>
+                            <tr>
+                                <th>操作系统:</th>
+                                <td>CentOS 7.0</td>
+                            </tr>
+                            <tr>
+                                <th>IP地址:</th>
+                                <td>
+                                    {{.IPv4}}
+                                    <br/>
+                                    {{.IPv6}}
+                                    <br/>
+                                    {{.LocalIP}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <i class="fa fa-info-circle"></i>
+                        计费信息
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-bordered table-striped data_detailId">
+                            <tbody>
+                                <tr>
+                                    <th>付费方式:</th>
+                                    <td>测试</td>
+                                </tr>
+                                <tr>
+                                    <th>到期时间:</th>
+                                    <td>2025-11-12 10:30:50</td>
+                                </tr>
+                                <tr>
+                                    <th>创建日期:</th>
+                                    <td>2017-11-12 10:30:50</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-    </div>
-    <div class="container" style="padding: 60px 0;">
+            </div>
         <div id="cpu" style="width:600px;height:400px"></div>
     </div>
 </body>
@@ -142,66 +158,69 @@
             useUTC: false
         }
     })
-    Highcharts.chart('cpu', {
-        credits: {
-            text: ''
-        },
-        colors: ['#61A5E8'],
-        title: {
-            text: 'cpu使用率'
-        },
-        xAxis: {
-            title: {
-                text:"时间"
+    $.post("/load.json","",function(d){
+        Highcharts.chart('cpu', {
+            credits: {
+                text: ''
             },
-            type: 'datetime',
-            dateTimeLabelFormats: {
-                millisecond: '%H:%M:%S',
-                second: '%H:%M:%S',
-                minute: '%H:%M',
-                hour: '%H:%M',
-                day: '%Y-%m-%d',
-                week: '%m-%d',
-                month: '%Y-%m',
-                year: '%Y'
-            },
-        },
-        yAxis: {
+            colors: ['#61A5E8'],
             title: {
-                text:"百分比"
-            }
-        },
-        tooltip: {
-            xDateFormat: '%Y-%m-%d %H:%M:%S',
-            shared: true
-        },
-        legend: {
-            layout: 'veritcal',
-            align: 'right',
-            verticalAlign: 'top',
-            y: 30,
-            floating: true,
-            borderWidth: 1
-        },
-        plotOptions: {
-            series: {
-                fillColor: {
-                    linearGradient: [0, 0, 0, 300],
-                    stops: [
-                        [0,"#ff0"],
-                        [1,"#f00"]
-                    ]
+                text: 'cpu使用率'
+            },
+            xAxis: {
+                title: {
+                    text:"时间"
+                },
+                type: 'datetime',
+                dateTimeLabelFormats: {
+                    millisecond: '%H:%M:%S',
+                    second: '%H:%M:%S',
+                    minute: '%H:%M',
+                    hour: '%H:%M',
+                    day: '%Y-%m-%d',
+                    week: '%m-%d',
+                    month: '%Y-%m',
+                    year: '%Y'
+                },
+            },
+            yAxis: {
+                title: {
+                    text:"百分比"
                 }
-            }
-        },
-        series: [{
-            type: 'line',
-            name: 'cpu使用率',
-            data: cpus.map(function(item){
-                return [item[0]*1000,item[1]/100]
-                })
-        }],
-    });
+            },
+            tooltip: {
+                xDateFormat: '%Y-%m-%d %H:%M:%S',
+                shared: true
+            },
+            legend: {
+                layout: 'veritcal',
+                align: 'right',
+                verticalAlign: 'top',
+                y: 30,
+                floating: true,
+                borderWidth: 1
+            },
+            plotOptions: {
+                series: {
+                    fillColor: {
+                        linearGradient: [0, 0, 0, 300],
+                        stops: [
+                            [0,"#ff0"],
+                            [1,"#f00"]
+                        ]
+                    }
+                }
+            },
+            series: [{
+                type: 'line',
+                name: 'cpu使用率',
+                data: d.cpus.map(function(item){
+                    return [item[0]*1000,item[1]/100]
+                    })
+            }],
+        });
+    },"json")
+ 
 </script>
 </html>
 
