@@ -71,7 +71,7 @@ func watch() {
 				fmt.Println("打开数据库失败", err.Error())
 				continue
 			}
-			defer db.Close()
+
 			stmt, err := db.Prepare("INSERT INTO watch(Vname,CPU,Memory,Ctime) values(?,?,?,?)")
 			if err != nil {
 				fmt.Println("创建sql失败", err.Error())
@@ -96,6 +96,7 @@ func watch() {
 				t[name] = info.CpuTime
 				dom.Free()
 			}
+			db.Close()
 		}
 	}
 }
