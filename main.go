@@ -143,8 +143,8 @@ func info(w http.ResponseWriter, req *http.Request) {
 	// if rows.Next() {
 	// 	rows.Scan(&ww.Vname, &ww.IPv4, &ww.IPv6, &ww.LocalIP, &ww.Mac, &ww.Vcpu, &ww.Bandwidth, &ww.Vmemory, &ww.Status)
 	// }
-	// var vmInfo = make(map[string]string)
-	// vmInfo["vname"] = ww.Vname
+	var vmInfo = make(map[string]string)
+	vmInfo["vname"] = vname
 	// vmInfo["IPv4"] = ww.IPv4
 	// vmInfo["IPv6"] = ww.IPv6
 	// vmInfo["LocalIP"] = ww.LocalIP
@@ -154,7 +154,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 	// vmInfo["Vcpu"] = fmt.Sprintf("%d", ww.Vcpu)
 	// vmInfo["stat"] = fmt.Sprintf("%d", s)
 	// vmInfo[""]
-	// fmt.Println(vmInfo)
+	fmt.Println(vmInfo)
 	t, _ := template.ParseFiles("html/info.html")
 	// vmInfoJ, _ := json.Marshal(vmInfo)
 	t.Execute(w, nil)
