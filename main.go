@@ -138,7 +138,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
-	sql := fmt.Sprintf("SELECT Vname,CPU,Ctime FROM watch WHERE Vname = '%s' LIMIT 100;", vname)
+	sql := fmt.Sprintf("SELECT Vname,CPU,Ctime FROM watch WHERE Vname = '%s' AND Ctime > '%d';", vname, time.Now().Unix()-3600)
 	rows, _ := db.Query(sql)
 	var cpus [][]int
 	for rows.Next() {
