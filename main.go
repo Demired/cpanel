@@ -66,6 +66,17 @@ func watch() {
 			if err != nil {
 				fmt.Println(err.Error())
 			}
+			db, err := sql.Open("sqlite3", "./db/cpanel.db")
+			if err != nil {
+				fmt.Println("打开数据库失败")
+				return
+			}
+			stmt, err := db.Prepare("INSERT INTO watch(Vname,CPU,Memory,Ctime) values(?,?,?,?)")
+			if err != nil {
+				fmt.Println("创建sql失败")
+				return
+			}
+			defer db.Close()
 			for _, dom := range doms {
 				name, _ := dom.GetName()
 				info, err := dom.GetInfo()
@@ -75,18 +86,6 @@ func watch() {
 				var cpurate float32
 				if lastCPUTime, ok := t[name]; ok {
 					cpurate = float32((info.CpuTime-lastCPUTime)*100) / float32(20*info.NrVirtCpu*10000000)
-				}
-				db, err := sql.Open("sqlite3", "./db/cpanel.db")
-				if err != nil {
-					msg, _ := json.Marshal(er{Ret: "e", Msg: "打开失败", Data: err.Error()})
-					fmt.Println(msg)
-					return
-				}
-				stmt, err := db.Prepare("INSERT INTO watch(Vname,CPU,Memory,Ctime) values(?,?,?,?)")
-				if err != nil {
-					msg, _ := json.Marshal(er{Ret: "e", Msg: "", Data: err.Error()})
-					fmt.Println("写入失败")
-					return
 				}
 				_, err = stmt.Exec(name, int(cpurate), info.Memory, time.Now().Unix())
 				if err != nil {
