@@ -31,7 +31,7 @@
     <div class="container" style="padding: 80px 0;">
         <div class="col-lg-12" style="margin-bottom: 10px;">
             <div class="btn-group">
-                <button class="btn btn-default" type="button" onclick="control.start()" disabled="">
+                <button class="btn btn-default" type="button" onclick="control.start()">
                     开机
                 </button>
                 <button class="btn btn-default" type="button" onclick="control.shutdown()">
@@ -174,17 +174,23 @@
     var control = {};
     control.start = function(){
         $.post("/start",{vname:vname},function(d){
-            Console.log(d.msg);
+            if(d.ret=="v"){
+                alert(d.msg)
+            }
         },"json")
     }
     control.shutdown = function(){
         $.post("/shutdown",{vname:vname},function(d){
-            Console.log(d.msg);
+            if(d.ret=="v"){
+                alert(d.msg)
+            }
         },"json")
     }
     control.reboot = function(){
         $.post("/reboot",{vname:vname},function(d){
-            Console.log(d.msg);
+            if(d.ret=="v"){
+                alert(d.msg)
+            }
         },"json")
     }
     control.repasswd = function(){
@@ -262,6 +268,7 @@
             }],
         });
     },"json")
- 
+    {{$v = 1}}
+    {{$v}}
 </script>
 </html>
