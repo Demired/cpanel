@@ -137,7 +137,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 	// 	}
 	// }
 	db, _ := sql.Open("sqlite3", "./db/cpanel.db")
-	sql := fmt.Sprintf("SELECT Vname,Vcpu,Bandwidth,Vmemory FROM vm WHERE vname = %s;", vname)
+	sql := fmt.Sprintf("SELECT Vname,IPv4,IPv6,LocalIP,Mac,Vcpu,Bandwidth,Vmemory,Status FROM vm WHERE vname = '%s';", vname)
 	rows, _ := db.Query(sql)
 	var ww vm
 	if rows.Next() {
@@ -148,14 +148,18 @@ func info(w http.ResponseWriter, req *http.Request) {
 	}
 	var vmInfo = make(map[string]string)
 	vmInfo["vname"] = ww.Vname
+	vmInfo["IPv4"] = ww.IPv4
+	vmInfo["IPv6"] = ww.IPv6
+	vmInfo["Mac"] = ww.Mac
+	vmInfo["LocalIP"] = ww.LocalIP
 	vmInfo["Bandwidth"] = fmt.Sprintf("%d", ww.Bandwidth)
 	vmInfo["Vmemory"] = fmt.Sprintf("%d", ww.Vmemory)
 	vmInfo["Vcpu"] = fmt.Sprintf("%d", ww.Vcpu)
 	// vmInfo[""]
 	fmt.Println(vmInfo)
-	// t, _ := template.ParseFiles("html/info.html")
+	t, _ := template.ParseFiles("html/info.html")
 	// vmInfoJ, _ := json.Marshal(vmInfo)
-	// t.Execute(w, nil)
+	t.Execute(w, nil)
 }
 
 func date(w http.ResponseWriter, req *http.Request) {
