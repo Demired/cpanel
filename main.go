@@ -157,10 +157,9 @@ func info(w http.ResponseWriter, req *http.Request) {
 	vmInfo["Vmemory"] = fmt.Sprintf("%d", vvm.Vmemory)
 	vmInfo["Vcpu"] = fmt.Sprintf("%d", vvm.Vcpu)
 	// vmInfo[""]
-	fmt.Println(vmInfo)
 	t, _ := template.ParseFiles("html/info.html")
 	// vmInfoJ, _ := json.Marshal(vmInfo)
-	t.Execute(w, nil)
+	t.Execute(w, vmInfo)
 }
 
 func loadJSON(w http.ResponseWriter, req *http.Request) {
