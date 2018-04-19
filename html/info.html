@@ -81,12 +81,7 @@
                             <tr>
                                 <th>状态:</th>
                                 <td>
-                                    {{$run := .Status}}
-                                    {{if eq $run 1}}
-                                    运行中
-                                    {{else}}
-                                    关机
-                                    {{end}}
+                                    {{.Status}}
                                 </td>
                             </tr>
                             <tr>
