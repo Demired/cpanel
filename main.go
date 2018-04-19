@@ -141,7 +141,10 @@ func info(w http.ResponseWriter, req *http.Request) {
 	rows, _ := db.Query(sql)
 	var ww vm
 	if rows.Next() {
-		rows.Scan(&ww.Vname, &ww.Vcpu, &ww.Bandwidth, &ww.Vmemory)
+		err := rows.Scan(&ww.Vname, &ww.Vcpu, &ww.Bandwidth, &ww.Vmemory)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
 	}
 	var vmInfo = make(map[string]string)
 	vmInfo["vname"] = ww.Vname
