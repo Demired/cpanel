@@ -124,7 +124,6 @@ func info(w http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
 	vname := req.URL.Query().Get("vname")
 	dom, err := control.Connect().LookupDomainByName(vname)
-	defer dom.Close()
 	if err != nil {
 		fmt.Println(err.Error())
 	}
