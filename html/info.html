@@ -28,6 +28,22 @@
             </div>
         </div>
     </nav>
+    <div class="col-lg-12" style="margin-bottom: 10px;">
+        <div class="btn-group">
+            <button class="btn btn-default" type="button" onclick="control.start()" disabled="">
+                开机
+            </button>
+            <button class="btn btn-default" type="button" onclick="control.shutdown()">
+                关机
+            </button>
+            <button class="btn btn-default" type="button" onclick="control.reboot()">
+                重启
+            </button>
+            <button class="btn btn-default" type="button" onclick="control.repasswd()">
+                修改密码
+            </button>
+        </div>
+    </div>
     <div class="container" style="padding: 80px 0;">
         <div class="col-lg-4">
             <div class="panel panel-primary">
@@ -153,6 +169,29 @@
         </div>
     </div>
 </body>
+<script>
+    var vname = "{{.Vname}}"
+    var control = {};
+    control.start = function(){
+        $.post("/start",{vname:vname},function(d){
+            Console.log(d.msg);
+        },"json")
+    }
+    control.shutdown = function(){
+        $.post("/shutdown",{vname:vname},function(d){
+            Console.log(d.msg);
+        },"json")
+    }
+    control.reboot = function(){
+        $.post("/reboot",{vname:vname},function(d){
+            Console.log(d.msg);
+        },"json")
+    }
+    control.repasswd = function(){
+        //弹出密码输入框
+        location.href="/repasswd.html"
+    }
+</script>
 <script>
     var dd = [];
     Highcharts.setOptions({

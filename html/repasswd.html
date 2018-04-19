@@ -43,7 +43,7 @@
         var p = {}
         p.passwd = $("#vpasswd").val()
         p.vname = $("#vname").val()
-        $.post("/passwd",p,function(d){
+        $.post("/repasswd",p,function(d){
             alert(d.msg);
             if(d.ret=="v"){
                 location.href="/list"

@@ -35,8 +35,8 @@ func main() {
 	http.HandleFunc("/shutdown", shutdown)
 	http.HandleFunc("/reboot", reboot)
 	http.HandleFunc("/create", createAPI)
-	http.HandleFunc("/passwd.html", passwd)
-	http.HandleFunc("/passwd", passwdAPI)
+	http.HandleFunc("/repasswd.html", repasswd)
+	http.HandleFunc("/repasswd", repasswdAPI)
 	http.HandleFunc("/undefine", undefine)
 	// http.HandleFunc("/edit.html", edit)
 	http.HandleFunc("/create.html", create)
@@ -189,13 +189,13 @@ func loadJSON(w http.ResponseWriter, req *http.Request) {
 	w.Write(dj)
 }
 
-func passwd(w http.ResponseWriter, req *http.Request) {
+func repasswd(w http.ResponseWriter, req *http.Request) {
 	vname := req.URL.Query().Get("vname")
 	db, _ := sql.Open("sqlite3", "./db/cpanel.db")
 	sql := fmt.Sprintf("SELECT id FROM vm WHERE Vname = '%s';", vname)
 	rows, _ := db.Query(sql)
 	if rows.Next() == true {
-		t, _ := template.ParseFiles("html/passwd.html")
+		t, _ := template.ParseFiles("html/repasswd.html")
 		t.Execute(w, vname)
 		return
 	}
@@ -280,7 +280,7 @@ func start(w http.ResponseWriter, req *http.Request) {
 	w.Write(msg)
 }
 
-func passwdAPI(w http.ResponseWriter, req *http.Request) {
+func repasswdAPI(w http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/", http.StatusFound)
