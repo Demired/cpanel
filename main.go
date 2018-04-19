@@ -71,7 +71,6 @@ func watch() {
 				fmt.Println("打开数据库失败", err.Error())
 				continue
 			}
-
 			stmt, err := db.Prepare("INSERT INTO watch(Vname,CPU,Memory,Ctime) values(?,?,?,?)")
 			if err != nil {
 				fmt.Println("创建sql失败", err.Error())
@@ -141,10 +140,13 @@ func info(w http.ResponseWriter, req *http.Request) {
 	defer db.Close()
 	sql := fmt.Sprintf("SELECT Vname,IPv4,IPv6,LocalIP,Mac,Vcpu,Bandwidth,Vmemory,Status FROM vm WHERE vname = '%s';", vname)
 	rows, _ := db.Query(sql)
+
 	var vvm vm
 	if rows.Next() {
 		rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Mac, &vvm.Vcpu, &vvm.Bandwidth, &vvm.Vmemory, &vvm.Status)
 	}
+	rows.Close()
+	db.Close()
 	var vmInfo = make(map[string]string)
 	vmInfo["Vname"] = vvm.Vname
 	vmInfo["IPv4"] = vvm.IPv4
@@ -232,7 +234,7 @@ func list(w http.ResponseWriter, req *http.Request) {
 		vvm.Status = int(s)
 		vvvm = append(vvvm, vvm)
 	}
-
+	db.Close()
 	t, _ := template.ParseFiles("html/list.html")
 	t.Execute(w, vvvm)
 }
