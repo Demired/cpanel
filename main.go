@@ -167,7 +167,6 @@ func loadJSON(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		startTime = int(time.Now().Unix()) - 3600
 	}
-	fmt.Println(startTime)
 	sql := fmt.Sprintf("SELECT Vname,CPU,Ctime FROM watch WHERE Vname = '%s' AND Ctime > '%d';", vname, startTime)
 	rows, _ := db.Query(sql)
 	var cpus [][]int
@@ -178,10 +177,9 @@ func loadJSON(w http.ResponseWriter, req *http.Request) {
 			fmt.Println(err.Error())
 			return
 		}
-		if ww.CPU > 0 {
-			cpus = append(cpus, []int{ww.Ctime, ww.CPU})
-		}
+		cpus = append(cpus, []int{ww.Ctime, ww.CPU})
 	}
+	fmt.Println(cpus)
 	var date = make(map[string]interface{})
 	date["cpus"] = cpus
 	dj, _ := json.Marshal(date)
