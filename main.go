@@ -154,9 +154,10 @@ func info(w http.ResponseWriter, req *http.Request) {
 	vmInfo["Vcpu"] = fmt.Sprintf("%d", ww.Vcpu)
 	vmInfo["stat"] = fmt.Sprintf("%d", s)
 	// vmInfo[""]
+	fmt.Println(vmInfo)
 	t, _ := template.ParseFiles("html/info.html")
-	vmInfoJ, _ := json.Marshal(vmInfo)
-	t.Execute(w, string(vmInfoJ))
+	// vmInfoJ, _ := json.Marshal(vmInfo)
+	t.Execute(w, nil)
 }
 
 func date(w http.ResponseWriter, req *http.Request) {
