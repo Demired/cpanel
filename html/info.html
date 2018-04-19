@@ -81,7 +81,11 @@
                             <tr>
                                 <th>状态:</th>
                                 <td>
-                                    开机
+                                    {{if eq .Status 1}}
+                                    运行中
+                                    {{else}}
+                                    关机
+                                    {{end}}
                                 </td>
                             </tr>
                             <tr>
@@ -221,4 +225,3 @@
  
 </script>
 </html>
-
