@@ -137,18 +137,17 @@ func info(w http.ResponseWriter, req *http.Request) {
 	// 	}
 	// }
 	db, _ := sql.Open("sqlite3", "./db/cpanel.db")
-	sql := fmt.Sprintf("SELECT Vname,IPv4,IPv6,LocalIP,Mac,Vcpu,Bandwidth,Vmemory,Status FROM vm WHERE vname = %s", vname)
+	sql := fmt.Sprintf("SELECT Vname,Vcpu,Bandwidth,Vmemory FROM vm WHERE vname = %s", vname)
 	rows, _ := db.Query(sql)
 	var ww vm
 	if rows.Next() {
-		rows.Scan(&ww.Vname, &ww.IPv4, &ww.IPv6, &ww.LocalIP, &ww.Mac, &ww.Vcpu, &ww.Bandwidth, &ww.Vmemory, &ww.Status)
+		rows.Scan(&ww.Vname, &ww.Vcpu, &ww.Bandwidth, &ww.Vmemory)
 	}
 	var vmInfo = make(map[string]string)
-	vmInfo["vname"] = vname
-	vmInfo["IPv4"] = ww.IPv4
-	vmInfo["IPv6"] = ww.IPv6
-	vmInfo["LocalIP"] = ww.LocalIP
-	vmInfo["Mac"] = ww.Mac
+	vmInfo["vname"] = ww.Vname
+	vmInfo["Vcpu"] = ww.Vcpu
+	vmInfo["Bandwidth"] = ww.Bandwidth
+	vmInfo["Vmemory"] = ww.Vmemory
 	// vmInfo["Bandwidth"] = fmt.Sprintf("%d", ww.Bandwidth)
 	// vmInfo["Vmemory"] = fmt.Sprintf("%d", ww.Vmemory)
 	// vmInfo["Vcpu"] = fmt.Sprintf("%d", ww.Vcpu)
