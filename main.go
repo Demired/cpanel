@@ -153,6 +153,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 	vmInfo["Bandwidth"] = fmt.Sprintf("%d", vvm.Bandwidth)
 	vmInfo["Vmemory"] = fmt.Sprintf("%d", vvm.Vmemory)
 	vmInfo["Vcpu"] = fmt.Sprintf("%d", vvm.Vcpu)
+	vmInfo["Status"] = fmt.Sprintf("%d", s)
 	// vmInfo[""]
 	t, _ := template.ParseFiles("html/info.html")
 	// vmInfoJ, _ := json.Marshal(vmInfo)
