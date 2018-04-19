@@ -33,50 +33,39 @@
     </div>
 </body>
 <script>
-    var timeline = {{.Timeline}}
-    var cpus = {{.Cpus}}
-     Highcharts.chart('cpu', {
+    var cpus = {{.}}
+    Highcharts.setOptions({
+        global: {
+            useUTC: false
+        }
+    })
+    Highcharts.chart('cpu', {
         credits: {
             text: ''
-        },
-        chart: {
-            zoomType: 'x',
-            resetZoomButton: {
-                theme: {
-                    fill: 'white',
-                    stroke: 'silver',
-                    r: 0,
-                    states: {
-                        hover: {
-                            fill: '#41739D',
-                            style: {
-                                color: 'white'
-                            }
-                        }
-                    }
-                }
-            }
         },
         colors: ['#61A5E8'],
         title: {
             text: 'cpu使用率'
         },
-        yAxis: {
-            title: {
-                text: "百分比"
-            },
-            min: 0
-        },
         xAxis: {
+            title: {
+                text:"时间"
+            },
             type: 'datetime',
             dateTimeLabelFormats: {
+                millisecond: '%H:%M:%S',
                 second: '%H:%M:%S',
                 minute: '%H:%M',
                 hour: '%H:%M',
-                day: '%m-%d',
+                day: '%Y-%m-%d',
                 week: '%m-%d',
                 month: '%Y-%m',
                 year: '%Y'
+            },
+        },
+        yAxis: {
+            title: {
+                text:"百分比"
             }
         },
         tooltip: {
@@ -88,7 +77,8 @@
                 week: '%m-%d',
                 month: '%Y-%m',
                 year: '%Y'
-            }
+            },
+            headerFormat: ""
         },
         legend: {
             layout: 'veritcal',
@@ -99,36 +89,23 @@
             borderWidth: 1
         },
         plotOptions: {
-            area: {
+            series: {
                 fillColor: {
-                    linearGradient: {
-                        x1: 0,
-                        y1: 0,
-                        x2: 0,
-                        y2: 1
-                    },
+                    linearGradient: [0, 0, 0, 300],
                     stops: [
+                        [0,"#ff0"],
+                        [1,"#f00"]
                     ]
-                },
-                marker: {
-                    radius: 2
-                },
-                lineWidth: 4,
-                states: {
-                    hover: {
-                        lineWidth: 5
-                    }
-                },
-                threshold: null
+                }
             }
         },
         series: [{
-            type: 'area',
+            type: 'line',
             name: 'cpu使用率',
             data: cpus.map(function(item){
-                return item/100
-            })
-        }]
+                return [item[0],item[1]/100]
+                })
+        }],
     });
 </script>
 </html>

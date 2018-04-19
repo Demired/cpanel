@@ -140,8 +140,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
 	sql := fmt.Sprintf("SELECT Vname,CPU,Ctime FROM watch WHERE Vname = '%s' LIMIT 100;", vname)
 	rows, _ := db.Query(sql)
-	var cpus []int
-	var timeline []int
+	var cpus [][]int
 	for rows.Next() {
 		var ww wa
 		err := rows.Scan(&ww.Vname, &ww.CPU, &ww.Ctime)
@@ -150,18 +149,12 @@ func info(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 		if ww.CPU > 0 {
-			cpus = append(cpus, ww.CPU)
-			timeline = append(timeline, ww.Ctime)
+			cpus = append(cpus, []int{ww.Ctime, ww.CPU})
 		}
 	}
 	cpuj, _ := json.Marshal(cpus)
-	timej, _ := json.Marshal(timeline)
 	t, _ := template.ParseFiles("html/info.html")
-	type Person struct {
-		Cpus     string
-		Timeline string
-	}
-	t.Execute(w, Person{Cpus: string(cpuj), Timeline: string(timej)})
+	t.Execute(w, string(cpuj))
 }
 
 func passwd(w http.ResponseWriter, req *http.Request) {
