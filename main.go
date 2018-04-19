@@ -165,10 +165,10 @@ func date(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 	fmt.Println(cpus)
-	// var date = make(map[string]interface{})
-	// date["cpus"] = cpus
-	// dj, _ := json.Marshal(date)
-	// w.Write(cpus)
+	var date = make(map[string]interface{})
+	date["cpus"] = cpus
+	dj, _ := json.Marshal(date)
+	w.Write(dj)
 }
 
 func passwd(w http.ResponseWriter, req *http.Request) {
