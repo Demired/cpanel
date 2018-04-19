@@ -145,7 +145,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 		rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Mac, &vvm.Vcpu, &vvm.Bandwidth, &vvm.Vmemory, &vvm.Status)
 	}
 	var vmInfo = make(map[string]string)
-	vmInfo["vname"] = vvm.Vname
+	vmInfo["Vname"] = vvm.Vname
 	vmInfo["IPv4"] = vvm.IPv4
 	vmInfo["IPv6"] = vvm.IPv6
 	vmInfo["Mac"] = vvm.Mac
