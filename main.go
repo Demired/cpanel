@@ -137,7 +137,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 	// 	}
 	// }
 	db, _ := sql.Open("sqlite3", "./db/cpanel.db")
-	sql := fmt.Sprintf("SELECT Vname,Vcpu,Bandwidth,Vmemory FROM vm WHERE vname = %s", vname)
+	sql := fmt.Sprintf("SELECT Vname,Vcpu,Bandwidth,Vmemory FROM vm WHERE vname = %s;", vname)
 	rows, _ := db.Query(sql)
 	var ww vm
 	if rows.Next() {
