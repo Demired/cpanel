@@ -154,7 +154,7 @@
             useUTC: false
         }
     })
-    $.post("/load.json","",function(d){
+    $.post("/load.json?vname={{.Vname}}","",function(d){
         Highcharts.chart('cpu', {
             credits: {
                 text: ''
