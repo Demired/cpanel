@@ -398,24 +398,17 @@ func test(w http.ResponseWriter, req *http.Request) {
 //创建虚拟机
 func createAPI(w http.ResponseWriter, req *http.Request) {
 	type vv struct {
-		ID    int    `json:"id"`
-		UID   int    `json:"uid"`
-		Vname string `json:"vname"`
+		ID    int
+		UID   int
+		Vname string
 	}
-	db, err := sql.Open("sqlite3", "./db/cpanel.db")
-	if err != nil {
-		cLog.Info(err.Error())
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "打开失败", Data: err.Error()})
-		w.Write(msg)
-		return
-	}
+	db, _ := sql.Open("sqlite3", "./db/cpanel.db")
+	orm := beedb.New(db)
 	var vInfo vv
 	vInfo.Vname = string(rpwd.Init(8, true, true, true, false))
 	vInfo.UID = 1
 
-	orm := beedb.New(db)
-
-	err = orm.SetTable("vv").SetPK("ID").Save(vInfo)
+	err = orm.SetTable("vv").SetPK("ID").Save(&vInfo)
 	if err != nil {
 		cLog.Info(err.Error())
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
