@@ -241,9 +241,9 @@ func list(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	defer rows.Close()
-	var vvvm []vm
+	var vvvm []table.Virtual
 	for rows.Next() {
-		var vvm vm
+		var vvm table.Virtual
 		err := rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Mac, &vvm.Vcpu, &vvm.Bandwidth, &vvm.Vmemory, &vvm.Status)
 		if err != nil {
 			fmt.Println(err.Error())
@@ -510,7 +510,7 @@ func workQueue() {
 	}
 }
 
-func createKvmXML(tvm vm) string {
+func createKvmXML(tvm table.Virtual) string {
 	// name := "test"
 	var templateXML = `
 	<domain type='kvm'>
