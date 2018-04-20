@@ -88,16 +88,9 @@ func watchTask() {
 				if lastCPUTime, ok := t[name]; ok {
 					cpurate = float32((info.CpuTime-lastCPUTime)*100) / float32(20*info.NrVirtCpu*10000000)
 				}
-				if cpurate < 1 {
-					wd.CPU = 1
-				} else {
-					wd.CPU = int(cpurate)
-				}
+				wd.CPU = IF(cpurate > 1, cpurate, 1).(int)
 				wd.Memory = int(info.Memory)
 				wd.Vname = name
-
-				fmt.Println()
-
 				if err = orm.Save(&wd); err != nil {
 					fmt.Println("写入数据失败", err.Error())
 					continue
