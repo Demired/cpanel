@@ -561,19 +561,19 @@ func createKvmXML(tvm vm) string {
 }
 
 type vm struct {
-	ID        int    `json:"id"`
-	IPv4      string `json:"ipv4"`
-	IPv6      string `json:"ipv6"`
-	LocalIP   string `json:"local"`
-	Ctime     string `json:"ctime"`
-	Utime     string `json:"utime"`
-	Vcpu      int    `json:"vcpu"`
-	Status    int    `json:"status"`
-	Etime     string `json:"etime"`   //Expire time
-	Vmemory   int    `json:"vmemory"` //GiB
-	Passwd    string `json:"vpasswd"`
-	Vname     string `json:"vname"`
-	Br        string `json:"br"`
+	ID      int    `json:"id"`
+	IPv4    string `json:"ipv4"`
+	IPv6    string `json:"ipv6"`
+	LocalIP string `json:"local"`
+	Ctime   string `json:"ctime"`
+	Utime   string `json:"utime"`
+	Vcpu    int    `json:"vcpu"`
+	Status  int    `json:"status"`
+	Etime   string `json:"etime"`   //Expire time
+	Vmemory int    `json:"vmemory"` //GiB
+	Passwd  string `json:"vpasswd"`
+	Vname   string `json:"vname"`
+	// Br        string `json:"br"`
 	Mac       string `json:"mac"`
 	Bandwidth int    `json:"bandwidth"` //Mbps
 }
