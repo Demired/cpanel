@@ -60,8 +60,8 @@ type wa struct {
 type watch struct {
 	Vname  string
 	CPU    int
-	Memory uint64
-	Ctime  int64
+	Memory int
+	Ctime  int
 }
 
 func vmWatch() {
@@ -88,7 +88,7 @@ func vmWatch() {
 					continue
 				}
 				var wd watch
-				wd.Ctime = time.Now().Unix()
+				wd.Ctime = int(time.Now().Unix())
 				var cpurate float32
 				if lastCPUTime, ok := t[name]; ok {
 					cpurate = float32((info.CpuTime-lastCPUTime)*100) / float32(20*info.NrVirtCpu*10000000)
@@ -98,7 +98,7 @@ func vmWatch() {
 				} else {
 					wd.CPU = int(cpurate)
 				}
-				wd.Memory = info.Memory
+				wd.Memory = int(info.Memory)
 
 				if err = orm.Save(&w); err != nil {
 					fmt.Println("写入数据失败", err.Error())
