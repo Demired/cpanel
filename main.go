@@ -404,7 +404,14 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	// 	w.Write(msg)
 	// 	return
 	// }
-	var vInfo table.Vv
+
+	type vv struct {
+		ID    int    `json:"id"`
+		UID   int    `json:"uid"`
+		Vname string `json:"vname"`
+	}
+
+	var vInfo vv
 	vInfo.Vname = string(rpwd.Init(8, true, true, true, false))
 
 	// vInfo.Vcpu = vcpu
