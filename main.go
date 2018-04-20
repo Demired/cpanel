@@ -28,7 +28,7 @@ var mac = make(chan string) //获取初始内网ip寄存的mac地址
 
 var cLog = logs.NewLogger(1)
 
-var logFile = "/home/log/cpanel.log"
+var logFile = "/var/log/cpanel.log"
 
 func main() {
 	cLog.SetLogger("file", `{"filename":"`+logFile+`"}`)
