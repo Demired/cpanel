@@ -408,13 +408,8 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	vInfo.Vname = string(rpwd.Init(8, true, true, true, false))
 	vInfo.UID = 1
 
-	err = orm.SetTable("vv").SetPK("ID").Save(&vInfo)
-	if err != nil {
-		cLog.Info(err.Error())
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
-		w.Write(msg)
-		return
-	}
+	orm.SetTable("vv").SetPK("ID").Save(&vInfo)
+
 	// if req.Method != "POST" {
 	// 	http.Redirect(w, req, "/create.html", http.StatusFound)
 	// 	return
