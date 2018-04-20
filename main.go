@@ -436,6 +436,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	orm := beedb.New(db)
+	fmt.Println(vInfo)
 	err = orm.SetTable("Virtual").Save(vInfo)
 	if err != nil {
 		cLog.Info(err.Error())
