@@ -16,10 +16,11 @@ func Init() {
 
 	defer db.Close()
 
-	sql := `CREATE TABLE IF NOT EXISTS vvm (
-                Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                UID INT NOT NULL,
-                Vname CHAR(20),
+	sql := `CREATE TABLE IF NOT EXISTS Virtual (
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                UID INT NOT NULL,// 用户ID
+                Vname CHAR(20),// 虚拟机名字
+                Tag CHAR(20),// 用户给虚拟机的标签
                 IPv4 CHAR(30),
                 IPv6 CHAR(50),
                 LocalIP CHAR(30),
@@ -27,11 +28,12 @@ func Init() {
                 Vmemory INT NOT NULL,
                 Status INT NOT NULL,
                 Bandwidth INT NOT NULL,
+                Br CHAR(10),
                 Mac CHAR(20),
                 Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 Utime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
-            CREATE TABLE IF NOT EXISTS watch (
+            CREATE TABLE IF NOT EXISTS Watch (
                 Id INTEGER PRIMARY KEY AUTOINCREMENT,
                 Vname CHAR(20),
                 CPU INT NOT NULL,

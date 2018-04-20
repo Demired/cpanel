@@ -2,6 +2,7 @@ package main
 
 import (
 	"cpanel/control"
+	"cpanel/db"
 	"cpanel/tools"
 	"database/sql"
 	"encoding/json"
@@ -161,7 +162,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	orm := beedb.New(db)
-	var vvm vm
+	var vvm table.Virtual
 	err = orm.Where("vname=?", vname).Find(&vvm)
 	if err != nil {
 		cLog.Warn(err.Error())
@@ -413,7 +414,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	var tvm vm
+	var tvm db.Virtual
 
 	tvm.Vcpu = vcpu
 	tvm.Vmemory = vmemory
@@ -558,22 +559,4 @@ func createKvmXML(tvm vm) string {
 		</devices>
 	</domain>`
 	return templateXML
-}
-
-type vm struct {
-	ID      int    `json:"id"`
-	IPv4    string `json:"ipv4"`
-	IPv6    string `json:"ipv6"`
-	LocalIP string `json:"local"`
-	Ctime   string `json:"ctime"`
-	Utime   string `json:"utime"`
-	Vcpu    int    `json:"vcpu"`
-	Status  int    `json:"status"`
-	Etime   string `json:"etime"`   //Expire time
-	Vmemory int    `json:"vmemory"` //GiB
-	Passwd  string `json:"vpasswd"`
-	Vname   string `json:"vname"`
-	// Br        string `json:"br"`
-	Mac       string `json:"mac"`
-	Bandwidth int    `json:"bandwidth"` //Mbps
 }
