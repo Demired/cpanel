@@ -99,8 +99,8 @@ func vmWatch() {
 					wd.CPU = int(cpurate)
 				}
 				wd.Memory = info.Memory
-				err := orm.Save(&w)
-				if err != nil {
+
+				if err = orm.Save(&w); err != nil {
 					fmt.Println("写入数据失败", err.Error())
 					continue
 				}
