@@ -26,7 +26,7 @@ var q = make(chan string)
 var mac = make(chan string)
 
 func main() {
-	go vmWatch()
+	go watchTask()
 	go workQueue()
 	http.HandleFunc("/", index)
 	http.HandleFunc("/list", list)
@@ -51,20 +51,15 @@ func index(w http.ResponseWriter, req *http.Request) {
 	t.Execute(w, nil)
 }
 
-type wa struct {
-	Vname  string
-	CPU    int
-	Memory int
-	Ctime  int
-}
 type watch struct {
+	Id     int
 	Vname  string
 	CPU    int
 	Memory int
 	Ctime  int
 }
 
-func vmWatch() {
+func watchTask() {
 	w := time.NewTicker(time.Second * 20)
 	for {
 		select {
@@ -101,7 +96,7 @@ func vmWatch() {
 				wd.Memory = int(info.Memory)
 				wd.Vname = name
 
-				if err = orm.Save(&w); err != nil {
+				if err = orm.Save(&wd); err != nil {
 					fmt.Println("写入数据失败", err.Error())
 					continue
 				}
@@ -188,7 +183,7 @@ func loadJSON(w http.ResponseWriter, req *http.Request) {
 	rows, _ := db.Query(sql)
 	var cpus [][]int
 	for rows.Next() {
-		var ww wa
+		var ww watch
 		err := rows.Scan(&ww.Vname, &ww.CPU, &ww.Ctime)
 		if err != nil {
 			fmt.Println(err.Error())
