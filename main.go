@@ -82,7 +82,7 @@ func vmWatch() {
 					continue
 				}
 				var wd watch
-				wd.Ctime = time.Now().Unix()
+				wd.Ctime = int(time.Now().Unix())
 				var cpurate float32
 				if lastCPUTime, ok := t[name]; ok {
 					cpurate = float32((info.CpuTime-lastCPUTime)*100) / float32(20*info.NrVirtCpu*10000000)
