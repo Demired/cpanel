@@ -414,7 +414,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	var tvm db.Virtual
+	var tvm table.Virtual
 
 	tvm.Vcpu = vcpu
 	tvm.Vmemory = vmemory
