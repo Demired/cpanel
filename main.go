@@ -436,6 +436,9 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	orm := beedb.New(db)
+	vInfo.Ctime = time.Now()
+	vInfo.Etime = time.Now()
+	vInfo.Utime = time.Now()
 	fmt.Println(vInfo)
 	err = orm.SetTable("Virtual").SetPK("ID").Save(vInfo)
 	if err != nil {
