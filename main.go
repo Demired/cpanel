@@ -99,7 +99,7 @@ func watchTask() {
 				if lastCPUTime, ok := t[name]; ok {
 					cpurate = float32((info.CpuTime-lastCPUTime)*100) / float32(20*info.NrVirtCpu*10000000)
 				}
-				wd.CPU = IF(cpurate > 1, cpurate, 1).(int)
+				wd.CPU = if(cpurate > 1, cpurate, 1).(int)
 				wd.Memory = int(info.Memory)
 				wd.Vname = name
 				if err = orm.Save(&wd); err != nil {
@@ -154,7 +154,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
 	if err != nil {
 		cLog.Warn("打开数据库失败", err.Error())
-		continue
+		return
 	}
 	orm := beedb.New(db)
 	var vvm vm
