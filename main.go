@@ -406,17 +406,17 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	var vInfo table.Virtual
-
-	vInfo.Vcpu = vcpu
-	vInfo.Vmemory = vmemory
-	vInfo.Passwd = vpasswd
-	vInfo.Mac = tools.Rmac()
-	vInfo.Br = "br1"
-	vInfo.Bandwidth = bandwidth
 	vInfo.Vname = string(rpwd.Init(8, true, true, true, false))
-	vInfo.Ctime = time.Now()
-	vInfo.Etime = time.Now()
-	vInfo.Utime = time.Now()
+
+	// vInfo.Vcpu = vcpu
+	// vInfo.Vmemory = vmemory
+	// vInfo.Passwd = vpasswd
+	// vInfo.Mac = tools.Rmac()
+	// vInfo.Br = "br1"
+	// vInfo.Bandwidth = bandwidth
+	// vInfo.Ctime = time.Now()
+	// vInfo.Etime = time.Now()
+	// vInfo.Utime = time.Now()
 
 	// xml := createKvmXML(vInfo)
 	// _, err = control.Connect().DomainDefineXML(xml)
