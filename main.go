@@ -162,7 +162,11 @@ func info(w http.ResponseWriter, req *http.Request) {
 	}
 	orm := beedb.New(db)
 	var vvm vm
-	orm.Where("vname=?", vname).Find(&vvm)
+	err = orm.Where("vname=?", vname).Find(&vvm)
+	if err != nil {
+		cLog.Warn(err.Error())
+		return
+	}
 	fmt.Println(vvm)
 	// sql := fmt.Sprintf("SELECT Vname,IPv4,IPv6,LocalIP,Mac,Vcpu,Bandwidth,Vmemory,Status FROM vm WHERE vname = '%s';", vname)
 	// rows, _ := db.Query(sql)
