@@ -16,8 +16,8 @@ func Init() {
 
 	defer db.Close()
 
-	sql := `CREATE TABLE IF NOT EXISTS vm (
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+	sql := `CREATE TABLE IF NOT EXISTS vvm (
+                Id INTEGER PRIMARY KEY AUTOINCREMENT,
                 UID INT NOT NULL,
                 Vname CHAR(20),
                 IPv4 CHAR(30),
@@ -32,6 +32,7 @@ func Init() {
                 Utime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
             CREATE TABLE IF NOT EXISTS watch (
+                Id INTEGER PRIMARY KEY AUTOINCREMENT,
                 Vname CHAR(20),
                 CPU INT NOT NULL,
                 Memory INT NOT NULL,

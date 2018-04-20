@@ -14,6 +14,7 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/astaxie/beedb"
 	libvirt "github.com/libvirt/libvirt-go"
 	_ "github.com/mattn/go-sqlite3"
 
@@ -50,7 +51,7 @@ func index(w http.ResponseWriter, req *http.Request) {
 	t.Execute(w, nil)
 }
 
-type wa struct {
+type watch struct {
 	Vname  string
 	CPU    int
 	Memory int
@@ -71,11 +72,8 @@ func watch() {
 				fmt.Println("打开数据库失败", err.Error())
 				continue
 			}
-			stmt, err := db.Prepare("INSERT INTO watch(Vname,CPU,Memory,Ctime) values(?,?,?,?)")
-			if err != nil {
-				fmt.Println("创建sql失败", err.Error())
-				continue
-			}
+			orm := beedb.New(db)
+
 			for _, dom := range doms {
 				name, _ := dom.GetName()
 				info, err := dom.GetInfo()
@@ -83,11 +81,20 @@ func watch() {
 					fmt.Println(err.Error())
 					continue
 				}
+				var w watch
+				w.Ctime = time.Now()
 				var cpurate float32
 				if lastCPUTime, ok := t[name]; ok {
 					cpurate = float32((info.CpuTime-lastCPUTime)*100) / float32(20*info.NrVirtCpu*10000000)
 				}
-				_, err = stmt.Exec(name, int(cpurate), info.Memory, time.Now().Unix())
+				if cpurate < 1 {
+					w.CPU = 1
+				} else {
+					w.CPU = int(cpurate)
+				}
+				w.Memory = info.Memory
+				w.Ctime = time.Now().Unix()
+				err := orm.Save(&w)
 				if err != nil {
 					fmt.Println("写入数据失败", err.Error())
 					continue
