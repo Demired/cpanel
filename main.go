@@ -437,7 +437,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	}
 	orm := beedb.New(db)
 	fmt.Println(vInfo)
-	err = orm.SetTable("Virtual").Save(vInfo)
+	err = orm.SetTable("Virtual").SetPK("ID").Save(vInfo)
 	if err != nil {
 		cLog.Info(err.Error())
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
