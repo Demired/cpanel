@@ -26,7 +26,7 @@ var q = make(chan string)
 var mac = make(chan string)
 
 func main() {
-	go watch()
+	go vmWatch()
 	go workQueue()
 	http.HandleFunc("/", index)
 	http.HandleFunc("/list", list)
@@ -58,7 +58,7 @@ type watch struct {
 	Ctime  int
 }
 
-func watch() {
+func vmWatch() {
 	w := time.NewTicker(time.Second * 20)
 	for {
 		select {
