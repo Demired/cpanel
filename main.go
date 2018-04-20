@@ -52,7 +52,7 @@ func index(w http.ResponseWriter, req *http.Request) {
 }
 
 type watch struct {
-	Id     int
+	ID     int `PK`
 	Vname  string
 	CPU    int
 	Memory int
@@ -95,6 +95,8 @@ func watchTask() {
 				}
 				wd.Memory = int(info.Memory)
 				wd.Vname = name
+
+				fmt.Println()
 
 				if err = orm.Save(&wd); err != nil {
 					fmt.Println("写入数据失败", err.Error())
