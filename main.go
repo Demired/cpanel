@@ -374,37 +374,36 @@ func reboot(w http.ResponseWriter, req *http.Request) {
 
 //创建虚拟机
 func createAPI(w http.ResponseWriter, req *http.Request) {
-	defer req.Body.Close()
-	if req.Method != "POST" {
-		http.Redirect(w, req, "/create.html", http.StatusFound)
-		return
-	}
-	vmemory, err := strconv.Atoi(req.PostFormValue("vmemory"))
+	// if req.Method != "POST" {
+	// 	http.Redirect(w, req, "/create.html", http.StatusFound)
+	// 	return
+	// }
+	// vmemory, err := strconv.Atoi(req.PostFormValue("vmemory"))
 
-	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "内存大小必须为整数"})
-		w.Write(msg)
-		return
-	}
+	// if err != nil {
+	// 	msg, _ := json.Marshal(er{Ret: "e", Msg: "内存大小必须为整数"})
+	// 	w.Write(msg)
+	// 	return
+	// }
 
-	vcpu, err := strconv.Atoi(req.PostFormValue("vcpu"))
-	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "cpu个数必须为整数"})
-		w.Write(msg)
-		return
-	}
+	// vcpu, err := strconv.Atoi(req.PostFormValue("vcpu"))
+	// if err != nil {
+	// 	msg, _ := json.Marshal(er{Ret: "e", Msg: "cpu个数必须为整数"})
+	// 	w.Write(msg)
+	// 	return
+	// }
 
-	vpasswd := req.PostFormValue("vpasswd")
-	if vpasswd == "" {
-		vpasswd = string(rpwd.Init(16, true, true, true, false))
-	}
+	// vpasswd := req.PostFormValue("vpasswd")
+	// if vpasswd == "" {
+	// 	vpasswd = string(rpwd.Init(16, true, true, true, false))
+	// }
 
-	bandwidth, err := strconv.Atoi(req.PostFormValue("bandwidth"))
-	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "带宽必须位整数"})
-		w.Write(msg)
-		return
-	}
+	// bandwidth, err := strconv.Atoi(req.PostFormValue("bandwidth"))
+	// if err != nil {
+	// 	msg, _ := json.Marshal(er{Ret: "e", Msg: "带宽必须位整数"})
+	// 	w.Write(msg)
+	// 	return
+	// }
 	var vInfo table.Virtual
 	vInfo.Vname = string(rpwd.Init(8, true, true, true, false))
 
