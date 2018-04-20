@@ -414,20 +414,23 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	vInfo.Br = "br1"
 	vInfo.Bandwidth = bandwidth
 	vInfo.Vname = string(rpwd.Init(8, true, true, true, false))
+	vInfo.Ctime = time.Now()
+	vInfo.Etime = time.Now()
+	vInfo.Utime = time.Now()
 
-	xml := createKvmXML(vInfo)
-	_, err = control.Connect().DomainDefineXML(xml)
-	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机失败", Data: err.Error()})
-		w.Write(msg)
-		return
-	}
-	_, err = createSysDisk(vInfo.Vname)
-	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机硬盘失败", Data: err.Error()})
-		w.Write(msg)
-		return
-	}
+	// xml := createKvmXML(vInfo)
+	// _, err = control.Connect().DomainDefineXML(xml)
+	// if err != nil {
+	// 	msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机失败", Data: err.Error()})
+	// 	w.Write(msg)
+	// 	return
+	// }
+	// _, err = createSysDisk(vInfo.Vname)
+	// if err != nil {
+	// 	msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机硬盘失败", Data: err.Error()})
+	// 	w.Write(msg)
+	// 	return
+	// }
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
 	if err != nil {
 		cLog.Info(err.Error())
@@ -436,10 +439,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	orm := beedb.New(db)
-	vInfo.Ctime = time.Now()
-	vInfo.Etime = time.Now()
-	vInfo.Utime = time.Now()
-	fmt.Println(vInfo)
+
 	err = orm.SetTable("Virtual").SetPK("ID").Save(vInfo)
 	if err != nil {
 		cLog.Info(err.Error())
@@ -447,9 +447,9 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	q <- fmt.Sprintf("%s/%s", vInfo.Vname, vInfo.Passwd)
-	msg, _ := json.Marshal(er{Ret: "v", Msg: fmt.Sprintf("你的虚拟机密码是：%s", vInfo.Passwd)})
-	w.Write(msg)
+	// q <- fmt.Sprintf("%s/%s", vInfo.Vname, vInfo.Passwd)
+	// msg, _ := json.Marshal(er{Ret: "v", Msg: fmt.Sprintf("你的虚拟机密码是：%s", vInfo.Passwd)})
+	// w.Write(msg)
 }
 
 func undefine(w http.ResponseWriter, req *http.Request) {
