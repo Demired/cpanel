@@ -405,6 +405,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	// 	return
 	// }
 	var vInfo table.Virtual
+	fmt.Println(vInfo)
 	vInfo.Vname = string(rpwd.Init(8, true, true, true, false))
 
 	// vInfo.Vcpu = vcpu
