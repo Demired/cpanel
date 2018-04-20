@@ -93,15 +93,19 @@ func watchTask() {
 					cLog.Warn(err.Error())
 					continue
 				}
-				var wd watch
-				wd.Ctime = int(time.Now().Unix())
+
 				var cpurate float32
 				if lastCPUTime, ok := t[name]; ok {
 					cpurate = float32((info.CpuTime-lastCPUTime)*100) / float32(20*info.NrVirtCpu*10000000)
+					if cpurate < 1 {
+						cpurate = 1
+					}
 				}
-				wd.CPU = if(cpurate > 1, cpurate, 1).(int)
-				wd.Memory = int(info.Memory)
+				var wd watch
+				wd.CPU = cpurate
 				wd.Vname = name
+				wd.Ctime = int(time.Now().Unix())
+				wd.Memory = int(info.Memory)
 				if err = orm.Save(&wd); err != nil {
 					cLog.Warn("写入数据失败", err.Error())
 					continue
