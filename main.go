@@ -15,17 +15,25 @@ import (
 	"time"
 
 	"github.com/astaxie/beedb"
+	"github.com/astaxie/beego/logs"
 	libvirt "github.com/libvirt/libvirt-go"
 	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/Demired/rpwd"
 )
 
-var q = make(chan string)
+var q = make(chan string) //设置初始密码的chan
 
-var mac = make(chan string)
+var mac = make(chan string) //获取初始内网ip寄存的mac地址
+
+var cLog = logs.NewLogger(1)
+
+var logFile = "/home/log/cpanel.log"
 
 func main() {
+	cLog.SetLogger("file", `{"filename":"`+logFile+`"}`)
+	cLog.SetLevel(logs.LevelInformational)
+
 	go watchTask()
 	go workQueue()
 	http.HandleFunc("/", index)
@@ -44,8 +52,6 @@ func main() {
 	http.ListenAndServe(":8100", nil)
 }
 
-var t = make(map[string]uint64)
-
 func index(w http.ResponseWriter, req *http.Request) {
 	t, _ := template.ParseFiles("html/index.html")
 	t.Execute(w, nil)
@@ -60,26 +66,31 @@ type watch struct {
 }
 
 func watchTask() {
+	var t = make(map[string]uint64)
 	w := time.NewTicker(time.Second * 20)
 	for {
 		select {
 		case <-w.C:
 			doms, err := control.Connect().ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_ACTIVE)
 			if err != nil {
-				fmt.Println(err.Error())
+				cLog.Warn(err.Error())
+				continue
 			}
 			db, err := sql.Open("sqlite3", "./db/cpanel.db")
 			if err != nil {
-				fmt.Println("打开数据库失败", err.Error())
+				cLog.Warn("打开数据库失败", err.Error())
 				continue
 			}
 			orm := beedb.New(db)
-
 			for _, dom := range doms {
-				name, _ := dom.GetName()
+				name, err := dom.GetName()
+				if err != nil {
+					cLog.Warn(err.Error())
+					continue
+				}
 				info, err := dom.GetInfo()
 				if err != nil {
-					fmt.Println(err.Error())
+					cLog.Warn(err.Error())
 					continue
 				}
 				var wd watch
@@ -92,7 +103,7 @@ func watchTask() {
 				wd.Memory = int(info.Memory)
 				wd.Vname = name
 				if err = orm.Save(&wd); err != nil {
-					fmt.Println("写入数据失败", err.Error())
+					cLog.Warn("写入数据失败", err.Error())
 					continue
 				}
 				t[name] = info.CpuTime
@@ -128,41 +139,47 @@ func info(w http.ResponseWriter, req *http.Request) {
 	vname := req.URL.Query().Get("vname")
 	dom, err := control.Connect().LookupDomainByName(vname)
 	if err != nil {
-		fmt.Println(err.Error())
+		cLog.Warn(err.Error())
 	}
 	s, _, err := dom.GetState()
 	if err != nil {
-		fmt.Println(err.Error())
+		cLog.Warn(err.Error())
 	}
 	if int(s) == 1 {
 		info, err := dom.GetInfo()
 		if err != nil {
-			fmt.Println(info)
+			cLog.Warn(err.Error())
 		}
 	}
-	db, _ := sql.Open("sqlite3", "./db/cpanel.db")
-	defer db.Close()
-	sql := fmt.Sprintf("SELECT Vname,IPv4,IPv6,LocalIP,Mac,Vcpu,Bandwidth,Vmemory,Status FROM vm WHERE vname = '%s';", vname)
-	rows, _ := db.Query(sql)
-	defer rows.Close()
-	var vvm vm
-	if rows.Next() {
-		rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Mac, &vvm.Vcpu, &vvm.Bandwidth, &vvm.Vmemory, &vvm.Status)
+	db, err := sql.Open("sqlite3", "./db/cpanel.db")
+	if err != nil {
+		cLog.Warn("打开数据库失败", err.Error())
+		continue
 	}
-	var vmInfo = make(map[string]string)
-	vmInfo["Vname"] = vvm.Vname
-	vmInfo["IPv4"] = vvm.IPv4
-	vmInfo["IPv6"] = vvm.IPv6
-	vmInfo["Mac"] = vvm.Mac
-	vmInfo["LocalIP"] = vvm.LocalIP
-	vmInfo["Bandwidth"] = fmt.Sprintf("%d", vvm.Bandwidth)
-	vmInfo["Vmemory"] = fmt.Sprintf("%d", vvm.Vmemory)
-	vmInfo["Vcpu"] = fmt.Sprintf("%d", vvm.Vcpu)
-	vmInfo["Status"] = fmt.Sprintf("%d", s)
+	orm := beedb.New(db)
+	var vvm vm
+	orm.Where("vname=?", vname).Find(&vvm)
+	fmt.Println(vvm)
+	// sql := fmt.Sprintf("SELECT Vname,IPv4,IPv6,LocalIP,Mac,Vcpu,Bandwidth,Vmemory,Status FROM vm WHERE vname = '%s';", vname)
+	// rows, _ := db.Query(sql)
+	// var vvm vm
+	// if rows.Next() {
+	// 	rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Mac, &vvm.Vcpu, &vvm.Bandwidth, &vvm.Vmemory, &vvm.Status)
+	// }
+	// var vmInfo = make(map[string]string)
+	// vmInfo["Vname"] = vvm.Vname
+	// vmInfo["IPv4"] = vvm.IPv4
+	// vmInfo["IPv6"] = vvm.IPv6
+	// vmInfo["Mac"] = vvm.Mac
+	// vmInfo["LocalIP"] = vvm.LocalIP
+	// vmInfo["Bandwidth"] = fmt.Sprintf("%d", vvm.Bandwidth)
+	// vmInfo["Vmemory"] = fmt.Sprintf("%d", vvm.Vmemory)
+	// vmInfo["Vcpu"] = fmt.Sprintf("%d", vvm.Vcpu)
+	// vmInfo["Status"] = fmt.Sprintf("%d", s)
 	// vmInfo[""]
+	vmInfoJ, _ := json.Marshal(vmInfo)
 	t, _ := template.ParseFiles("html/info.html")
-	// vmInfoJ, _ := json.Marshal(vmInfo)
-	t.Execute(w, vmInfo)
+	t.Execute(w, vmInfoJ)
 }
 
 func loadJSON(w http.ResponseWriter, req *http.Request) {
