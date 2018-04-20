@@ -397,77 +397,80 @@ func test(w http.ResponseWriter, req *http.Request) {
 
 //创建虚拟机
 func createAPI(w http.ResponseWriter, req *http.Request) {
-	type vv struct {
-		ID    int
-		UID   int
-		Vname string
+	if req.Method != "POST" {
+		http.Redirect(w, req, "/create.html", http.StatusFound)
+		return
 	}
-	db, _ := sql.Open("sqlite3", "./db/cpanel.db")
-	orm := beedb.New(db)
-	var vInfo vv
+	vmemory, err := strconv.Atoi(req.PostFormValue("vmemory"))
+
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "内存大小必须为整数"})
+		w.Write(msg)
+		return
+	}
+
+	vcpu, err := strconv.Atoi(req.PostFormValue("vcpu"))
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "cpu个数必须为整数"})
+		w.Write(msg)
+		return
+	}
+
+	vpasswd := req.PostFormValue("vpasswd")
+	if vpasswd == "" {
+		vpasswd = string(rpwd.Init(16, true, true, true, false))
+	}
+
+	bandwidth, err := strconv.Atoi(req.PostFormValue("bandwidth"))
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "带宽必须位整数"})
+		w.Write(msg)
+		return
+	}
+	var vInfo table.Virtual
 	vInfo.Vname = string(rpwd.Init(8, true, true, true, false))
-	vInfo.UID = 1
 
-	orm.SetTable("vv").SetPK("ID").Save(&vInfo)
+	vInfo.Vcpu = vcpu
+	vInfo.Vmemory = vmemory
+	vInfo.Passwd = vpasswd
+	vInfo.Mac = tools.Rmac()
+	vInfo.Br = "br1"
+	vInfo.Bandwidth = bandwidth
+	vInfo.Ctime = time.Now()
+	vInfo.Etime = time.Now()
+	vInfo.Utime = time.Now()
 
-	// if req.Method != "POST" {
-	// 	http.Redirect(w, req, "/create.html", http.StatusFound)
-	// 	return
-	// }
-	// vmemory, err := strconv.Atoi(req.PostFormValue("vmemory"))
-
-	// if err != nil {
-	// 	msg, _ := json.Marshal(er{Ret: "e", Msg: "内存大小必须为整数"})
-	// 	w.Write(msg)
-	// 	return
-	// }
-
-	// vcpu, err := strconv.Atoi(req.PostFormValue("vcpu"))
-	// if err != nil {
-	// 	msg, _ := json.Marshal(er{Ret: "e", Msg: "cpu个数必须为整数"})
-	// 	w.Write(msg)
-	// 	return
-	// }
-
-	// vpasswd := req.PostFormValue("vpasswd")
-	// if vpasswd == "" {
-	// 	vpasswd = string(rpwd.Init(16, true, true, true, false))
-	// }
-
-	// bandwidth, err := strconv.Atoi(req.PostFormValue("bandwidth"))
-	// if err != nil {
-	// 	msg, _ := json.Marshal(er{Ret: "e", Msg: "带宽必须位整数"})
-	// 	w.Write(msg)
-	// 	return
-	// }
-
-	// vInfo.Vcpu = vcpu
-	// vInfo.Vmemory = vmemory
-	// vInfo.Passwd = vpasswd
-	// vInfo.Mac = tools.Rmac()
-	// vInfo.Br = "br1"
-	// vInfo.Bandwidth = bandwidth
-	// vInfo.Ctime = time.Now()
-	// vInfo.Etime = time.Now()
-	// vInfo.Utime = time.Now()
-
-	// xml := createKvmXML(vInfo)
-	// _, err = control.Connect().DomainDefineXML(xml)
-	// if err != nil {
-	// 	msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机失败", Data: err.Error()})
-	// 	w.Write(msg)
-	// 	return
-	// }
-	// _, err = createSysDisk(vInfo.Vname)
-	// if err != nil {
-	// 	msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机硬盘失败", Data: err.Error()})
-	// 	w.Write(msg)
-	// 	return
-	// }
-
-	// q <- fmt.Sprintf("%s/%s", vInfo.Vname, vInfo.Passwd)
-	// msg, _ := json.Marshal(er{Ret: "v", Msg: fmt.Sprintf("你的虚拟机密码是：%s", vInfo.Passwd)})
-	// w.Write(msg)
+	xml := createKvmXML(vInfo)
+	_, err = control.Connect().DomainDefineXML(xml)
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机失败", Data: err.Error()})
+		w.Write(msg)
+		return
+	}
+	_, err = createSysDisk(vInfo.Vname)
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机硬盘失败", Data: err.Error()})
+		w.Write(msg)
+		return
+	}
+	db, err := sql.Open("sqlite3", "./db/cpanel.db")
+	if err != nil {
+		cLog.Info(err.Error())
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "打开失败", Data: err.Error()})
+		w.Write(msg)
+		return
+	}
+	orm := beedb.New(db)
+	err = orm.SetTable("Virtual").SetPK("ID").Save(&vInfo)
+	if err != nil {
+		cLog.Info(err.Error())
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
+		w.Write(msg)
+		return
+	}
+	q <- fmt.Sprintf("%s/%s", vInfo.Vname, vInfo.Passwd)
+	msg, _ := json.Marshal(er{Ret: "v", Msg: fmt.Sprintf("你的虚拟机密码是：%s", vInfo.Passwd)})
+	w.Write(msg)
 }
 
 func undefine(w http.ResponseWriter, req *http.Request) {

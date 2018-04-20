@@ -24,12 +24,6 @@ type Virtual struct {
 	Utime     time.Time `json:"utime"`
 }
 
-type Vv struct {
-	ID    int    `json:"id"`
-	UID   int    `json:"uid"`
-	Vname string `json:"vname"`
-}
-
 type Watch struct {
 	ID     int
 	Vname  string
