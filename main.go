@@ -2,7 +2,7 @@ package main
 
 import (
 	"cpanel/control"
-	"cpanel/db"
+	"cpanel/table"
 	"cpanel/tools"
 	"database/sql"
 	"encoding/json"
