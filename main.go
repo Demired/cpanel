@@ -404,8 +404,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	// 	w.Write(msg)
 	// 	return
 	// }
-	var vInfo table.Virtual
-	fmt.Println(vInfo)
+	var vInfo table.Vv
 	vInfo.Vname = string(rpwd.Init(8, true, true, true, false))
 
 	// vInfo.Vcpu = vcpu
@@ -440,7 +439,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	}
 	orm := beedb.New(db)
 
-	err = orm.SetTable("Virtual").SetPK("ID").Save(vInfo)
+	err = orm.SetTable("vv").SetPK("ID").Save(vInfo)
 	if err != nil {
 		cLog.Info(err.Error())
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})

@@ -51,5 +51,11 @@ func Init() {
             // );
             `
 	db.Exec(sql)
+
+	// `CREATE TABLE IF NOT EXISTS vv (
+	//     ID INTEGER PRIMARY KEY AUTOINCREMENT,
+	//     UID INT NOT NULL,
+	//     Vname CHAR(20)
+	// );
 	//开机关机的时候做计费标记
 }
