@@ -81,19 +81,18 @@ func vmWatch() {
 					fmt.Println(err.Error())
 					continue
 				}
-				var w watch
-				w.Ctime = time.Now()
+				var wd watch
+				wd.Ctime = time.Now().Unix()
 				var cpurate float32
 				if lastCPUTime, ok := t[name]; ok {
 					cpurate = float32((info.CpuTime-lastCPUTime)*100) / float32(20*info.NrVirtCpu*10000000)
 				}
 				if cpurate < 1 {
-					w.CPU = 1
+					wd.CPU = 1
 				} else {
-					w.CPU = int(cpurate)
+					wd.CPU = int(cpurate)
 				}
-				w.Memory = info.Memory
-				w.Ctime = time.Now().Unix()
+				wd.Memory = info.Memory
 				err := orm.Save(&w)
 				if err != nil {
 					fmt.Println("写入数据失败", err.Error())
