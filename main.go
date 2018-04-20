@@ -150,7 +150,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 		cLog.Warn(err.Error())
 	}
 	if int(s) == 1 {
-		info, err := dom.GetInfo()
+		_, err := dom.GetInfo()
 		if err != nil {
 			cLog.Warn(err.Error())
 		}
