@@ -18,9 +18,10 @@ func Init() {
 
 	sql := `CREATE TABLE IF NOT EXISTS Virtual (
                 ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                UID INT NOT NULL,// 用户ID
-                Vname CHAR(20),// 虚拟机名字
-                Tag CHAR(20),// 用户给虚拟机的标签
+                UID INT NOT NULL,
+                Vname CHAR(20),
+                Tag CHAR(20),
+                Passwd CHAR(50),
                 IPv4 CHAR(30),
                 IPv6 CHAR(50),
                 LocalIP CHAR(30),
@@ -31,7 +32,8 @@ func Init() {
                 Br CHAR(10),
                 Mac CHAR(20),
                 Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                Utime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                Utime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                ETime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
             CREATE TABLE IF NOT EXISTS Watch (
                 Id INTEGER PRIMARY KEY AUTOINCREMENT,

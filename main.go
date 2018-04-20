@@ -163,7 +163,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 	}
 	orm := beedb.New(db)
 	var vvm table.Virtual
-	err = orm.Where("vname=?", vname).Find(&vvm)
+	err = orm.SetTable("Virtual").Where("vname=?", vname).Find(&vvm)
 	if err != nil {
 		cLog.Warn(err.Error())
 		return
