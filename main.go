@@ -39,6 +39,7 @@ func main() {
 	go workQueue()
 	http.HandleFunc("/", index)
 	http.HandleFunc("/list", list)
+	http.HandleFunc("/test", test)
 	http.HandleFunc("/info.html", info)
 	http.HandleFunc("/load.json", loadJSON)
 	http.HandleFunc("/start", start)
@@ -370,6 +371,28 @@ func reboot(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	w.Write(msg)
+}
+
+func test(w http.ResponseWriter, req *http.Request) {
+	type vmm struct {
+		ID    int
+		Vname string `json:"vname"`
+		Ctime time.Time
+		Utime time.Time
+	}
+	db, err := sql.Open("sqlite3", "./db/cpanel.db")
+	if err != nil {
+		panic(err)
+	}
+	orm := beedb.New(db)
+	var save vmm
+	save.Vname = string(rpwd.Init(16, true, true, true, false))
+	save.Ctime = time.Now()
+	save.Utime = time.Now()
+	err = orm.SetTable("vmm").SetPK("ID").Save(&save)
+	if err != nil {
+		panic(err)
+	}
 }
 
 //创建虚拟机
