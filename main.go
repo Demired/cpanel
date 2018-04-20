@@ -195,7 +195,7 @@ func loadJSON(w http.ResponseWriter, req *http.Request) {
 	rows, _ := db.Query(sql)
 	var cpus [][]int
 	for rows.Next() {
-		var ww table.Virtual
+		var ww table.Watch
 		err := rows.Scan(&ww.Vname, &ww.CPU, &ww.Ctime)
 		if err != nil {
 			fmt.Println(err.Error())
