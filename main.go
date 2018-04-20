@@ -102,7 +102,7 @@ func watchTask() {
 					}
 				}
 				var wd watch
-				wd.CPU = cpurate
+				wd.CPU = int(cpurate)
 				wd.Vname = name
 				wd.Ctime = int(time.Now().Unix())
 				wd.Memory = int(info.Memory)
@@ -170,7 +170,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 	// if rows.Next() {
 	// 	rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Mac, &vvm.Vcpu, &vvm.Bandwidth, &vvm.Vmemory, &vvm.Status)
 	// }
-	// var vmInfo = make(map[string]string)
+	var vmInfo = make(map[string]string)
 	// vmInfo["Vname"] = vvm.Vname
 	// vmInfo["IPv4"] = vvm.IPv4
 	// vmInfo["IPv6"] = vvm.IPv6
