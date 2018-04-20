@@ -21,3 +21,11 @@ type Virtual struct {
 	Ctime     time.Time `json:"ctime"`
 	Utime     time.Time `json:"utime"`
 }
+
+type Watch struct {
+	ID     int
+	Vname  string
+	CPU    int
+	Memory int
+	Ctime  int
+}

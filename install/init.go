@@ -36,7 +36,7 @@ func Init() {
                 ETime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
             CREATE TABLE IF NOT EXISTS Watch (
-                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 Vname CHAR(20),
                 CPU INT NOT NULL,
                 Memory INT NOT NULL,

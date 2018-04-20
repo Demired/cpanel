@@ -35,7 +35,7 @@ func main() {
 	cLog.SetLogger("file", `{"filename":"`+logFile+`"}`)
 	cLog.SetLevel(logs.LevelInformational)
 
-	go watchTask()
+	go watch()
 	go workQueue()
 	http.HandleFunc("/", index)
 	http.HandleFunc("/list", list)
@@ -58,15 +58,7 @@ func index(w http.ResponseWriter, req *http.Request) {
 	t.Execute(w, nil)
 }
 
-type watch struct {
-	ID     int `PK`
-	Vname  string
-	CPU    int
-	Memory int
-	Ctime  int
-}
-
-func watchTask() {
+func watch() {
 	var t = make(map[string]uint64)
 	w := time.NewTicker(time.Second * 20)
 	for {
@@ -94,7 +86,6 @@ func watchTask() {
 					cLog.Warn(err.Error())
 					continue
 				}
-
 				var cpurate float32
 				if lastCPUTime, ok := t[name]; ok {
 					cpurate = float32((info.CpuTime-lastCPUTime)*100) / float32(20*info.NrVirtCpu*10000000)
@@ -102,12 +93,12 @@ func watchTask() {
 						cpurate = 1
 					}
 				}
-				var wd watch
-				wd.CPU = int(cpurate)
-				wd.Vname = name
-				wd.Ctime = int(time.Now().Unix())
-				wd.Memory = int(info.Memory)
-				if err = orm.Save(&wd); err != nil {
+				var watch table.Watch
+				watch.CPU = int(cpurate)
+				watch.Vname = name
+				watch.Ctime = int(time.Now().Unix())
+				watch.Memory = int(info.Memory)
+				if err = orm.SetTable("watch").Save(&watch); err != nil {
 					cLog.Warn("写入数据失败", err.Error())
 					continue
 				}
@@ -414,24 +405,24 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	var tvm table.Virtual
+	var vInfo table.Virtual
 
-	tvm.Vcpu = vcpu
-	tvm.Vmemory = vmemory
-	tvm.Passwd = vpasswd
-	tvm.Mac = tools.Rmac()
-	tvm.Br = "br1"
-	tvm.Bandwidth = bandwidth
-	tvm.Vname = string(rpwd.Init(8, true, true, true, false))
+	vInfo.Vcpu = vcpu
+	vInfo.Vmemory = vmemory
+	vInfo.Passwd = vpasswd
+	vInfo.Mac = tools.Rmac()
+	vInfo.Br = "br1"
+	vInfo.Bandwidth = bandwidth
+	vInfo.Vname = string(rpwd.Init(8, true, true, true, false))
 
-	xml := createKvmXML(tvm)
+	xml := createKvmXML(vInfo)
 	_, err = control.Connect().DomainDefineXML(xml)
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机失败", Data: err.Error()})
 		w.Write(msg)
 		return
 	}
-	_, err = createSysDisk(tvm.Vname)
+	_, err = createSysDisk(vInfo.Vname)
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机硬盘失败", Data: err.Error()})
 		w.Write(msg)
@@ -439,25 +430,20 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	}
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
 	if err != nil {
+		cLog.Info(err.Error())
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "打开失败", Data: err.Error()})
 		w.Write(msg)
 		return
 	}
-	stmt, err := db.Prepare("INSERT INTO vm(UID,Vname, Vcpu, Vmemory, Mac, Bandwidth, Status,IPv4,IPv6,LocalIP) values(?,?,?,?,?,?,?,?,?,?)")
+	orm := beedb.New(db)
+	err = orm.SetTable("Virtual").Save(vInfo)
 	if err != nil {
+		cLog.Info(err.Error())
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
 		w.Write(msg)
 		return
 	}
-	_, err = stmt.Exec(1, tvm.Vname, tvm.Vcpu, tvm.Vmemory, tvm.Mac, tvm.Bandwidth, 1, "", "", "")
-	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入数据失败", Data: err.Error()})
-		w.Write(msg)
-		return
-	}
-	str := fmt.Sprintf("%s/%s", tvm.Vname, tvm.Passwd)
-	fmt.Println(str)
-	q <- str
+	q <- fmt.Sprintf("%s/%s", vInfo.Vname, vInfo.Passwd)
 	msg, _ := json.Marshal(er{Ret: "v", Msg: fmt.Sprintf("你的虚拟机密码是：%s", tvm.Passwd)})
 	w.Write(msg)
 }
