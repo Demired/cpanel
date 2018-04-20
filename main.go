@@ -195,7 +195,7 @@ func loadJSON(w http.ResponseWriter, req *http.Request) {
 	rows, _ := db.Query(sql)
 	var cpus [][]int
 	for rows.Next() {
-		var ww watch
+		var ww table.Virtual
 		err := rows.Scan(&ww.Vname, &ww.CPU, &ww.Ctime)
 		if err != nil {
 			fmt.Println(err.Error())
@@ -444,7 +444,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	q <- fmt.Sprintf("%s/%s", vInfo.Vname, vInfo.Passwd)
-	msg, _ := json.Marshal(er{Ret: "v", Msg: fmt.Sprintf("你的虚拟机密码是：%s", tvm.Passwd)})
+	msg, _ := json.Marshal(er{Ret: "v", Msg: fmt.Sprintf("你的虚拟机密码是：%s", vInfo.Passwd)})
 	w.Write(msg)
 }
 
