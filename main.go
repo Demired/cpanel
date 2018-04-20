@@ -397,6 +397,31 @@ func test(w http.ResponseWriter, req *http.Request) {
 
 //创建虚拟机
 func createAPI(w http.ResponseWriter, req *http.Request) {
+	type vv struct {
+		ID    int    `json:"id"`
+		UID   int    `json:"uid"`
+		Vname string `json:"vname"`
+	}
+	db, err := sql.Open("sqlite3", "./db/cpanel.db")
+	if err != nil {
+		cLog.Info(err.Error())
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "打开失败", Data: err.Error()})
+		w.Write(msg)
+		return
+	}
+	var vInfo vv
+	vInfo.Vname = string(rpwd.Init(8, true, true, true, false))
+	vInfo.UID = 1
+
+	orm := beedb.New(db)
+
+	err = orm.SetTable("vv").SetPK("ID").Save(vInfo)
+	if err != nil {
+		cLog.Info(err.Error())
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
+		w.Write(msg)
+		return
+	}
 	// if req.Method != "POST" {
 	// 	http.Redirect(w, req, "/create.html", http.StatusFound)
 	// 	return
@@ -428,15 +453,6 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	// 	return
 	// }
 
-	type vv struct {
-		ID    int    `json:"id"`
-		UID   int    `json:"uid"`
-		Vname string `json:"vname"`
-	}
-
-	var vInfo vv
-	vInfo.Vname = string(rpwd.Init(8, true, true, true, false))
-
 	// vInfo.Vcpu = vcpu
 	// vInfo.Vmemory = vmemory
 	// vInfo.Passwd = vpasswd
@@ -460,22 +476,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	// 	w.Write(msg)
 	// 	return
 	// }
-	db, err := sql.Open("sqlite3", "./db/cpanel.db")
-	if err != nil {
-		cLog.Info(err.Error())
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "打开失败", Data: err.Error()})
-		w.Write(msg)
-		return
-	}
-	orm := beedb.New(db)
 
-	err = orm.SetTable("vv").SetPK("ID").Save(vInfo)
-	if err != nil {
-		cLog.Info(err.Error())
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
-		w.Write(msg)
-		return
-	}
 	// q <- fmt.Sprintf("%s/%s", vInfo.Vname, vInfo.Passwd)
 	// msg, _ := json.Marshal(er{Ret: "v", Msg: fmt.Sprintf("你的虚拟机密码是：%s", vInfo.Passwd)})
 	// w.Write(msg)
