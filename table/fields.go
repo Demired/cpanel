@@ -11,13 +11,13 @@ type Virtual struct {
 	LocalIP   string    `json:"local"`
 	Vcpu      int       `json:"vcpu"`
 	Status    int       `json:"status"`
-	Etime     string    `json:"etime"`   //Expire time
 	Vmemory   int       `json:"vmemory"` //GiB
 	Passwd    string    `json:"vpasswd"`
 	Vname     string    `json:"vname"`
 	Br        string    `json:"br"`
 	Mac       string    `json:"mac"`
 	Bandwidth int       `json:"bandwidth"` //Mbps
+	Etime     time.Time `json:"etime"`     //Expire time
 	Ctime     time.Time `json:"ctime"`
 	Utime     time.Time `json:"utime"`
 }
