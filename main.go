@@ -86,15 +86,15 @@ func watch() {
 					cLog.Warn(err.Error())
 					continue
 				}
-				var cpurate float32
+				var cpurate int
 				if lastCPUTime, ok := t[name]; ok {
-					cpurate = float32((info.CpuTime-lastCPUTime)*100) / float32(20*info.NrVirtCpu*10000000)
+					cpurate = (float32((info.CpuTime-lastCPUTime)*100) / float32(20*info.NrVirtCpu*10000000))
 					if cpurate < 1 {
 						cpurate = 1
 					}
 				}
 				var watch table.Watch
-				watch.CPU = int(cpurate)
+				watch.CPU = cpurate
 				watch.Vname = name
 				watch.Ctime = int(time.Now().Unix())
 				watch.Memory = int(info.Memory)
