@@ -199,7 +199,7 @@ func repasswd(w http.ResponseWriter, req *http.Request) {
 	db, _ := sql.Open("sqlite3", "./db/cpanel.db")
 	orm := beedb.New(db)
 	var watch table.Watch
-	err = orm.SetTable("Watch").Find(&watch)
+	err := orm.SetTable("Watch").Find(&watch)
 	if err != nil {
 		cLog.Warn(err.Error())
 		http.Redirect(w, req, "/list", http.StatusFound)
