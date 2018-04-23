@@ -159,6 +159,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 		cLog.Warn(err.Error())
 		return
 	}
+	vvm.Status = int(s)
 	t, _ := template.ParseFiles("html/info.html")
 	t.Execute(w, vvm)
 }
