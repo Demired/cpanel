@@ -45,6 +45,7 @@ func main() {
 	http.HandleFunc("/shutdown", shutdown)
 	http.HandleFunc("/reboot", reboot)
 	http.HandleFunc("/create", createAPI)
+	http.HandleFunc("/favicon.ico", favicon)
 	http.HandleFunc("/repasswd.html", repasswd)
 	http.HandleFunc("/repasswd", repasswdAPI)
 	http.HandleFunc("/undefine", undefine)
@@ -56,6 +57,11 @@ func main() {
 func index(w http.ResponseWriter, req *http.Request) {
 	t, _ := template.ParseFiles("html/index.html")
 	t.Execute(w, nil)
+}
+
+func favicon(w http.ResponseWriter, req *http.Request) {
+	path := "./html/images/favicon.ico"
+	http.ServeFile(w, req, path)
 }
 
 func watch() {
@@ -209,7 +215,6 @@ func repasswd(w http.ResponseWriter, req *http.Request) {
 	t, _ := template.ParseFiles("html/repasswd.html")
 	t.Execute(w, vname)
 	return
-
 }
 
 func list(w http.ResponseWriter, req *http.Request) {
