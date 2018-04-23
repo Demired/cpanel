@@ -154,7 +154,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 	}
 	orm := beedb.New(db)
 	var vvm table.Virtual
-	err = orm.SetTable("Virtual").Where("vname=?", vname).Find(&vvm)
+	err = orm.SetTable("Virtual").Where("Vname=?", vname).Find(&vvm)
 	if err != nil {
 		cLog.Warn(err.Error())
 		return
@@ -172,21 +172,32 @@ func loadJSON(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		startTime = int(time.Now().Unix()) - 3600
 	}
-	sql := fmt.Sprintf("SELECT Vname,CPU,Ctime FROM watch WHERE Vname = '%s' AND Ctime > '%d';", vname, startTime)
-	rows, _ := db.Query(sql)
-	var cpus [][]int
-	for rows.Next() {
-		var ww table.Watch
-		err := rows.Scan(&ww.Vname, &ww.CPU, &ww.Ctime)
-		if err != nil {
-			fmt.Println(err.Error())
-			return
-		}
-		cpus = append(cpus, []int{ww.Ctime, ww.CPU})
+	endTime, err := strconv.Atoi(req.URL.Query().Get("end"))
+	if err != nil {
+		endTime = int(time.Now().Unix())
 	}
-	var date = make(map[string]interface{})
-	date["cpus"] = cpus
-	dj, _ := json.Marshal(date)
+	var watchs []table.Watch
+	orm := beedb.New(db)
+	err = orm.SetTable("watch").Where("Vname = ? and Ctime > ? and Etime < ?", vname, startTime, endTime).FindAll(&watchs)
+	if err != nil {
+		cLog.Warn(err.Error())
+		return
+	}
+	fmt.Println(watchs)
+
+	// var cpus [][]int
+	// for rows.Next() {
+	// 	var ww table.Watch
+	// 	err := rows.Scan(&ww.Vname, &ww.CPU, &ww.Ctime)
+	// 	if err != nil {
+	// 		fmt.Println(err.Error())
+	// 		return
+	// 	}
+	// 	cpus = append(cpus, []int{ww.Ctime, ww.CPU})
+	// }
+	// var date = make(map[string]interface{})
+	// date["cpus"] = cpus
+	// dj, _ := json.Marshal(date)
 	w.Write(dj)
 }
 
