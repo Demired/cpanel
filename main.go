@@ -190,12 +190,22 @@ func loadJSON(w http.ResponseWriter, req *http.Request) {
 		cLog.Warn(err.Error())
 		return
 	}
-	var date = make(map[string]interface{})
+	var virtual table.Virtual
+	err := orm.SetTable("Virtual").Where("Vname = ?", vname).Find(&virtual)
+	if err != nil {
+		cLog.Warn(err.Error())
+		return
+	}
 	var cpus [][]int
+	var memorys [][]int
 	for _, v := range watchs {
+		memorys = append(memorys, []int{v.Ctime, v.Memory})
 		cpus = append(cpus, []int{v.Ctime, v.CPU})
 	}
+	var date = make(map[string]interface{})
+	date["maxMemory"] = virtual.Vmemory * 1024
 	date["cpus"] = cpus
+	date["memorys"] = memorys
 	dj, _ := json.Marshal(date)
 	w.Write(dj)
 }
