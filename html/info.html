@@ -31,16 +31,16 @@
     <div class="container" style="padding: 80px 0;">
         <div class="col-lg-12" style="margin-bottom: 10px;">
             <div class="btn-group">
-                <button class="btn btn-default" type="button" onclick="control.start()" {{if eq .Status 1}}ok{{end}}>
+                <button class="btn btn-default" type="button" onclick="control.start()" {{if eq .Status 1}}disabled{{end}}>
                     开机
                 </button>
-                <button class="btn btn-default" type="button" onclick="control.shutdown()">
+                <button class="btn btn-default" type="button" onclick="control.shutdown()" {{if eq .Status 5}}disabled{{end}}>
                     关机
                 </button>
                 <button class="btn btn-default" type="button" onclick="control.reboot()">
                     重启
                 </button>
-                <button class="btn btn-default" type="button" onclick="control.repasswd()">
+                <button class="btn btn-default" type="button" onclick="control.repasswd()" {{if neq .Status 1}}disabled{{end}}>
                     修改密码
                 </button>
             </div>
