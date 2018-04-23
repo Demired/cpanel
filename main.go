@@ -213,9 +213,9 @@ func list(w http.ResponseWriter, req *http.Request) {
 	err = orm.SetTable("Virtual").Where("Status = ?", "1").FindAll(&vvvm)
 	if err != nil {
 		fmt.Println(err.Error())
+
 		return
 	}
-	fmt.Println(vvvm)
 	t, _ := template.ParseFiles("html/list.html")
 	t.Execute(w, vvvm)
 }
