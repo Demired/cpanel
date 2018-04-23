@@ -226,35 +226,14 @@ func repasswd(w http.ResponseWriter, req *http.Request) {
 func list(w http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
-	rows, err := db.Query("SELECT Vname,IPv4,IPv6,LocalIP,Mac,Vcpu,Bandwidth,Vmemory,Status FROM vm WHERE Status = 1 LIMIT 100;")
+	defer db.Close()
+	orm := beedb.New(db)
+	var vvvm []table.Virtual
+	err := orm.Where("Status = ?", "1").FindAll(&vvvm)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-	defer rows.Close()
-	var vvvm []table.Virtual
-	for rows.Next() {
-		var vvm table.Virtual
-		err := rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Mac, &vvm.Vcpu, &vvm.Bandwidth, &vvm.Vmemory, &vvm.Status)
-		if err != nil {
-			fmt.Println(err.Error())
-			return
-		}
-		vvm.LocalIP = tools.Arp(vvm.Mac)
-		dom, err := control.Connect().LookupDomainByName(vvm.Vname)
-		if err != nil {
-			fmt.Println(err.Error())
-			continue
-		}
-		s, _, err := dom.GetState()
-		if err != nil {
-			fmt.Println(err.Error())
-			continue
-		}
-		vvm.Status = int(s)
-		vvvm = append(vvvm, vvm)
-	}
-	db.Close()
 	t, _ := template.ParseFiles("html/list.html")
 	t.Execute(w, vvvm)
 }
