@@ -28,6 +28,10 @@ type Virtual struct {
 type Watch struct {
 	ID     int
 	Vname  string
+	Up     int
+	Down   int
+	Read   int
+	Write  int
 	CPU    int
 	Memory int
 	Ctime  int

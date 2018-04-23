@@ -98,7 +98,7 @@ func watch() {
 				watch.Vname = name
 				watch.Ctime = int(time.Now().Unix())
 				watch.Memory = int(info.Memory)
-				if err = orm.SetTable("watch").Save(&watch); err != nil {
+				if err = orm.SetTable("Watch").SetPK("ID").Save(&watch); err != nil {
 					cLog.Warn("写入数据失败", err.Error())
 					continue
 				}

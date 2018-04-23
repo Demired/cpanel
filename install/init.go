@@ -34,13 +34,17 @@ func Init() {
                 Sys CHAR(20),
                 Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 Utime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                ETime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                Etime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
             CREATE TABLE IF NOT EXISTS Watch (
                 ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 Vname CHAR(20),
                 CPU INT NOT NULL,
                 Memory INT NOT NULL,
+                Up INT NOT NULL,
+                Down INT NOT NULL,
+                Read INT NOT NULL,
+                Write INT NOT NULL,
                 Ctime INT NOT NULL
             );
             // CREATE TABLE IF NOT EXISTS billing (
