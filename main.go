@@ -229,7 +229,7 @@ func list(w http.ResponseWriter, req *http.Request) {
 	defer db.Close()
 	orm := beedb.New(db)
 	var vvvm []table.Virtual
-	err = orm.Where("Status = ?", "1").FindAll(&vvvm)
+	err = orm.SetTable("Virtual").Where("Status = ?", "1").FindAll(&vvvm)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
