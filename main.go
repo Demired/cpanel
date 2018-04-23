@@ -224,7 +224,7 @@ func createSysDisk(vname, mirror string) (w int64, err error) {
 	mirrorPath := fmt.Sprintf("/virt/disk/%s.qcow2", mirror)
 	srcFile, err := os.Open(mirrorPath)
 	if err != nil {
-		log.Info(err.Error())
+		cLog.Info(err.Error())
 		return nil, err
 	}
 	defer srcFile.Close()
