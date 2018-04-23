@@ -34,13 +34,13 @@
                 <button class="btn btn-default" type="button" onclick="control.start()" {{if eq .Status 1}}disabled{{end}}>
                     开机
                 </button>
-                <button class="btn btn-default" type="button" onclick="control.shutdown()" {{if eq .Status 5}}disabled{{end}}>
+                <button class="btn btn-default" type="button" onclick="control.shutdown()">
                     关机
                 </button>
                 <button class="btn btn-default" type="button" onclick="control.reboot()">
                     重启
                 </button>
-                <button class="btn btn-default" type="button" onclick="control.repasswd()" {{if neq .Status 1}}disabled{{end}}>
+                <button class="btn btn-default" type="button" onclick="control.repasswd()">
                     修改密码
                 </button>
             </div>
