@@ -159,27 +159,8 @@ func info(w http.ResponseWriter, req *http.Request) {
 		cLog.Warn(err.Error())
 		return
 	}
-	fmt.Println(vvm)
-	// sql := fmt.Sprintf("SELECT Vname,IPv4,IPv6,LocalIP,Mac,Vcpu,Bandwidth,Vmemory,Status FROM vm WHERE vname = '%s';", vname)
-	// rows, _ := db.Query(sql)
-	// var vvm vm
-	// if rows.Next() {
-	// 	rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Mac, &vvm.Vcpu, &vvm.Bandwidth, &vvm.Vmemory, &vvm.Status)
-	// }
-	var vmInfo = make(map[string]string)
-	// vmInfo["Vname"] = vvm.Vname
-	// vmInfo["IPv4"] = vvm.IPv4
-	// vmInfo["IPv6"] = vvm.IPv6
-	// vmInfo["Mac"] = vvm.Mac
-	// vmInfo["LocalIP"] = vvm.LocalIP
-	// vmInfo["Bandwidth"] = fmt.Sprintf("%d", vvm.Bandwidth)
-	// vmInfo["Vmemory"] = fmt.Sprintf("%d", vvm.Vmemory)
-	// vmInfo["Vcpu"] = fmt.Sprintf("%d", vvm.Vcpu)
-	// vmInfo["Status"] = fmt.Sprintf("%d", s)
-	// vmInfo[""]
-	vmInfoJ, _ := json.Marshal(vmInfo)
 	t, _ := template.ParseFiles("html/info.html")
-	t.Execute(w, vmInfoJ)
+	t.Execute(w, vvm)
 }
 
 func loadJSON(w http.ResponseWriter, req *http.Request) {
