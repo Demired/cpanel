@@ -34,7 +34,7 @@
                 <button class="btn btn-default" type="button" onclick="control.start()" {{if eq .Status 1}}disabled{{end}}>
                     开机
                 </button>
-                <button class="btn btn-default" type="button" onclick="control.shutdown()">
+                <button class="btn btn-default" type="button" onclick="control.shutdown()" {{if eq .Status 5}}disabled{{end}}>
                     关机
                 </button>
                 <button class="btn btn-default" type="button" onclick="control.reboot()">
