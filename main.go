@@ -369,7 +369,6 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 
 	var vInfo table.Virtual
 	vInfo.Vname = string(rpwd.Init(8, true, true, true, false))
-
 	vInfo.Vcpu = vcpu
 	vInfo.Vmemory = vmemory
 	vInfo.Passwd = vpasswd
