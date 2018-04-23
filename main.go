@@ -191,7 +191,7 @@ func loadJSON(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	var virtual table.Virtual
-	err := orm.SetTable("Virtual").Where("Vname = ?", vname).Find(&virtual)
+	err = orm.SetTable("Virtual").Where("Vname = ?", vname).Find(&virtual)
 	if err != nil {
 		cLog.Warn(err.Error())
 		return
