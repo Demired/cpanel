@@ -360,9 +360,9 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	sys, err := req.PostFormValue("sys")
-	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "镜像不存在"})
+	sys := req.PostFormValue("sys")
+	if sys == "" {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "镜像必填"})
 		w.Write(msg)
 		return
 	}
