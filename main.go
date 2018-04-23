@@ -320,7 +320,7 @@ func reboot(w http.ResponseWriter, req *http.Request) {
 	vname := req.PostFormValue("vname")
 	err := control.Reboot(vname)
 	if err != nil {
-		fmt.Println(err.Error())
+		cLog.Info(err.Error())
 		return
 	}
 	msg, err := json.Marshal(er{Ret: "v", Msg: "正在重启"})

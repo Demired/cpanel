@@ -37,10 +37,10 @@
                 <button class="btn btn-default" type="button" onclick="control.shutdown()" {{if eq .Status 5}}disabled{{end}}>
                     关机
                 </button>
-                <button class="btn btn-default" type="button" onclick="control.reboot()">
+                <button class="btn btn-default" type="button" onclick="control.reboot()" {{if ne .Status 1}}disabled{{end}}>
                     重启
                 </button>
-                <button class="btn btn-default" type="button" onclick="control.repasswd()">
+                <button class="btn btn-default" type="button" onclick="control.repasswd()" {{if ne .Status 1}}disabled{{end}}>
                     修改密码
                 </button>
             </div>
