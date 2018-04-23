@@ -89,9 +89,9 @@ func watch() {
 				var cpurate int
 				if lastCPUTime, ok := t[name]; ok {
 					cpurate = int(float32((info.CpuTime-lastCPUTime)*100) / float32(20*info.NrVirtCpu*10000000))
-					if cpurate < 1 {
-						cpurate = 1
-					}
+				}
+				if cpurate < 1 {
+					cpurate = 1
 				}
 				var watch table.Watch
 				watch.CPU = cpurate
