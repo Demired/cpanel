@@ -183,21 +183,13 @@ func loadJSON(w http.ResponseWriter, req *http.Request) {
 		cLog.Warn(err.Error())
 		return
 	}
-	fmt.Println(watchs)
-
-	// var cpus [][]int
-	// for rows.Next() {
-	// 	var ww table.Watch
-	// 	err := rows.Scan(&ww.Vname, &ww.CPU, &ww.Ctime)
-	// 	if err != nil {
-	// 		fmt.Println(err.Error())
-	// 		return
-	// 	}
-	// 	cpus = append(cpus, []int{ww.Ctime, ww.CPU})
-	// }
-	// var date = make(map[string]interface{})
-	// date["cpus"] = cpus
-	// dj, _ := json.Marshal(date)
+	var date = make(map[string]interface{})
+	var cpus [][]int
+	for k, v := range watchs {
+		cpus = append(cpus, []int{ww.Ctime, ww.CPU})
+	}
+	date["cpus"] = cpus
+	dj, _ := json.Marshal(watchs)
 	w.Write(dj)
 }
 
