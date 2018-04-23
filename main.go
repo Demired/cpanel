@@ -374,6 +374,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	vInfo.Passwd = vpasswd
 	vInfo.Mac = tools.Rmac()
 	vInfo.Br = "br1"
+	vInfo.Status = 1
 	vInfo.Bandwidth = bandwidth
 	vInfo.Ctime = time.Now()
 	vInfo.Etime = time.Now()
@@ -382,6 +383,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 
 	_, err = createSysDisk(vInfo.Vname, vInfo.Sys)
 	if err != nil {
+		cLog.Info(err.Error())
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机硬盘失败", Data: err.Error()})
 		w.Write(msg)
 		return
@@ -389,6 +391,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	xml := createKvmXML(vInfo)
 	_, err = control.Connect().DomainDefineXML(xml)
 	if err != nil {
+		cLog.Info(err.Error())
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机失败", Data: err.Error()})
 		w.Write(msg)
 		return
