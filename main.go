@@ -211,7 +211,6 @@ func repasswd(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, "/list", http.StatusFound)
 		return
 	}
-	fmt.Println(watch)
 	t, _ := template.ParseFiles("html/repasswd.html")
 	t.Execute(w, vname)
 	return
@@ -225,8 +224,7 @@ func list(w http.ResponseWriter, req *http.Request) {
 	var vvvm []table.Virtual
 	err = orm.SetTable("Virtual").Where("Status = ?", "1").FindAll(&vvvm)
 	if err != nil {
-		fmt.Println(err.Error())
-
+		cLog.Warn(err.Error())
 		return
 	}
 	t, _ := template.ParseFiles("html/list.html")
