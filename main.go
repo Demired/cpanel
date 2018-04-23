@@ -178,7 +178,7 @@ func loadJSON(w http.ResponseWriter, req *http.Request) {
 	}
 	var watchs []table.Watch
 	orm := beedb.New(db)
-	err = orm.SetTable("watch").Where("Vname = ? and Ctime > ? and Etime < ?", vname, startTime, endTime).FindAll(&watchs)
+	err = orm.SetTable("watch").Where("Vname = ? and Ctime > ? and Ctime < ?", vname, startTime, endTime).FindAll(&watchs)
 	if err != nil {
 		cLog.Warn(err.Error())
 		return
@@ -186,7 +186,7 @@ func loadJSON(w http.ResponseWriter, req *http.Request) {
 	var date = make(map[string]interface{})
 	var cpus [][]int
 	for k, v := range watchs {
-		cpus = append(cpus, []int{ww.Ctime, ww.CPU})
+		cpus = append(cpus, []int{v.Ctime, v.CPU})
 	}
 	date["cpus"] = cpus
 	dj, _ := json.Marshal(watchs)
