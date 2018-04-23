@@ -225,7 +225,7 @@ func createSysDisk(vname, mirror string) (w int64, err error) {
 	srcFile, err := os.Open(mirrorPath)
 	if err != nil {
 		cLog.Info(err.Error())
-		return nil, err
+		return 0, err
 	}
 	defer srcFile.Close()
 	diskPath := fmt.Sprintf("/virt/disk/%s.qcow2", vname)
@@ -273,19 +273,11 @@ func repasswdAPI(w http.ResponseWriter, req *http.Request) {
 	passwd := req.PostFormValue("passwd")
 	err := control.SetPasswd(vname, "root", passwd)
 	if err != nil {
-		msg, err := json.Marshal(er{Ret: "e", Msg: err.Error()})
-		if err != nil {
-			fmt.Println(err.Error())
-			return
-		}
+		msg, _ := json.Marshal(er{Ret: "e", Msg: err.Error()})
 		w.Write(msg)
 		return
 	}
-	msg, err := json.Marshal(er{Ret: "v", Msg: "密码已重置"})
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
+	msg, _ := json.Marshal(er{Ret: "v", Msg: "密码已重置"})
 	w.Write(msg)
 }
 
@@ -368,7 +360,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	sys, err := strconv.Atoi(req.PostFormValue("sys"))
+	sys, err := req.PostFormValue("sys")
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "镜像不存在"})
 		w.Write(msg)
@@ -389,7 +381,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	vInfo.Utime = time.Now()
 	vInfo.Sys = sys
 
-	_, err = createSysDisk(vInfo.Vname, vInfo.sys)
+	_, err = createSysDisk(vInfo.Vname, vInfo.Sys)
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机硬盘失败", Data: err.Error()})
 		w.Write(msg)
