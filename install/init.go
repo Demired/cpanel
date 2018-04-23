@@ -31,6 +31,7 @@ func Init() {
                 Bandwidth INT NOT NULL,
                 Br CHAR(10),
                 Mac CHAR(20),
+                Sys CHAR(20),
                 Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 Utime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 ETime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
