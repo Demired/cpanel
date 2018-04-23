@@ -179,7 +179,7 @@ func loadJSON(w http.ResponseWriter, req *http.Request) {
 	}
 	var watchs []table.Watch
 	orm := beedb.New(db)
-	err = orm.SetTable("watch").Where("Vname = ? and Ctime > ? and Ctime < ?", vname, startTime, endTime).FindAll(&watchs)
+	err = orm.SetTable("Watch").Where("Vname = ? and Ctime > ? and Ctime < ?", vname, startTime, endTime).FindAll(&watchs)
 	if err != nil {
 		cLog.Warn(err.Error())
 		return
@@ -197,15 +197,19 @@ func loadJSON(w http.ResponseWriter, req *http.Request) {
 func repasswd(w http.ResponseWriter, req *http.Request) {
 	vname := req.URL.Query().Get("vname")
 	db, _ := sql.Open("sqlite3", "./db/cpanel.db")
-	sql := fmt.Sprintf("SELECT id FROM vm WHERE Vname = '%s';", vname)
-	rows, _ := db.Query(sql)
-	if rows.Next() == true {
-		t, _ := template.ParseFiles("html/repasswd.html")
-		t.Execute(w, vname)
+	orm := beedb.New(db)
+	var watch table.Watch
+	err = orm.SetTable("Watch").Find(&watch)
+	if err != nil {
+		cLog.Warn(err.Error())
+		http.Redirect(w, req, "/list", http.StatusFound)
 		return
 	}
-	http.Redirect(w, req, "/list", http.StatusFound)
+	fmt.Println(watch)
+	t, _ := template.ParseFiles("html/repasswd.html")
+	t.Execute(w, vname)
 	return
+
 }
 
 func list(w http.ResponseWriter, req *http.Request) {
