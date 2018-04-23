@@ -207,9 +207,76 @@
     })
     $.post("/load.json?vname={{.Vname}}","",function(d){
         dd = d;
+        Highcharts.chart('memory',{
+            credits: {
+                text: '内存'
+            },
+            colors: ['#61A5E8'],
+            title: {
+                text: '内存使用率'
+            },
+            xAxis: {
+                title: {
+                    text:"时间"
+                },
+                type: 'datetime',
+                dateTimeLabelFormats: {
+                    millisecond: '%H:%M:%S',
+                    second: '%H:%M:%S',
+                    minute: '%H:%M',
+                    hour: '%H:%M',
+                    day: '%Y-%m-%d',
+                    week: '%m-%d',
+                    month: '%Y-%m',
+                    year: '%Y'
+                },
+            },
+            yAxis: {
+                title: {
+                    text:"内存"
+                }
+            },
+            tooltip: {
+                xDateFormat: '%Y-%m-%d %H:%M:%S',
+                shared: true
+            },
+            legend: {
+                layout: 'veritcal',
+                align: 'right',
+                verticalAlign: 'top',
+                y: 30,
+                floating: true,
+                borderWidth: 1
+            },
+            plotOptions: {
+                series: {
+                    fillColor: {
+                        linearGradient: [0, 0, 0, 300],
+                        stops: [
+                            [0,"#ff0"],
+                            [1,"#f00"]
+                        ]
+                    },
+                    lineWidth: 3,
+                    states: {
+                        hover: {
+                            lineWidth: 3
+                        }
+                    }
+                }
+            },
+            series: [{
+                type: 'line',
+                name: '内存用量',
+                data: d.memory.map(function(item){
+                    return [item[0]*1000,item[1]]
+                    })
+            }],
+
+        });
         Highcharts.chart('cpu', {
             credits: {
-                text: ''
+                text: 'cpu'
             },
             colors: ['#61A5E8'],
             title: {
