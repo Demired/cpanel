@@ -220,14 +220,16 @@ func list(w http.ResponseWriter, req *http.Request) {
 	t.Execute(w, vvvm)
 }
 
-func createSysDisk(vname string) (w int64, err error) {
-	srcFile, err := os.Open("/virt/disk/centos.qcow2")
+func createSysDisk(vname, mirror string) (w int64, err error) {
+	mirrorPath := fmt.Sprintf("/virt/disk/%s.qcow2", mirror)
+	srcFile, err := os.Open(mirrorPath)
 	if err != nil {
-		fmt.Println(err)
+		log.Info(err.Error())
+		return nil, err
 	}
 	defer srcFile.Close()
-
-	desFile, err := os.Create("/virt/disk/" + vname + ".qcow2")
+	diskPath := fmt.Sprintf("/virt/disk/%s.qcow2", vname)
+	desFile, err := os.Create(diskPath)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -365,6 +367,14 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
+
+	sys, err := strconv.Atoi(req.PostFormValue("sys"))
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "镜像不存在"})
+		w.Write(msg)
+		return
+	}
+
 	var vInfo table.Virtual
 	vInfo.Vname = string(rpwd.Init(8, true, true, true, false))
 
@@ -377,17 +387,18 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	vInfo.Ctime = time.Now()
 	vInfo.Etime = time.Now()
 	vInfo.Utime = time.Now()
+	vInfo.Sys = sys
 
+	_, err = createSysDisk(vInfo.Vname, vInfo.sys)
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机硬盘失败", Data: err.Error()})
+		w.Write(msg)
+		return
+	}
 	xml := createKvmXML(vInfo)
 	_, err = control.Connect().DomainDefineXML(xml)
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机失败", Data: err.Error()})
-		w.Write(msg)
-		return
-	}
-	_, err = createSysDisk(vInfo.Vname)
-	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机硬盘失败", Data: err.Error()})
 		w.Write(msg)
 		return
 	}

@@ -18,6 +18,7 @@ type Virtual struct {
 	Tag       string    `json:"tag"`
 	Br        string    `json:"br"`
 	Mac       string    `json:"mac"`
+	Sys       string    `json:"sys"`
 	Bandwidth int       `json:"bandwidth"` //Mbps
 	Etime     time.Time `json:"etime"`     //Expire time
 	Ctime     time.Time `json:"ctime"`

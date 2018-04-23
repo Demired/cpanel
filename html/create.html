@@ -102,7 +102,8 @@
         }
     });
     $("#submit").click(function(){
-        var p = {}        
+        var p = {}
+        p.sys = $("#sys").val()
         p.vcpu = $("#vcpu").val()
         p.vmemory = $("#vmemory").val() 
         p.vpasswd = $("#vpasswd").val()
