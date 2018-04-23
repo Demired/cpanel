@@ -54,8 +54,8 @@
                 <td>{{$v.Vcpu}}</td>
                 <td>{{$v.Vmemory}}</td>
                 <td>{{$v.Status}}</td>
-                <td>—</td>
-                <td>—</td>
+                <td>{{$v.Etime}}</td>
+                <td>{{$v.Ctime}}</td>
                 <td ret="{{$v.Vname}}">
                     <!-- <a class="ajax" href="/{{$v.Status}}">强制关机</a> -->
                     {{if eq $v.Status 1}}

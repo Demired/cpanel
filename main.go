@@ -234,6 +234,7 @@ func list(w http.ResponseWriter, req *http.Request) {
 		fmt.Println(err.Error())
 		return
 	}
+	fmt.Println(vvvm)
 	t, _ := template.ParseFiles("html/list.html")
 	t.Execute(w, vvvm)
 }
