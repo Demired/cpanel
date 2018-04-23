@@ -186,7 +186,7 @@ func loadJSON(w http.ResponseWriter, req *http.Request) {
 	var date = make(map[string]interface{})
 	var cpus [][]int
 	for _, v := range watchs {
-		date["cpus"] = append(cpus, []int{v.Ctime, v.CPU})
+		cpus = append(cpus, []int{v.Ctime, v.CPU})
 	}
 	date["cpus"] = cpus
 	dj, _ := json.Marshal(date)
