@@ -190,7 +190,7 @@ func loadJSON(w http.ResponseWriter, req *http.Request) {
 		cpus = append(cpus, []int{v.Ctime, v.CPU})
 	}
 	date["cpus"] = cpus
-	dj, _ := json.Marshal(watchs)
+	dj, _ := json.Marshal(date)
 	w.Write(dj)
 }
 
