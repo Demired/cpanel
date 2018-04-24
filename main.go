@@ -421,7 +421,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	vInfo.Status = 1
 	vInfo.Bandwidth = bandwidth
 	vInfo.Ctime = time.Now()
-	vInfo.Etime = time.Now()
+	vInfo.Etime = time.Now().Add(24 * 30 * time.Hour)
 	vInfo.Utime = time.Now()
 	vInfo.Sys = sys
 
