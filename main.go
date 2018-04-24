@@ -513,7 +513,7 @@ func createKvmXML(tvm table.Virtual) string {
 	var templateXML = `
 	<domain type='kvm'>
 		<name>` + tvm.Vname + `</name>
-		<memory unit="GB">` + fmt.Sprintf("%d", tvm.Vmemory) + `</memory>
+		<memory unit="GiB">` + fmt.Sprintf("%d", tvm.Vmemory) + `</memory>
 		<os>
 			<type>hvm</type>
 		</os>
