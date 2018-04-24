@@ -475,7 +475,7 @@ func undefine(w http.ResponseWriter, req *http.Request) {
 	orm := beedb.New(db)
 	t := make(map[string]interface{})
 	t["Status"] = 0
-	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Update(&t)
+	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Update(t)
 	if err != nil {
 		cLog.Warn(err.Error())
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "删除失败", Data: err.Error()})
