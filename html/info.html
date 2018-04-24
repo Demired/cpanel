@@ -187,7 +187,7 @@
             if(d.ret=="v"){
                 alert(d.msg)
                 $(this).html("关机中...");
-                setTimeout(location.reload('get'),2000)
+                setTimeout(function(){location.reload('get')},2000)
             }
         },"json")
         $(this).attr("disabled",false);
