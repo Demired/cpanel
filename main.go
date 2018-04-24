@@ -248,7 +248,7 @@ func list(w http.ResponseWriter, req *http.Request) {
 			cLog.Warn(err.Error())
 			continue
 		}
-		vvvm[k].State = int(s)
+		vvvm[k].Status = int(s)
 	}
 	t, _ := template.ParseFiles("html/list.html")
 	t.Execute(w, vvvm)
