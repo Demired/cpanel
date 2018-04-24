@@ -472,8 +472,7 @@ func undefine(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	var v table.Virtual
-	v.Status = 0
+	orm := beedb.New(db)
 	t := make(map[string]interface{})
 	t["Status"] = 0
 	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname=?", vname).Update(t)
