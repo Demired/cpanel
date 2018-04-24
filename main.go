@@ -282,6 +282,7 @@ func createSysDisk(vname, mirror string) (w int64, err error) {
 }
 
 func start(w http.ResponseWriter, req *http.Request) {
+	time.Sleep(2 * time.Second)
 	defer req.Body.Close()
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/", http.StatusFound)
@@ -332,6 +333,7 @@ type er struct {
 }
 
 func shutdown(w http.ResponseWriter, req *http.Request) {
+	time.Sleep(2 * time.Second)
 	defer req.Body.Close()
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/", http.StatusFound)
