@@ -70,7 +70,7 @@
                             </tr>
                             <tr>
                                 <th>初始密码:</th>
-                                <td data-val="{{.Passwd}}" id="passwd">********</td>
+                                <td data-val="{{.Passwd}}" id="passwd">xxxxxxxx</td>
                             </tr>
                             <tr>
                                 <th>报警设置:</th>
@@ -206,7 +206,7 @@
     $("#passwd").hover(function(){
         $(this).html($(this).attr("data-val"))
     },function(){
-        $(this).html("********")
+        $(this).html("xxxxxxxx")
     })
     var dd = [];
     Highcharts.setOptions({
