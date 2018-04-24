@@ -235,7 +235,8 @@
                 title: {
                     text:"内存"
                 },
-                min: 0
+                min: 0,
+                max: dd.maxMemory + 100
             },
             tooltip: {
                 xDateFormat: '%Y-%m-%d %H:%M:%S',
@@ -270,7 +271,7 @@
                 type: 'line',
                 name: '内存用量',
                 data: d.memorys.map(function(item){
-                    return [item[0]*1000,item[1]]
+                    return [item[0]*1000,item[1]/1024]
                 })
             },{
                 type: 'line',
