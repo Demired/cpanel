@@ -31,10 +31,10 @@
     <div class="container" style="padding: 80px 0;">
         <div class="col-lg-12" style="margin-bottom: 10px;">
             <div class="btn-group">
-                <button class="btn btn-default" type="button" onclick="control.start()" {{if eq .Status 1}}disabled{{end}}>
+                <button class="btn btn-default" type="button" onclick="control.start(this)" {{if eq .Status 1}}disabled{{end}}>
                     开机
                 </button>
-                <button class="btn btn-default" type="button" onclick="control.shutdown()" {{if eq .Status 5}}disabled{{end}}>
+                <button class="btn btn-default" type="button" onclick="control.shutdown(this)" {{if eq .Status 5}}disabled{{end}}>
                     关机
                 </button>
                 <button class="btn btn-default" type="button" onclick="control.reboot()" {{if ne .Status 1}}disabled{{end}}>
@@ -170,16 +170,16 @@
 <script>
     var vname = "{{.Vname}}"
     var control = {};
-    control.start = function(){
-        $(this).attr("disabled",true);
+    control.start = function(obj){
+        obj.attr("disabled",true);
         $.post("/start",{vname:vname},function(d){
             if(d.ret=="v"){
                 alert(d.msg)
-                $(this).html("开机中...");
+                obj.html("开机中...");
                 location.reload('get');
             }
         },"json")
-        $(this).attr("disabled",false);
+        obj.attr("disabled",false);
     }
     control.shutdown = function(){
         $(this).attr("disabled",true);
