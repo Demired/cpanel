@@ -467,28 +467,23 @@ func undefine(w http.ResponseWriter, req *http.Request) {
 	os.Remove(disk)
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
 	if err != nil {
+		cLog.Warn(err.Error())
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "打开失败", Data: err.Error()})
 		w.Write(msg)
 		return
 	}
-	stmt, err := db.Prepare("UPDATE vm SET Status = 0 WHERE Vname = ?")
+	var v table.Virtual
+	v.Status = 0
+	t := make(map[string]interface{})
+	t["Status"] = 0
+	err := orm.SetTable("Virtual").SetPK("ID").Where("Vname=?", vname).Update(t)
 	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
-		w.Write(msg)
-		return
-	}
-	_, err = stmt.Exec(vname)
-	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
+		cLog.Warn(err.Error())
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "删除失败", Data: err.Error()})
 		w.Write(msg)
 		return
 	}
 	control.Undefine(vname)
-	// if err != nil {
-	// 	msg, _ := json.Marshal(er{Ret: "e", Msg: "删除失败", Data: err.Error()})
-	// 	w.Write(msg)
-	// 	return
-	// }
 	msg, _ := json.Marshal(er{Ret: "v", Msg: "已删除"})
 	w.Write(msg)
 }
