@@ -53,12 +53,12 @@
                 <td>{{$v.LocalIP}}</td>
                 <td>{{$v.Vcpu}}</td>
                 <td>{{$v.Vmemory}}</td>
-                <td>{{if eq $v.State 1}}运行中{{else}}关机中{{end}}</td>
+                <td>{{if eq $v.Status 1}}运行中{{else}}关机中{{end}}</td>
                 <td>{{$v.Etime.Format "2006-01-02 15:04:05"}}</td>
                 <td>{{$v.Ctime.Format "2006-01-02 15:04:05"}}</td>
                 <td ret="{{$v.Vname}}">
                     <!-- <a class="ajax" href="/{{$v.Status}}">强制关机</a> -->
-                    {{if eq $v.State 1}}
+                    {{if eq $v.Status 1}}
                     <a class="ajax" href="/shutdown">关机</a>
                     <a href="/repasswd.html?vname={{$v.Vname}}">修改密码</a>
                     {{else}}
