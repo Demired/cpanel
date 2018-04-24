@@ -12,7 +12,6 @@ type Virtual struct {
 	LocalIP   string    `json:"local"`
 	Vcpu      int       `json:"vcpu"`
 	Status    int       `json:"status"`
-	State     int       `json:"state"`
 	Vmemory   int       `json:"vmemory"` //GiB
 	Passwd    string    `json:"vpasswd"`
 	Vname     string    `json:"vname"`
