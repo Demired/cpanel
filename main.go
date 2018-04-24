@@ -482,7 +482,13 @@ func undefine(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	control.Undefine(vname)
+	err = control.Undefine(vname)
+	if err != nil {
+		cLog.Error(err.Error())
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "销毁失败", Data: err.Error()})
+		w.Write(msg)
+		return
+	}
 	msg, _ := json.Marshal(er{Ret: "v", Msg: "已删除"})
 	w.Write(msg)
 }
