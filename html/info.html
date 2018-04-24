@@ -69,6 +69,10 @@
                                 <td>{{.Ctime.Format "2006-01-02 15:04:05"}}</td>
                             </tr>
                             <tr>
+                                <th>初始密码:</th>
+                                <td data-val="{{.Passwd}}" id="passwd">********</td>
+                            </tr>
+                            <tr>
                                 <th>报警设置:</th>
                                 <td>
                                     <a href="#" target="_blank">
@@ -199,6 +203,11 @@
     }
 </script>
 <script>
+    $("#passwd").hover(function(){
+        $(this).html($(this).attr("data-val"))
+    },function(){
+        $(this).html("********")
+    })
     var dd = [];
     Highcharts.setOptions({
         global: {
