@@ -265,7 +265,7 @@ func list(w http.ResponseWriter, req *http.Request) {
 }
 
 func createSysDisk(vname, mirror string) (w int64, err error) {
-	mirrorPath := fmt.Sprintf("/virt/disk/%s.qcow2", mirror)
+	mirrorPath := fmt.Sprintf("/virt/mirror/%s.qcow2", mirror)
 	srcFile, err := os.Open(mirrorPath)
 	if err != nil {
 		cLog.Info(err.Error())
