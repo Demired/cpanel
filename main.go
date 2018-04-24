@@ -237,6 +237,19 @@ func list(w http.ResponseWriter, req *http.Request) {
 		cLog.Warn(err.Error())
 		return
 	}
+	for k, v := range vvvm {
+		dom, err := control.Connect().LookupDomainByName(v.Vname)
+		if err != nil {
+			cLog.Warn(err.Error())
+			continue
+		}
+		s, _, err := dom.GetState()
+		if err != nil {
+			cLog.Warn(err.Error())
+			continue
+		}
+		vvvm[k].State = int(s)
+	}
 	t, _ := template.ParseFiles("html/list.html")
 	t.Execute(w, vvvm)
 }
@@ -490,7 +503,7 @@ func createKvmXML(tvm table.Virtual) string {
 	var templateXML = `
 	<domain type='kvm'>
 		<name>` + tvm.Vname + `</name>
-		<memory unit="GiB">` + fmt.Sprintf("%d", tvm.Vmemory) + `</memory>
+		<memory unit="GB">` + fmt.Sprintf("%d", tvm.Vmemory) + `</memory>
 		<os>
 			<type>hvm</type>
 		</os>
