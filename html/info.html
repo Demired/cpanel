@@ -271,9 +271,14 @@
                 name: '内存用量',
                 data: d.memorys.map(function(item){
                     return [item[0]*1000,item[1]]
-                    })
-            }],
-
+                })
+            },{
+                type: 'line',
+                name: '内存总量',
+                data: d.memorys.map(function(item){
+                    return [item[0]*1000,dd.maxMemory]
+                })
+            }]
         });
         Highcharts.chart('cpu', {
             credits: {
