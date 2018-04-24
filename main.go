@@ -97,7 +97,7 @@ func watch() {
 					cLog.Warn("读取虚拟机信息失败", err.Error())
 					continue
 				}
-				intfaceInfo, err := dom.InterfaceStats(virtual.Mac)
+				intfaceInfo, err := dom.InterfaceStats("18:a9:05:3c:ba:ee")
 				if err != nil {
 					cLog.Warn(err.Error())
 				}
