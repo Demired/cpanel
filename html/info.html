@@ -211,7 +211,7 @@
             credits: {
                 text: '内存'
             },
-            colors: ['#61A5E8'],
+            colors: ['#61A5E8','#7ECF51'],
             title: {
                 text: '内存使用率'
             },
@@ -276,6 +276,7 @@
             },{
                 type: 'line',
                 name: '内存总量',
+
                 data: d.memorys.map(function(item){
                     return [item[0]*1000,dd.maxMemory]
                 })
