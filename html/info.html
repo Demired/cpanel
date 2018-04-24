@@ -171,18 +171,26 @@
     var vname = "{{.Vname}}"
     var control = {};
     control.start = function(){
+        $(this).attr("disabled",true);
         $.post("/start",{vname:vname},function(d){
             if(d.ret=="v"){
                 alert(d.msg)
+                $(this).val("开机中...");
+                location.reload('get');
             }
         },"json")
+        $(this).attr("disabled",false);
     }
     control.shutdown = function(){
+        $(this).attr("disabled",true);
         $.post("/shutdown",{vname:vname},function(d){
             if(d.ret=="v"){
                 alert(d.msg)
+                $(this).val("关机中...");
+                setTimeout(location.reload('get'),2000)
             }
         },"json")
+        $(this).attr("disabled",false);
     }
     control.reboot = function(){
         $.post("/reboot",{vname:vname},function(d){
