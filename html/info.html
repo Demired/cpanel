@@ -40,8 +40,13 @@
                 <button class="btn btn-default" type="button" onclick="control.reboot()" {{if ne .Status 1}}disabled{{end}}>
                     重启
                 </button>
+            </div>
+            <div class="btn-group">
                 <button class="btn btn-default" type="button" onclick="control.repasswd()" {{if ne .Status 1}}disabled{{end}}>
                     修改密码
+                </button>
+                <button class="btn btn-default" type="button" onclick="control.edit()" {{if ne .Status 1}}disabled{{end}}>
+                    修改配置
                 </button>
             </div>
         </div>
@@ -199,7 +204,10 @@
     }
     control.repasswd = function(){
         //弹出密码输入框
-        location.href="/repasswd.html?vname={{.Vname}}"
+        location.href = "/repasswd.html?vname={{.Vname}}"
+    }
+    control.edit = function(){
+        location.href = "/edit.html?vname={{.Vname}}"
     }
 </script>
 <script>

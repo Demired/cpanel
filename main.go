@@ -38,7 +38,7 @@ func main() {
 	go watch()
 	go workQueue()
 	http.HandleFunc("/", index)
-	http.HandleFunc("/edit", edit)
+	http.HandleFunc("/edit", editAPI)
 	http.HandleFunc("/list", list)
 	http.HandleFunc("/info.html", info)
 	http.HandleFunc("/load.json", loadJSON)
@@ -50,7 +50,7 @@ func main() {
 	http.HandleFunc("/repasswd.html", repasswd)
 	http.HandleFunc("/repasswd", repasswdAPI)
 	http.HandleFunc("/undefine", undefine)
-	// http.HandleFunc("/edit.html", edit)
+	http.HandleFunc("/edit.html", edit)
 	http.HandleFunc("/create.html", create)
 	http.ListenAndServe(":8100", nil)
 }
@@ -390,6 +390,10 @@ func reboot(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	w.Write(msg)
+}
+
+func editAPI(w http.ResponseWriter, req *http.Request) {
+
 }
 
 //创建虚拟机

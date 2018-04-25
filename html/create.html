@@ -29,14 +29,6 @@
 </nav>
 <div class="container" style="padding: 80px 0;">
     <form class="col-md-8 col-md-offset-2" action="#">
-        <div class="alert alert-success" id="add" hidden>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <strong>添加成功!</strong> 节点添加成功！你可以部署应用程序了。
-        </div>
-        <div class="alert alert-success" id="edit" hidden>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <strong>修改成功!</strong> 节点信息修改成功！请检查并确保应用程序正常运行。
-        </div>
         <div class="form-group">
             <label for="vcpu"><h3>核心数</h3></label>
             <input type="tel" class="form-control" id="vcpu" name="vcpu" value="{{with .Vcpu}}{{.}}{{end}}" placeholder="单位：个">
@@ -64,7 +56,7 @@
                 <option value="centos_7.1_x64" disabled>
                     centos_7.1_x64
                 </option>
-                <option value="centos_7.0_x64"  disabled>
+                <option value="centos_7.0_x64" disabled>
                     centos_7.0_x64
                 </option>
             </select>
