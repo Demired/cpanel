@@ -55,7 +55,7 @@
                 <option value="centos_7.4_x64" {{with .Sys}}{{if eq . "centos_7.4_x64"}}selected{{end}}{{end}}>
                     centos_7.4_x64
                 </option>
-                <option value="centos_7.3_x64" disabled>
+                <option value="centos_7.3_x64" {{with .Sys}}{{if eq . "centos_7.3_x64"}}selected{{end}}{{end}}>
                     centos_7.3_x64
                 </option>
                 <option value="centos_7.2_x64" disabled>
