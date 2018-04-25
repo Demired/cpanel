@@ -39,7 +39,7 @@
         </div>
         <div class="form-group">
             <label for="vcpu"><h3>核心数</h3></label>
-            <input type="tel" class="form-control" id="vcpu" name="vcpu" value="{{with .Vcpu}}{{.}}}{{end}}" placeholder="单位：个">
+            <input type="tel" class="form-control" id="vcpu" name="vcpu" value="{{with .Vcpu}}{{.}}{{end}}" placeholder="单位：个">
         </div>
         <div class="form-group">
             <label for="vmemory"><h3>内存大小</h3></label>
@@ -52,7 +52,7 @@
         <div class="form-group">
             <label for="sys"><h3>操作系统</h3></label>
             <select name="sys" id="sys" class="form-control">
-                <option value="centos_7.4_x64" {{with .Sys}}selected{{end}}>
+                <option value="centos_7.4_x64" {{with .Sys}}{{if eq . "centos_7.4_x64"}}selected{{end}}{{end}}>
                     centos_7.4_x64
                 </option>
                 <option value="centos_7.3_x64" disabled>
