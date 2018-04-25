@@ -47,7 +47,7 @@
         </div>
         <div class="form-group">
             <label for="bandwidth"><h3>带宽大小</h3></label>
-            <input type="tel" class="form-control" id="bandwidth" name="bandwidth" value="{{with ($u:=.Bandwidth)}}{{$u}}{{end}}" placeholder="单位：Mbps">
+            <input type="tel" class="form-control" id="bandwidth" name="bandwidth" value="{{with .Bandwidth}}{{.}}{{end}}" placeholder="单位：Mbps">
         </div>
         <div class="form-group">
             <label for="sys"><h3>操作系统</h3></label>
