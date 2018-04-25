@@ -65,11 +65,6 @@ func favicon(w http.ResponseWriter, req *http.Request) {
 	http.ServeFile(w, req, path)
 }
 
-func edit(w http.ResponseWriter, req *http.Request) {
-	t, _ := template.ParseFiles("html/create.html")
-	t.Execute(w, nil)
-}
-
 func watch() {
 	var t = make(map[string]uint64)
 	w := time.NewTicker(time.Second * 20)
@@ -152,8 +147,25 @@ func create(w http.ResponseWriter, req *http.Request) {
 // 	t.Execute(w, nil)
 // }
 
+func edit(w http.ResponseWriter, req *http.Request) {
+	vname := req.URL.Query().Get("vname")
+	db, err := sql.Open("sqlite3", "./db/cpanel.db")
+	if err != nil {
+		cLog.Warn("打开数据库失败", err.Error())
+		return
+	}
+	orm := beedb.New(db)
+	var vvm table.Virtual
+	err = orm.SetTable("Virtual").Where("Vname = ?", vname).Find(&vvm)
+	if err != nil {
+		cLog.Warn(err.Error())
+		return
+	}
+	t, _ := template.ParseFiles("html/create.html")
+	t.Execute(w, vvm)
+}
+
 func info(w http.ResponseWriter, req *http.Request) {
-	defer req.Body.Close()
 	vname := req.URL.Query().Get("vname")
 	dom, err := control.Connect().LookupDomainByName(vname)
 	if err != nil {
