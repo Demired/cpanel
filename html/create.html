@@ -69,46 +69,25 @@
                 </option>
             </select>
         </div>
+        {{with .ID}}
         <div class="form-group">
             <label for="vpasswd"><h3>密码</h3></label>
-            <input type="text" class="form-control" id="vpasswd" name="vpasswd" value="{{with .vpasswd}}{{.vpasswd}}{{end}}" placeholder="可选">
+            <input type="text" class="form-control" id="vpasswd" name="vpasswd" value="" placeholder="可选">
         </div>
+        {{end}}
         <button type="button" class="btn btn-default" id="submit">创建虚拟机</button>
     </form>
 </div>
 <script>
     //页面加载完毕
-    $(function() {
-        if(1&&document.cookie.indexOf("notice=1") == "-1"){
-           setTimeout(function () {
-               $('#protocol').modal({
-                   backdrop: false,
-                   keyboard: false,
-                   show:true
-               });
-           },500);
-        }
-    });
-    $("#refuse").click(function () {
-        setTimeout(function () {
-            window.location.href = "/network/index"
-        },500);
-    });
-    $("#agree").click(function () {
-        if($("#notice").prop( "checked")){
-            var d = new Date();
-            d.setTime(d.getTime()+(30*24*60*60*1000));
-            document.cookie = "notice=1;expires="+d.toGMTString();
-        }
-    });
     $("#submit").click(function(){
         var p = {}
         p.sys = $("#sys").val()
         p.vcpu = $("#vcpu").val()
-        p.vmemory = $("#vmemory").val() 
+        p.vmemory = $("#vmemory").val()
         p.vpasswd = $("#vpasswd").val()
         p.bandwidth = $("#bandwidth").val()
-        $.post("/create",p,function(d){
+        $.post("/{{with .ID}}edit{{else}}create{{end}}",p,function(d){
             alert(d.msg);
             if(d.ret=="v"){
                 location.href = "/list"

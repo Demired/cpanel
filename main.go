@@ -38,6 +38,7 @@ func main() {
 	go watch()
 	go workQueue()
 	http.HandleFunc("/", index)
+	http.HandleFunc("/edit", edit)
 	http.HandleFunc("/list", list)
 	http.HandleFunc("/info.html", info)
 	http.HandleFunc("/load.json", loadJSON)
@@ -62,6 +63,11 @@ func index(w http.ResponseWriter, req *http.Request) {
 func favicon(w http.ResponseWriter, req *http.Request) {
 	path := "./html/images/favicon.ico"
 	http.ServeFile(w, req, path)
+}
+
+func edit(w http.ResponseWriter, req *http.Request) {
+	t, _ := template.ParseFiles("html/create.html")
+	t.Execute(w, nil)
 }
 
 func watch() {
