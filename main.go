@@ -456,7 +456,6 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	//检查虚拟机所有者
-	var vInfo table.Virtual
 	AStatus, _ := strconv.Atoi(req.PostFormValue("AStatus"))
 	if AStatus == 0 {
 		if dInfo.AStatus == 0 {
@@ -466,7 +465,7 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 		}
 		t := make(map[string]interface{})
 		t["Status"] = 0
-		orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Update(&vInfo)
+		orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Update(t)
 		msg, _ := json.Marshal(er{Ret: "v", Msg: "报警已关闭"})
 		w.Write(msg)
 		return
@@ -499,11 +498,12 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
+	var vInfo table.Virtual
 	vInfo.ACpu = ACpu
 	vInfo.ABandwidth = ABandwidth
 	vInfo.AMemory = AMemory
 	vInfo.ADisk = ADisk
-	vInfo.Status = 1
+	vInfo.AStatus = 1
 	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Save(&vInfo)
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "设置失败", Data: err.Error()})
