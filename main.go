@@ -464,7 +464,8 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 			w.Write(msg)
 			return
 		}
-		vInfo.AStatus = 0
+		t := make(map[string]interface{})
+		t["Status"] = 0
 		orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Update(&vInfo)
 		msg, _ := json.Marshal(er{Ret: "v", Msg: "报警已关闭"})
 		w.Write(msg)
