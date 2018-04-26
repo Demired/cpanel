@@ -444,7 +444,21 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 	alarm.Disk = Disk
 	alarm.Bandwidth = Bandwidth
 	alarm.Ctime = time.Now()
-	fmt.Println(alarm)
+	db, err := sql.Open("sqlite3", "./db/cpanel.db")
+	if err != nil {
+		cLog.Info(err.Error())
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "打开失败", Data: err.Error()})
+		w.Write(msg)
+		return
+	}
+	orm := beedb.New(db)
+	err = orm.SetTable("Alarm").SetPK("ID").Save(&alarm)
+	if err != nil {
+		cLog.Info(err.Error())
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
+		w.Write(msg)
+		return
+	}
 
 }
 
