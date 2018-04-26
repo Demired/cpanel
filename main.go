@@ -415,34 +415,34 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 	}
 	var alarm table.Alarm
 	alarm.Vname = req.PostFormValue("Vname")
-	cpu, err := strconv.Atoi(req.PostFormValue("CPU"))
+	alarm.CPU, err := strconv.Atoi(req.PostFormValue("CPU"))
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "cpu报警必须位整数"})
 		w.Write(msg)
 		return
 	}
-	memory, err := strconv.Atoi(req.PostFormValue("Memory"))
+	Memory, err := strconv.Atoi(req.PostFormValue("Memory"))
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "内存报警必须位整数"})
 		w.Write(msg)
 		return
 	}
-	disk, err := strconv.Atoi(req.PostFormValue("Disk"))
+	Disk, err := strconv.Atoi(req.PostFormValue("Disk"))
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "硬盘报警必须位整数"})
 		w.Write(msg)
 		return
 	}
-	bandwidth, err := strconv.Atoi(req.PostFormValue("Bandwidth"))
+	Bandwidth, err := strconv.Atoi(req.PostFormValue("Bandwidth"))
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "硬盘报警必须位整数"})
 		w.Write(msg)
 		return
 	}
-	alarm.CPU = cpu
-	alarm.Memory = memory
-	alarm.Disk = disk
-	alarm.Bandwidth = bandwidth
+	// alarm.CPU = cpu
+	alarm.Memory = Memory
+	alarm.Disk = Disk
+	alarm.Bandwidth = Bandwidth
 	fmt.Println(alarm)
 
 }
