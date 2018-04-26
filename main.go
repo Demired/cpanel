@@ -415,7 +415,7 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 	}
 	var alarm table.Alarm
 	alarm.Vname = req.PostFormValue("Vname")
-	alarm.CPU, err = strconv.Atoi(req.PostFormValue("CPU"))
+	CPU, err := strconv.Atoi(req.PostFormValue("CPU"))
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "cpu报警必须位整数"})
 		w.Write(msg)
@@ -439,7 +439,7 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	// alarm.CPU = cpu
+	alarm.CPU = CPU
 	alarm.Memory = Memory
 	alarm.Disk = Disk
 	alarm.Bandwidth = Bandwidth
