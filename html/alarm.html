@@ -35,7 +35,7 @@
                     CPU:
                 </td>
                 <td>
-                    <input type="text" name="ACPU" id="ACPU" value="{{with .ACPU}}{{.}}{{end}}"> (%)
+                    <input type="text" name="ACpu" id="ACpu" value="{{with .ACpu}}{{.}}{{end}}"> (%)
                 </td>
             </tr>
             <tr>
@@ -74,7 +74,7 @@
         var p = {};
         p.Vname = $("#Vname").val();
         p.AStatus = 1;
-        p.ACpu = $("#ACPU").val();
+        p.ACpu = $("#ACpu").val();
         p.AMemory = $("#AMemory").val();
         p.ADisk = $("#ADisk").val();
         p.ABandwidth = $("#ABandwidth").val();
