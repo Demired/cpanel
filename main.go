@@ -404,6 +404,26 @@ func editAPI(w http.ResponseWriter, req *http.Request) {
 
 func alarm(w http.ResponseWriter, req *http.Request) {
 	Vname := req.URL.Query().Get("Vname")
+	db, err := sql.Open("sqlite3", "./db/cpanel.db")
+	if err != nil {
+		cLog.Info(err.Error())
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "打开失败", Data: err.Error()})
+		w.Write(msg)
+		return
+	}
+	var dInfo table.Virtual
+	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Find(&dInfo)
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "发生错误", Data: err.Error()})
+		w.Write(msg)
+		return
+	}
+	if time.Now().After(dInfo.Etime) {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "虚拟机已到期"})
+		w.Write(msg)
+		return
+	}
+	//检查虚拟机所有者
 	t, _ := template.ParseFiles("html/alarm.html")
 	t.Execute(w, map[string]string{"Vname": Vname})
 }
@@ -420,74 +440,75 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	var alarm table.Alarm
-	alarm.Vname = req.PostFormValue("Vname")
-	var dbAlarm table.Alarm
-
+	var dInfo table.Virtual
 	orm := beedb.New(db)
-	err = orm.SetTable("Alarm").SetPK("ID").Where("Vname = ?", alarm.Vname).Find(&dbAlarm)
+	Vname := req.PostFormValue("Vname")
+	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Find(&dInfo)
 	if err != nil {
-		fmt.Println("---------")
-		fmt.Println(err.Error())
-	} else {
-		fmt.Println(dbAlarm)
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "发生错误", Data: err.Error()})
+		w.Write(msg)
+		return
 	}
-	return
-
-	alarm.Status, _ = strconv.Atoi(req.PostFormValue("Status"))
-	if alarm.Status == 0 {
-		t := make(map[string]interface{})
-		t["Status"] = 0
-		_, err = orm.SetTable("Alarm").SetPK("ID").Where("Vname = ?", alarm.Vname).Update(t)
-		if err != nil {
-			msg, _ := json.Marshal(er{Ret: "e", Msg: "关闭警报失败"})
+	if time.Now().After(dInfo.Etime) {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "虚拟机已到期"})
+		w.Write(msg)
+		return
+	}
+	//检查虚拟机所有者
+	var vInfo table.Virtual
+	AStatus, _ := strconv.Atoi(req.PostFormValue("AStatus"))
+	if AStatus == 0 {
+		if dInfo.AStatus == 0 {
+			msg, _ := json.Marshal(er{Ret: "v", Msg: "报警未开启"})
 			w.Write(msg)
 			return
 		}
-		msg, _ := json.Marshal(er{Ret: "v", Msg: "添加成功"})
+		vInfo.AStatus = 0
+		orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Update(&vInfo)
+		msg, _ := json.Marshal(er{Ret: "v", Msg: "报警已关闭"})
 		w.Write(msg)
 		return
 	}
-	CPU, err := strconv.Atoi(req.PostFormValue("CPU"))
+	// ACpu INT NOT NULL,
+	// ABandwidth INT NOT NULL,
+	// AMemory INT NOT NULL,
+	// ADisk INT NOT NULL,
+	ACpu, err := strconv.Atoi(req.PostFormValue("ACpu"))
+	if err != nil || ACpu > 100 || ACpu < 0 {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "cpu报警百分比阀值必须为整数"})
+		w.Write(msg)
+		return
+	}
+	ABandwidth, err := strconv.Atoi(req.PostFormValue("ABandwidth"))
+	if err != nil || ABandwidth > 100 || ABandwidth < 0 {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "带宽报警百分比阀值必须为整数"})
+		w.Write(msg)
+		return
+	}
+	AMemory, err := strconv.Atoi(req.PostFormValue("AMemory"))
+	if err != nil || AMemory > 100 || AMemory < 0 {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "内存报警百分比阀值必须为整数"})
+		w.Write(msg)
+		return
+	}
+	ADisk, err := strconv.Atoi(req.PostFormValue("ADisk"))
+	if err != nil || ADisk > 100 || ADisk < 0 {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "内存报警百分比阀值必须为整数"})
+		w.Write(msg)
+		return
+	}
+	vInfo.ACpu = ACpu
+	vInfo.ABandwidth = ABandwidth
+	vInfo.AMemory = AMemory
+	vInfo.ADisk = ADisk
+	vInfo.Status = 1
+	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Save(&vInfo)
 	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "cpu报警必须位整数"})
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "设置失败", Data: err.Error()})
 		w.Write(msg)
 		return
 	}
-	Memory, err := strconv.Atoi(req.PostFormValue("Memory"))
-	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "内存报警必须位整数"})
-		w.Write(msg)
-		return
-	}
-	Disk, err := strconv.Atoi(req.PostFormValue("Disk"))
-	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "硬盘报警必须位整数"})
-		w.Write(msg)
-		return
-	}
-	Bandwidth, err := strconv.Atoi(req.PostFormValue("Bandwidth"))
-	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "硬盘报警必须位整数"})
-		w.Write(msg)
-		return
-	}
-	alarm.CPU = CPU
-	alarm.Memory = Memory
-	alarm.Disk = Disk
-	alarm.Status = 1
-	alarm.Bandwidth = Bandwidth
-	alarm.Ctime = time.Now()
-	alarm.Utime = time.Now()
-	err = orm.SetTable("Alarm").SetPK("ID").Save(&alarm)
-	if err != nil {
-		cLog.Info(err.Error())
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
-		w.Write(msg)
-		return
-	}
-
-	msg, _ := json.Marshal(er{Ret: "v", Msg: "添加成功"})
+	msg, _ := json.Marshal(er{Ret: "v", Msg: "设置成功"})
 	w.Write(msg)
 }
 

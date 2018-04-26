@@ -32,6 +32,11 @@ func Init() {
                 Br CHAR(10),
                 Mac CHAR(20),
                 Sys CHAR(20),
+                ACpu INT NOT NULL,
+                ABandwidth INT NOT NULL,
+                AMemory INT NOT NULL,
+                ADisk INT NOT NULL,
+                AStatus INT NOT NULL,
                 Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 Utime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 Etime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
