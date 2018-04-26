@@ -420,9 +420,16 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	orm := beedb.New(db)
 	var alarm table.Alarm
 	alarm.Vname = req.PostFormValue("Vname")
+	var dbAlarm table.Alarm
+
+	orm := beedb.New(db)
+	orm.SetTable("Alarm").SetPK("ID").Where("Vname = ?", alarm.Vname).Find(&dbAlarm)
+
+	fmt.Println(dbAlarm)
+	return
+
 	alarm.Status, _ = strconv.Atoi(req.PostFormValue("Status"))
 	if alarm.Status == 0 {
 		t := make(map[string]interface{})
@@ -468,7 +475,6 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 	alarm.Bandwidth = Bandwidth
 	alarm.Ctime = time.Now()
 	alarm.Utime = time.Now()
-
 	err = orm.SetTable("Alarm").SetPK("ID").Save(&alarm)
 	if err != nil {
 		cLog.Info(err.Error())
