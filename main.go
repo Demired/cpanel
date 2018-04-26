@@ -404,7 +404,6 @@ func editAPI(w http.ResponseWriter, req *http.Request) {
 
 func alarm(w http.ResponseWriter, req *http.Request) {
 	Vname := req.URL.Query().Get("Vname")
-	fmt.Println(Vname)
 	t, _ := template.ParseFiles("html/alarm.html")
 	t.Execute(w, map[string]string{"Vname": Vname})
 }
