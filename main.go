@@ -498,14 +498,15 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	var vInfo table.Virtual
-	vInfo.ACpu = ACpu
-	vInfo.ABandwidth = ABandwidth
-	vInfo.AMemory = AMemory
-	vInfo.ADisk = ADisk
-	vInfo.AStatus = 1
-	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Save(&vInfo)
+	t := make(map[string]interface{})
+	t["ACpu"] = ACpu
+	t["ABandwidth"] = ABandwidth
+	t["AMemory"] = AMemory
+	t["ADisk"] = ADisk
+	t["AStatus"] = 1
+	_, err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Update(t)
 	if err != nil {
+		cLog.Warn(err.Error())
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "设置失败", Data: err.Error()})
 		w.Write(msg)
 		return
