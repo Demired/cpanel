@@ -427,7 +427,7 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 	if alarm.Status == 0 {
 		t := make(map[string]interface{})
 		t["Status"] = 0
-		err = orm.SetTable("Alarm").SetPK("ID").Where("Vname=?", alarm.Vname).Update(t)
+		_, err = orm.SetTable("Alarm").SetPK("ID").Where("Vname = ?", alarm.Vname).Update(t)
 		if err != nil {
 			msg, _ := json.Marshal(er{Ret: "e", Msg: "关闭警报失败"})
 			w.Write(msg)
