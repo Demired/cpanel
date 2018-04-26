@@ -375,7 +375,6 @@ func shutdown(w http.ResponseWriter, req *http.Request) {
 }
 
 func reboot(w http.ResponseWriter, req *http.Request) {
-	defer req.Body.Close()
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/", http.StatusFound)
 		return
@@ -409,8 +408,9 @@ func editAPI(w http.ResponseWriter, req *http.Request) {
 }
 
 func alarm(w http.ResponseWriter, req *http.Request) {
+	vname := req.URL.Query().Get("vname")
 	t, _ := template.ParseFiles("html/alarm.html")
-	t.Execute(w, nil)
+	t.Execute(w, vname)
 }
 
 func alarmAPI(w http.ResponseWriter, req *http.Request) {
