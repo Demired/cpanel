@@ -77,7 +77,7 @@
         p.vmemory = $("#vmemory").val();
         p.vpasswd = $("#vpasswd").val();
         p.bandwidth = $("#bandwidth").val();
-        $.post("/{{with .ID}}edit{{else}}create{{end}}",p,function(d){
+        $.post("/alarm",p,function(d){
             alert(d.msg);
             if(d.ret=="v"){
                 location.href = "/list"
