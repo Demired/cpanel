@@ -73,7 +73,7 @@
     $("#submit").click(function(){
         var p = {};
         p.Vname = $("#Vname").val();
-        p.Status = 1;
+        p.AStatus = 1;
         p.CPU = $("#CPU").val();
         p.Memory = $("#Memory").val();
         p.Disk = $("#Disk").val();
@@ -88,7 +88,7 @@
     $("#remove").click(function(){
         var p = {};
         p.Vname = $("#Vname").val();
-        p.Status = 0;
+        p.AStatus = 0;
         $.post("/alarm",p,function(d){
             alert(d.msg);
             if (d.ret == "v"){
