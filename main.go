@@ -422,13 +422,13 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	alarm.memory,err = strconv.Atoi((req.ParseFormValue("Memory"))
+	alarm.memory,err = strconv.Atoi(req.ParseFormValue("Memory"))
 	if err != nil{
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "内存报警必须位整数"})
 		w.Write(msg)
 		return
 	}
-	alarm.Disk,err = strconv.Atoi((req.PostFormValue("Disk"))
+	alarm.Disk,err = strconv.Atoi(req.PostFormValue("Disk"))
 	if err != nil{
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "硬盘报警必须位整数"})
 		w.Write(msg)
