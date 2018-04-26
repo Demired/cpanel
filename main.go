@@ -426,7 +426,7 @@ func alarm(w http.ResponseWriter, req *http.Request) {
 	}
 	//检查虚拟机所有者
 	t, _ := template.ParseFiles("html/alarm.html")
-	t.Execute(w, map[string]string{"Vname": Vname})
+	t.Execute(w, dInfo)
 }
 
 func alarmAPI(w http.ResponseWriter, req *http.Request) {
