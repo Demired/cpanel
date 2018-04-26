@@ -429,6 +429,7 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
+	fmt.Println(dbAlarm)
 	return
 
 	alarm.Status, _ = strconv.Atoi(req.PostFormValue("Status"))
