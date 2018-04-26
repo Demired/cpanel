@@ -64,7 +64,8 @@
             </tr>
             <input type="hidden" name="Vname" id="Vname" value="{{.Vname}}">
         </table>
-        <button type="button" class="btn btn-default" id="submit">确定</button>
+        <button type="button" class="btn btn-default" id="submit">设置警报</button>
+        <button type="button" class="btn btn-default" id="remove">取消警报</button>
     </div>
 </div>
 <script>
@@ -79,7 +80,18 @@
         $.post("/alarm",p,function(d){
             alert(d.msg);
             if(d.ret=="v"){
-                location.href = "/list"
+                location.href = "/info.html?Vname={{.Vname}}"
+            }
+        },"json")
+    });
+    $("#remove").click(function(){
+        var p = {};
+        p.Vname = $("#Vname").val();
+        p.Status = 0;
+        $.post("/alarm",p,function(d){
+            alert(d.msg);
+            if (d.ret == "v"){
+                location.href = "/info.html?Vname={{.Vname}}"
             }
         },"json")
     });

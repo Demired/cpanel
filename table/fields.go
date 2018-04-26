@@ -44,6 +44,8 @@ type Alarm struct {
 	CPU       int
 	Bandwidth int
 	Memory    int
+	Status    int
 	Disk      int
 	Ctime     time.Time
+	Utime     time.Time
 }

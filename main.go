@@ -413,8 +413,30 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, "/create.html", http.StatusFound)
 		return
 	}
+	db, err := sql.Open("sqlite3", "./db/cpanel.db")
+	if err != nil {
+		cLog.Info(err.Error())
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "打开失败", Data: err.Error()})
+		w.Write(msg)
+		return
+	}
+	orm := beedb.New(db)
 	var alarm table.Alarm
 	alarm.Vname = req.PostFormValue("Vname")
+	alarm.Status, _ = strconv.Atoi(req.PostFormValue("Status"))
+	if alarm.Status == 0 {
+		t := make(map[string]interface{})
+		t["Status"] = 0
+		err = orm.SetTable("Alarm").SetPK("ID").Where("Vname=?", alarm.Vname).Update(t)
+		if err != nil {
+			msg, _ := json.Marshal(er{Ret: "e", Msg: "关闭警报失败"})
+			w.Write(msg)
+			return
+		}
+		msg, _ := json.Marshal(er{Ret: "v", Msg: "添加成功"})
+		w.Write(msg)
+		return
+	}
 	CPU, err := strconv.Atoi(req.PostFormValue("CPU"))
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "cpu报警必须位整数"})
@@ -442,16 +464,11 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 	alarm.CPU = CPU
 	alarm.Memory = Memory
 	alarm.Disk = Disk
+	alarm.Status = 1
 	alarm.Bandwidth = Bandwidth
 	alarm.Ctime = time.Now()
-	db, err := sql.Open("sqlite3", "./db/cpanel.db")
-	if err != nil {
-		cLog.Info(err.Error())
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "打开失败", Data: err.Error()})
-		w.Write(msg)
-		return
-	}
-	orm := beedb.New(db)
+	alarm.Utime = time.Now()
+
 	err = orm.SetTable("Alarm").SetPK("ID").Save(&alarm)
 	if err != nil {
 		cLog.Info(err.Error())
@@ -460,6 +477,8 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	msg, _ := json.Marshal(er{Ret: "v", Msg: "添加成功"})
+	w.Write(msg)
 }
 
 //创建虚拟机

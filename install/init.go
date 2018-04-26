@@ -54,7 +54,9 @@ func Init() {
                 CPU INT NOT NULL,
                 Memory INT NOT NULL,
                 Disk INT NOT NULL,
+                Status INT NOT NULL,
                 Bandwidth INT NOT NULL,
+                Utime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
             // CREATE TABLE IF NOT EXISTS billing (
