@@ -405,6 +405,7 @@ func editAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
+	fmt.Println(vmemory)
 }
 
 func alarm(w http.ResponseWriter, req *http.Request) {
