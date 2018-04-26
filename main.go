@@ -422,14 +422,10 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 	}
 	var alarm table.Alarm
 	alarm.Vname = req.PostFormValue("Vname")
-	var dbAlarm table.Alarm
 
 	orm := beedb.New(db)
-	err = orm.SetTable("Alarm").SetPK("ID").Where("Vname = ?", alarm.Vname).Find(&dbAlarm)
-
-	fmt.Println(dbAlarm)
-	fmt.Println(err.Error())
-	return
+	err = orm.SetTable("Alarm").SetPK("ID").Where("Vname = ?", alarm.Vname).Find()
+	fmt.Println(err)
 
 	alarm.Status, _ = strconv.Atoi(req.PostFormValue("Status"))
 	if alarm.Status == 0 {
