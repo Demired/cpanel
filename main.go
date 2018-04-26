@@ -424,7 +424,7 @@ func alarm(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	if dInfo.Status == 0 {
+	if dInfo.AStatus == 0 {
 		dInfo.ABandwidth = 0
 		dInfo.ACpu = 0
 		dInfo.ADisk = 0
