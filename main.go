@@ -424,6 +424,12 @@ func alarm(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
+	if dInfo.Status == 0 {
+		dInfo.ABandwidth = nil
+		dInfo.ACpu = nil
+		dInfo.ADisk = nil
+		dInfo.AMemory = nil
+	}
 	//检查虚拟机所有者
 	t, _ := template.ParseFiles("html/alarm.html")
 	t.Execute(w, dInfo)
