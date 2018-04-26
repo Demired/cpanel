@@ -36,3 +36,14 @@ type Watch struct {
 	Memory int
 	Ctime  int
 }
+
+type Alarm struct {
+	ID        int
+	UID       int
+	Vname     string
+	CPU       int
+	Bandwidth int
+	Memory    int
+	Disk      int
+	Ctime     time.Time
+}

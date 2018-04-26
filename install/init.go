@@ -47,6 +47,16 @@ func Init() {
                 Write INT NOT NULL,
                 Ctime INT NOT NULL
             );
+            CREATE TABLE IF NOT EXISTS Alarm (
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                UID INT NOT NULL,
+                Vname CHAR(20),
+                CPU INT NOT NULL,
+                Memory INT NOT NULL,
+                Disk INT NOT NULL,
+                Bandwidth INT NOT NULL,
+                Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+            );
             // CREATE TABLE IF NOT EXISTS billing (
             //     ID INTEGER PRIMARY KEY AUTOINCREMENT,
             //     UID INT NOT NULL,

@@ -22,7 +22,7 @@
             <ul class="nav navbar-nav">
                 <li><a href="/"> 首页 </a></li>
                 <li><a href="/list">虚拟机列表</a></li>
-                <li class="active"><a href="/create.html">创建虚拟机</a></li>
+                <li><a href="/create.html">创建虚拟机</a></li>
             </ul>
         </div>
     </div>
@@ -62,7 +62,7 @@
                     <input type="text" name="bandwidth" value="{{with .bandwidth}}{{.}}{{end}}"> (%)
                 </td>
             </tr>
-            <input type="hidden" name="vname" value="{{.Vname}}">
+            <input type="hidden" name="Vname" id="Vname" value="{{.Vname}}">
         </table>
         <button type="button" class="btn btn-default" id="submit">确定</button>
     </div>
@@ -71,10 +71,10 @@
     //页面加载完毕
     $("#submit").click(function(){
         var p = {};
-        p.sys = $("#sys").val();
-        p.vcpu = $("#vcpu").val();
-        p.vmemory = $("#vmemory").val();
-        p.vpasswd = $("#vpasswd").val();
+        p.Vname = $("#Vname").val();
+        p.cpu = $("#cpu").val();
+        p.memeory = $("#memeory").val();
+        p.disk = $("#disk").val();
         p.bandwidth = $("#bandwidth").val();
         $.post("/alarm",p,function(d){
             alert(d.msg);
