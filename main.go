@@ -100,11 +100,6 @@ func watch() {
 					cLog.Warn("读取虚拟机信息失败", err.Error())
 					continue
 				}
-				intfaceInfo, err := dom.InterfaceStats("18:a9:05:3c:ba:ee")
-				if err != nil {
-					cLog.Warn(err.Error())
-				}
-				fmt.Println(intfaceInfo)
 				var cpurate int
 				if lastCPUTime, ok := t[name]; ok {
 					cpurate = int(float32((info.CpuTime-lastCPUTime)*100) / float32(20*info.NrVirtCpu*10000000))
