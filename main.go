@@ -48,6 +48,8 @@ func main() {
 	http.HandleFunc("/create", createAPI)
 	http.HandleFunc("/favicon.ico", favicon)
 	http.HandleFunc("/repasswd.html", repasswd)
+	http.HandleFunc("/alarm.html", alarm)
+	http.HandleFunc("/alarm", alarmAPI)
 	http.HandleFunc("/repasswd", repasswdAPI)
 	http.HandleFunc("/undefine", undefine)
 	http.HandleFunc("/edit.html", edit)
@@ -393,7 +395,28 @@ func reboot(w http.ResponseWriter, req *http.Request) {
 }
 
 func editAPI(w http.ResponseWriter, req *http.Request) {
+	if req.Method != "POST" {
+		http.Redirect(w, req, "/create.html", http.StatusFound)
+		return
+	}
+	vmemory, err := strconv.Atoi(req.PostFormValue("vmemory"))
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "内存大小必须为整数"})
+		w.Write(msg)
+		return
+	}
+}
 
+func alarm(w http.ResponseWriter, req *http.Request) {
+	t, _ := template.ParseFiles("html/alarm.html")
+	t.Execute(w, nil)
+}
+
+func alarmAPI(w http.ResponseWriter, req *http.Request) {
+	if req.Method != "POST" {
+		http.Redirect(w, req, "/create.html", http.StatusFound)
+		return
+	}
 }
 
 //创建虚拟机
