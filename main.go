@@ -145,7 +145,7 @@ func create(w http.ResponseWriter, req *http.Request) {
 // }
 
 func edit(w http.ResponseWriter, req *http.Request) {
-	vname := req.URL.Query().Get("vname")
+	Vname := req.URL.Query().Get("Vname")
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
 	if err != nil {
 		cLog.Warn("打开数据库失败", err.Error())
@@ -153,7 +153,7 @@ func edit(w http.ResponseWriter, req *http.Request) {
 	}
 	orm := beedb.New(db)
 	var vvm table.Virtual
-	err = orm.SetTable("Virtual").Where("Vname = ?", vname).Find(&vvm)
+	err = orm.SetTable("Virtual").Where("Vname = ?", Vname).Find(&vvm)
 	if err != nil {
 		cLog.Warn(err.Error())
 		return
@@ -164,8 +164,8 @@ func edit(w http.ResponseWriter, req *http.Request) {
 }
 
 func info(w http.ResponseWriter, req *http.Request) {
-	vname := req.URL.Query().Get("vname")
-	dom, err := control.Connect().LookupDomainByName(vname)
+	Vname := req.URL.Query().Get("Vname")
+	dom, err := control.Connect().LookupDomainByName(Vname)
 	if err != nil {
 		cLog.Warn(err.Error())
 	}
@@ -186,7 +186,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 	}
 	orm := beedb.New(db)
 	var vvm table.Virtual
-	err = orm.SetTable("Virtual").Where("Vname = ?", vname).Find(&vvm)
+	err = orm.SetTable("Virtual").Where("Vname = ?", Vname).Find(&vvm)
 	if err != nil {
 		cLog.Warn(err.Error())
 		return
@@ -237,7 +237,7 @@ func loadJSON(w http.ResponseWriter, req *http.Request) {
 }
 
 func repasswd(w http.ResponseWriter, req *http.Request) {
-	vname := req.URL.Query().Get("vname")
+	Vname := req.URL.Query().Get("Vname")
 	db, _ := sql.Open("sqlite3", "./db/cpanel.db")
 	orm := beedb.New(db)
 	var watch table.Watch
@@ -248,7 +248,7 @@ func repasswd(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	t, _ := template.ParseFiles("html/repasswd.html")
-	t.Execute(w, vname)
+	t.Execute(w, Vname)
 	return
 }
 
