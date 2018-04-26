@@ -35,7 +35,7 @@
                     CPU:
                 </td>
                 <td>
-                    <input type="text" name="CPU" id="CPU" value="{{with .CPU}}{{.}}{{end}}"> (%)
+                    <input type="text" name="ACPU" id="ACPU" value="{{with .ACPU}}{{.}}{{end}}"> (%)
                 </td>
             </tr>
             <tr>
@@ -43,7 +43,7 @@
                     内存:
                 </td>
                 <td>
-                    <input type="text" name="Memory" id="Memory" value="{{with .Memory}}{{.}}{{end}}"> (%)
+                    <input type="text" name="AMemory" id="AMemory" value="{{with .AMemory}}{{.}}{{end}}"> (%)
                 </td>
             </tr>
             <tr>
@@ -51,7 +51,7 @@
                     硬盘:
                 </td>
                 <td>
-                    <input type="text" name="Disk" id="Disk" value="{{with .Disk}}{{.}}{{end}}"> (%)
+                    <input type="text" name="ADisk" id="ADisk" value="{{with .ADisk}}{{.}}{{end}}"> (%)
                 </td>
             </tr>
             <tr>
@@ -59,7 +59,7 @@
                     带宽:
                 </td>
                 <td>
-                    <input type="text" name="Bandwidth" id="Bandwidth" value="{{with .Bandwidth}}{{.}}{{end}}"> (%)
+                    <input type="text" name="ABandwidth" id="ABandwidth" value="{{with .ABandwidth}}{{.}}{{end}}"> (%)
                 </td>
             </tr>
             <input type="hidden" name="Vname" id="Vname" value="{{.Vname}}">
@@ -74,10 +74,10 @@
         var p = {};
         p.Vname = $("#Vname").val();
         p.AStatus = 1;
-        p.CPU = $("#CPU").val();
-        p.Memory = $("#Memory").val();
-        p.Disk = $("#Disk").val();
-        p.Bandwidth = $("#Bandwidth").val();
+        p.ACpu = $("#ACPU").val();
+        p.AMemory = $("#AMemory").val();
+        p.ADisk = $("#ADisk").val();
+        p.ABandwidth = $("#ABandwidth").val();
         $.post("/alarm",p,function(d){
             alert(d.msg);
             if(d.ret=="v"){
