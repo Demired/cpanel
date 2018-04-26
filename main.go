@@ -412,6 +412,7 @@ func alarm(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	var dInfo table.Virtual
+	orm := beedb.New(db)
 	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Find(&dInfo)
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "发生错误", Data: err.Error()})

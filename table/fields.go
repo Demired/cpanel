@@ -23,11 +23,11 @@ type Virtual struct {
 	Etime      time.Time `json:"etime"`     //Expire time
 	Ctime      time.Time `json:"ctime"`
 	Utime      time.Time `json:"utime"`
-	ACpu       string    `json:"acpu"`
-	ABandwidth string    `json:"abandwidth"`
-	AMemory    string    `json:"amemory"`
-	ADisk      string    `json:"adisk"`
-	AStatus    string    `json:"astatus"`
+	ACpu       int       `json:"acpu"`
+	ABandwidth int       `json:"abandwidth"`
+	AMemory    int       `json:"amemory"`
+	ADisk      int       `json:"adisk"`
+	AStatus    int       `json:"astatus"`
 }
 
 type Watch struct {
