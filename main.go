@@ -443,6 +443,7 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 	alarm.Memory = Memory
 	alarm.Disk = Disk
 	alarm.Bandwidth = Bandwidth
+	alarm.Ctime = time.Now()
 	fmt.Println(alarm)
 
 }
