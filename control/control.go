@@ -21,12 +21,12 @@ func Start(vname string) error {
 	return dom.Create()
 }
 
-func Beedb() beedb.Model,error {
+func Beedb() (beedb.Model, error) {
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
-	return beedb.New(db),nil
+	return beedb.New(db), nil
 }
 
 func CheckEtime(Vname string) error {
