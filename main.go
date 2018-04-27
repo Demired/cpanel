@@ -2,6 +2,8 @@ package main
 
 import (
 	"cpanel/control"
+	"cpanel/log"
+	"cpanel/loop"
 	"cpanel/table"
 	"cpanel/tools"
 	"encoding/json"
@@ -10,31 +12,19 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"strings"
 	"text/template"
 	"time"
 
-	"github.com/astaxie/beego/logs"
-	libvirt "github.com/libvirt/libvirt-go"
 	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/Demired/rpwd"
 )
 
-var q = make(chan string) //设置初始密码的chan
-
-var mac = make(chan string) //获取初始内网ip寄存的mac地址
-
-var cLog = logs.NewLogger(1)
-
-var logFile = "/var/log/cpanel.log"
+var cLog = log.CLog
 
 func main() {
-	cLog.SetLogger("file", `{"filename":"`+logFile+`"}`)
-	cLog.SetLevel(logs.LevelInformational)
-
-	go watch()
-	go workQueue()
+	go loop.Watch()
+	go loop.WorkQueue()
 	http.HandleFunc("/", index)
 	http.HandleFunc("/edit", editAPI)
 	http.HandleFunc("/list", list)
@@ -63,61 +53,6 @@ func index(w http.ResponseWriter, req *http.Request) {
 func favicon(w http.ResponseWriter, req *http.Request) {
 	path := "./html/images/favicon.ico"
 	http.ServeFile(w, req, path)
-}
-
-func watch() {
-	var t = make(map[string]uint64)
-	w := time.NewTicker(time.Second * 20)
-	for {
-		select {
-		case <-w.C:
-			doms, err := control.Connect().ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_ACTIVE)
-			if err != nil {
-				cLog.Warn(err.Error())
-				continue
-			}
-			orm, err := control.Bdb()
-			if err != nil {
-				cLog.Warn(err.Error())
-				return
-			}
-			for _, dom := range doms {
-				name, err := dom.GetName()
-				if err != nil {
-					cLog.Warn(err.Error())
-					continue
-				}
-				info, err := dom.GetInfo()
-				if err != nil {
-					cLog.Warn(err.Error())
-					continue
-				}
-				var virtual table.Virtual
-				if err := orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", name).Find(&virtual); err != nil {
-					cLog.Warn("读取虚拟机信息失败", err.Error())
-					continue
-				}
-				var cpurate int
-				if lastCPUTime, ok := t[name]; ok {
-					cpurate = int(float32((info.CpuTime-lastCPUTime)*100) / float32(20*info.NrVirtCpu*10000000))
-				}
-				if cpurate < 1 {
-					cpurate = 1
-				}
-				var watch table.Watch
-				watch.CPU = cpurate
-				watch.Vname = name
-				watch.Ctime = int(time.Now().Unix())
-				watch.Memory = int(info.Memory)
-				if err = orm.SetTable("Watch").SetPK("ID").Save(&watch); err != nil {
-					cLog.Warn("写入数据失败", err.Error())
-					continue
-				}
-				t[name] = info.CpuTime
-				dom.Free()
-			}
-		}
-	}
 }
 
 func create(w http.ResponseWriter, req *http.Request) {
@@ -578,7 +513,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	q <- fmt.Sprintf("%s/%s", vInfo.Vname, vInfo.Passwd)
+	loop.InitPass <- fmt.Sprintf("%s/%s", vInfo.Vname, vInfo.Passwd)
 	msg, _ := json.Marshal(er{Ret: "v", Msg: fmt.Sprintf("你的虚拟机密码是：%s", vInfo.Passwd)})
 	w.Write(msg)
 }
@@ -611,21 +546,6 @@ func undefine(w http.ResponseWriter, req *http.Request) {
 	}
 	msg, _ := json.Marshal(er{Ret: "v", Msg: "已删除"})
 	w.Write(msg)
-}
-
-func workQueue() {
-	for {
-		select {
-		case str := <-q:
-			by := strings.Split(str, "/")
-			err := control.Start(by[0])
-			if err != nil {
-				fmt.Println(err.Error())
-			}
-			time.Sleep(1 * time.Minute)
-			control.SetPasswd(by[0], "root", by[1])
-		}
-	}
 }
 
 func createKvmXML(tvm table.Virtual) string {
