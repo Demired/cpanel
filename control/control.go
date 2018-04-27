@@ -24,7 +24,7 @@ func Start(vname string) error {
 func Beedb() (beedb.Model, error) {
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
 	if err != nil {
-		return nil, err
+		return beedb.Model{}, err
 	}
 	return beedb.New(db), nil
 }
