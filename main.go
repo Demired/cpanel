@@ -138,10 +138,8 @@ func edit(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	orm.SetTable("Virtual").Where("Vname = ?", Vname).Find(&vvm)
-
-	fmt.Println(Vname)
 	t, _ := template.ParseFiles("html/create.html")
-	t.Execute(w, nil)
+	t.Execute(w, vvm)
 }
 
 func info(w http.ResponseWriter, req *http.Request) {
