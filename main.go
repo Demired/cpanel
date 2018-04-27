@@ -137,11 +137,8 @@ func edit(w http.ResponseWriter, req *http.Request) {
 		cLog.Warn(err.Error())
 		return
 	}
-	// err = orm.SetTable("Virtual").Where("Vname = ?", Vname).Find(&vvm)
-	// if err != nil {
-	// 	cLog.Warn(err.Error())
-	// 	return
-	// }
+	orm.SetTable("Virtual").Where("Vname = ?", Vname).Find(&vvm)
+
 	fmt.Println(Vname)
 	t, _ := template.ParseFiles("html/create.html")
 	t.Execute(w, nil)
