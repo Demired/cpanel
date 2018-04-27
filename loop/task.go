@@ -78,8 +78,9 @@ func Watch() {
 					continue
 				}
 				//检查是否超过阀值
-				if virtual.ACpu > cpurate/1000 {
+				if cpurate/100 > virtual.ACpu {
 					Alarm <- fmt.Sprintf("cpu/%s", name)
+					cLog.Warn("in alarm")
 				}
 				t[name] = info.CpuTime
 				dom.Free()
@@ -102,6 +103,7 @@ func WorkQueue() {
 				control.SetPasswd(data[0], "root", data[1])
 			}()
 		case str := <-Alarm:
+			cLog.Warn("out alarm")
 			data := strings.Split(str, "/")
 			//发短信 邮件 通知
 			cLog.Warn("%s,%s使用率过高超越阀值", data[1], data[0])
