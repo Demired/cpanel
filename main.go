@@ -116,7 +116,6 @@ func watch() {
 				t[name] = info.CpuTime
 				dom.Free()
 			}
-			db.Close()
 		}
 	}
 }
@@ -221,7 +220,7 @@ func repasswd(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	var watch table.Watch
-	err := orm.SetTable("Watch").Find(&watch)
+	err = orm.SetTable("Watch").Find(&watch)
 	if err != nil {
 		cLog.Warn(err.Error())
 		http.Redirect(w, req, "/list", http.StatusFound)
