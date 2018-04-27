@@ -4,7 +4,6 @@ import (
 	"cpanel/control"
 	"cpanel/table"
 	"cpanel/tools"
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -15,7 +14,6 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/astaxie/beedb"
 	"github.com/astaxie/beego/logs"
 	libvirt "github.com/libvirt/libvirt-go"
 	_ "github.com/mattn/go-sqlite3"
@@ -78,12 +76,11 @@ func watch() {
 				cLog.Warn(err.Error())
 				continue
 			}
-			db, err := sql.Open("sqlite3", "./db/cpanel.db")
+			orm, err := control.Bdb()
 			if err != nil {
-				cLog.Warn("打开数据库失败", err.Error())
-				continue
+				cLog.Warn(err.Error())
+				return
 			}
-			orm := beedb.New(db)
 			for _, dom := range doms {
 				name, err := dom.GetName()
 				if err != nil {
@@ -158,12 +155,11 @@ func info(w http.ResponseWriter, req *http.Request) {
 			cLog.Warn(err.Error())
 		}
 	}
-	db, err := sql.Open("sqlite3", "./db/cpanel.db")
+	orm, err := control.Bdb()
 	if err != nil {
-		cLog.Warn("打开数据库失败", err.Error())
+		cLog.Warn(err.Error())
 		return
 	}
-	orm := beedb.New(db)
 	var vvm table.Virtual
 	err = orm.SetTable("Virtual").Where("Vname = ?", Vname).Find(&vvm)
 	if err != nil {
@@ -178,8 +174,11 @@ func info(w http.ResponseWriter, req *http.Request) {
 func loadJSON(w http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
 	Vname := req.URL.Query().Get("Vname")
-	db, _ := sql.Open("sqlite3", "./db/cpanel.db")
-	defer db.Close()
+	orm, err := control.Bdb()
+	if err != nil {
+		cLog.Warn(err.Error())
+		return
+	}
 	startTime, err := strconv.Atoi(req.URL.Query().Get("start"))
 	if err != nil {
 		startTime = int(time.Now().Unix()) - 3600
@@ -189,7 +188,6 @@ func loadJSON(w http.ResponseWriter, req *http.Request) {
 		endTime = int(time.Now().Unix())
 	}
 	var watchs []table.Watch
-	orm := beedb.New(db)
 	err = orm.SetTable("Watch").Where("Vname = ? and Ctime > ? and Ctime < ?", Vname, startTime, endTime).FindAll(&watchs)
 	if err != nil {
 		cLog.Warn(err.Error())
@@ -217,8 +215,11 @@ func loadJSON(w http.ResponseWriter, req *http.Request) {
 
 func repasswd(w http.ResponseWriter, req *http.Request) {
 	Vname := req.URL.Query().Get("Vname")
-	db, _ := sql.Open("sqlite3", "./db/cpanel.db")
-	orm := beedb.New(db)
+	orm, err := control.Bdb()
+	if err != nil {
+		cLog.Warn(err.Error())
+		return
+	}
 	var watch table.Watch
 	err := orm.SetTable("Watch").Find(&watch)
 	if err != nil {
@@ -233,9 +234,11 @@ func repasswd(w http.ResponseWriter, req *http.Request) {
 
 func list(w http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
-	db, err := sql.Open("sqlite3", "./db/cpanel.db")
-	defer db.Close()
-	orm := beedb.New(db)
+	orm, err := control.Bdb()
+	if err != nil {
+		cLog.Warn(err.Error())
+		return
+	}
 	var vvvm []table.Virtual
 	err = orm.SetTable("Virtual").Where("Status = ?", "1").FindAll(&vvvm)
 	if err != nil {
@@ -384,15 +387,12 @@ func editAPI(w http.ResponseWriter, req *http.Request) {
 
 func alarm(w http.ResponseWriter, req *http.Request) {
 	Vname := req.URL.Query().Get("Vname")
-	db, err := sql.Open("sqlite3", "./db/cpanel.db")
+	orm, err := control.Bdb()
 	if err != nil {
-		cLog.Info(err.Error())
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "打开失败", Data: err.Error()})
-		w.Write(msg)
+		cLog.Warn(err.Error())
 		return
 	}
 	var dInfo table.Virtual
-	orm := beedb.New(db)
 	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Find(&dInfo)
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "发生错误", Data: err.Error()})
@@ -420,15 +420,12 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, "/create.html", http.StatusFound)
 		return
 	}
-	db, err := sql.Open("sqlite3", "./db/cpanel.db")
+	orm, err := control.Bdb()
 	if err != nil {
-		cLog.Info(err.Error())
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "打开失败", Data: err.Error()})
-		w.Write(msg)
+		cLog.Warn(err.Error())
 		return
 	}
 	var dInfo table.Virtual
-	orm := beedb.New(db)
 	Vname := req.PostFormValue("Vname")
 	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Find(&dInfo)
 	if err != nil {
@@ -570,14 +567,11 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	db, err := sql.Open("sqlite3", "./db/cpanel.db")
+	orm, err := control.Bdb()
 	if err != nil {
-		cLog.Info(err.Error())
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "打开失败", Data: err.Error()})
-		w.Write(msg)
+		cLog.Warn(err.Error())
 		return
 	}
-	orm := beedb.New(db)
 	err = orm.SetTable("Virtual").SetPK("ID").Save(&vInfo)
 	if err != nil {
 		cLog.Info(err.Error())
@@ -595,14 +589,11 @@ func undefine(w http.ResponseWriter, req *http.Request) {
 	Vname := req.PostFormValue("Vname")
 	disk := fmt.Sprintf("/virt/disk/%s.qcow2", Vname)
 	os.Remove(disk)
-	db, err := sql.Open("sqlite3", "./db/cpanel.db")
+	orm, err := control.Bdb()
 	if err != nil {
 		cLog.Warn(err.Error())
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "打开失败", Data: err.Error()})
-		w.Write(msg)
 		return
 	}
-	orm := beedb.New(db)
 	t := make(map[string]interface{})
 	t["Status"] = 0
 	_, err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Update(t)
