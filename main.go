@@ -142,8 +142,9 @@ func edit(w http.ResponseWriter, req *http.Request) {
 	// 	cLog.Warn(err.Error())
 	// 	return
 	// }
+	fmt.Println(Vname)
 	t, _ := template.ParseFiles("html/create.html")
-	t.Execute(w, map[string]struct{"Vname":Vname})
+	t.Execute(w, nil)
 }
 
 func info(w http.ResponseWriter, req *http.Request) {
