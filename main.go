@@ -143,7 +143,6 @@ func edit(w http.ResponseWriter, req *http.Request) {
 		cLog.Warn(err.Error())
 		return
 	}
-	fmt.Println(vvm)
 	t, _ := template.ParseFiles("html/create.html")
 	t.Execute(w, vvm)
 }

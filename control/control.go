@@ -21,6 +21,15 @@ func Start(vname string) error {
 	return dom.Create()
 }
 
+func db() {
+	db, err := sql.Open("sqlite3", "./db/cpanel.db")
+	if err != nil {
+		cLog.Warn("打开数据库失败", err.Error())
+		return
+	}
+	orm := beedb.New(db)
+}
+
 func CheckEtime(Vname string) error {
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
 	if err != nil {
