@@ -1,10 +1,15 @@
 package control
 
 import (
+	"cpanel/table"
+	"database/sql"
+	"errors"
 	"fmt"
+	"time"
 
 	"github.com/Demired/rpwd"
 	"github.com/amoghe/go-crypt"
+	"github.com/astaxie/beedb"
 	libvirt "github.com/libvirt/libvirt-go"
 )
 
@@ -14,6 +19,22 @@ func Start(vname string) error {
 		return err
 	}
 	return dom.Create()
+}
+
+func CheckEtime(Vname string) error {
+	db, err := sql.Open("sqlite3", "./db/cpanel.db")
+	if err != nil {
+		return err
+	}
+	var dInfo table.Virtual
+	orm := beedb.New(db)
+	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Find(&dInfo)
+	if err != nil {
+		return err
+	}
+	if time.Now().After(dInfo.Etime) {
+		return errors.New("虚拟机到期")
+	}
 }
 
 func Connect() *libvirt.Connect {

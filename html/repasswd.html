@@ -42,7 +42,7 @@
     $("#submit").click(function(){
         var p = {}
         p.passwd = $("#vpasswd").val()
-        p.vname = $("#vname").val()
+        p.Vname = $("#vname").val()
         $.post("/repasswd",p,function(d){
             alert(d.msg);
             if(d.ret=="v"){

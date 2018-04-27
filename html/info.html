@@ -177,10 +177,10 @@
     </div>
 </body>
 <script>
-    var vname = "{{.Vname}}"
+    var Vname = "{{.Vname}}"
     var control = {};
     control.start = function(){
-        $.post("/start",{vname:vname},function(d){
+        $.post("/start",{Vname:Vname},function(d){
             if(d.ret=="v"){
                 alert(d.msg)
                 location.reload('get');
@@ -188,7 +188,7 @@
         },"json")
     }
     control.shutdown = function(){
-        $.post("/shutdown",{vname:vname},function(d){
+        $.post("/shutdown",{Vname:Vname},function(d){
             if(d.ret=="v"){
                 alert(d.msg)
                 setTimeout(function(){location.reload('get')},2000)
@@ -196,7 +196,7 @@
         },"json")
     }
     control.reboot = function(){
-        $.post("/reboot",{vname:vname},function(d){
+        $.post("/reboot",{Vname:Vname},function(d){
             if(d.ret=="v"){
                 alert(d.msg)
             }
@@ -204,10 +204,10 @@
     }
     control.repasswd = function(){
         //弹出密码输入框
-        location.href = "/repasswd.html?vname={{.Vname}}"
+        location.href = "/repasswd.html?Vname={{.Vname}}"
     }
     control.edit = function(){
-        location.href = "/edit.html?vname={{.Vname}}"
+        location.href = "/edit.html?Vname={{.Vname}}"
     }
 </script>
 <script>
@@ -222,7 +222,7 @@
             useUTC: false
         }
     })
-    $.post("/load.json?vname={{.Vname}}","",function(d){
+    $.post("/load.json?Vname={{.Vname}}","",function(d){
         dd = d;
         Highcharts.chart('memory',{
             credits: {

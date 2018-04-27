@@ -129,21 +129,6 @@ func create(w http.ResponseWriter, req *http.Request) {
 	t.Execute(w, nil)
 }
 
-// func edit(w http.ResponseWriter, req *http.Request) {
-// 	vname := req.URL.Query().Get("vname")
-// 	db, _ := sql.Open("sqlite3", "./db/cpanel.db")
-// 	sql := fmt.Sprintf("SELECT Vname,IPv4,IPv6,LocalIP,Mac,Vcpu,Vmemory,Status FROM vm WHERE Vname = '%s';", vname)
-// 	rows, _ := db.Query(sql)
-// 	if rows.Next() == true {
-// 		var vvm vm
-// 		// err := rows.Scan(&vvm.Vname, &vvm.IPv4, &vvm.IPv6, &vvm.LocalIP, &vvm.Mac, &vvm.Vcpu, &vvm.Vmemory, &vvm.Status)
-// 		// if
-
-// 	}
-// 	t, _ := template.ParseFiles("html/create.html")
-// 	t.Execute(w, nil)
-// }
-
 func edit(w http.ResponseWriter, req *http.Request) {
 	Vname := req.URL.Query().Get("Vname")
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
@@ -198,7 +183,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 
 func loadJSON(w http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
-	vname := req.URL.Query().Get("vname")
+	Vname := req.URL.Query().Get("Vname")
 	db, _ := sql.Open("sqlite3", "./db/cpanel.db")
 	defer db.Close()
 	startTime, err := strconv.Atoi(req.URL.Query().Get("start"))
@@ -211,13 +196,13 @@ func loadJSON(w http.ResponseWriter, req *http.Request) {
 	}
 	var watchs []table.Watch
 	orm := beedb.New(db)
-	err = orm.SetTable("Watch").Where("Vname = ? and Ctime > ? and Ctime < ?", vname, startTime, endTime).FindAll(&watchs)
+	err = orm.SetTable("Watch").Where("Vname = ? and Ctime > ? and Ctime < ?", Vname, startTime, endTime).FindAll(&watchs)
 	if err != nil {
 		cLog.Warn(err.Error())
 		return
 	}
 	var virtual table.Virtual
-	err = orm.SetTable("Virtual").Where("Vname = ?", vname).Find(&virtual)
+	err = orm.SetTable("Virtual").Where("Vname = ?", Vname).Find(&virtual)
 	if err != nil {
 		cLog.Warn(err.Error())
 		return
@@ -280,7 +265,7 @@ func list(w http.ResponseWriter, req *http.Request) {
 	t.Execute(w, vvvm)
 }
 
-func createSysDisk(vname, mirror string) (w int64, err error) {
+func createSysDisk(Vname, mirror string) (w int64, err error) {
 	mirrorPath := fmt.Sprintf("/virt/mirror/%s.qcow2", mirror)
 	srcFile, err := os.Open(mirrorPath)
 	if err != nil {
@@ -288,7 +273,7 @@ func createSysDisk(vname, mirror string) (w int64, err error) {
 		return 0, err
 	}
 	defer srcFile.Close()
-	diskPath := fmt.Sprintf("/virt/disk/%s.qcow2", vname)
+	diskPath := fmt.Sprintf("/virt/disk/%s.qcow2", Vname)
 	desFile, err := os.Create(diskPath)
 	if err != nil {
 		fmt.Println(err)
@@ -298,29 +283,27 @@ func createSysDisk(vname, mirror string) (w int64, err error) {
 }
 
 func start(w http.ResponseWriter, req *http.Request) {
-	time.Sleep(2 * time.Second)
 	defer req.Body.Close()
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/", http.StatusFound)
 		return
 	}
-	vname := req.PostFormValue("vname")
-	err := control.Start(vname)
+	Vname := req.PostFormValue("Vname")
+	err := control.CheckEtime(Vname)
 	if err != nil {
-		fmt.Println(err.Error())
-		msg, err := json.Marshal(er{Ret: "e", Msg: "开机失败", Data: err.Error()})
-		if err != nil {
-			fmt.Println(err.Error())
-			return
-		}
+		cLog.Warn("检查到期:%s,%s", Vname, err.Error())
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "服务器已经到期", Data: err.Error()})
 		w.Write(msg)
 		return
 	}
-	msg, err := json.Marshal(er{Ret: "v", Msg: "正在开机"})
+	err = control.Start(Vname)
 	if err != nil {
-		fmt.Println(err.Error())
+		cLog.Warn("虚拟机开启:%s,%s", Vname, err.Error())
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "开机失败", Data: err.Error()})
+		w.Write(msg)
 		return
 	}
+	msg, _ := json.Marshal(er{Ret: "v", Msg: "正在开机"})
 	w.Write(msg)
 }
 
@@ -330,9 +313,9 @@ func repasswdAPI(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, "/", http.StatusFound)
 		return
 	}
-	vname := req.PostFormValue("vname")
+	Vname := req.PostFormValue("Vname")
 	passwd := req.PostFormValue("passwd")
-	err := control.SetPasswd(vname, "root", passwd)
+	err := control.SetPasswd(Vname, "root", passwd)
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: err.Error()})
 		w.Write(msg)
@@ -349,23 +332,26 @@ type er struct {
 }
 
 func shutdown(w http.ResponseWriter, req *http.Request) {
-	time.Sleep(2 * time.Second)
-	defer req.Body.Close()
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/", http.StatusFound)
 		return
 	}
-	vname := req.PostFormValue("vname")
-	err := control.Shutdown(vname)
+	Vname := req.PostFormValue("Vname")
+	err := control.CheckEtime(Vname)
 	if err != nil {
-		fmt.Println(err.Error())
+		cLog.Warn("检查到期：%s,%s", Vname, err.Error())
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "服务器已到期", Data: err.Error()})
+		w.Write(msg)
 		return
 	}
-	msg, err := json.Marshal(er{Ret: "v", Msg: "正在关机"})
+	err = control.Shutdown(Vname)
 	if err != nil {
-		fmt.Println(err.Error())
+		cLog.Warn(err.Error())
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "关机失败", Data: err.Error()})
+		w.Write(msg)
 		return
 	}
+	msg, _ := json.Marshal(er{Ret: "v", Msg: "正在关机"})
 	w.Write(msg)
 }
 
@@ -374,8 +360,8 @@ func reboot(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, "/", http.StatusFound)
 		return
 	}
-	vname := req.PostFormValue("vname")
-	err := control.Reboot(vname)
+	Vname := req.PostFormValue("Vname")
+	err := control.Reboot(Vname)
 	if err != nil {
 		cLog.Info(err.Error())
 		return
@@ -612,8 +598,8 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 
 func undefine(w http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
-	vname := req.PostFormValue("vname")
-	disk := fmt.Sprintf("/virt/disk/%s.qcow2", vname)
+	Vname := req.PostFormValue("Vname")
+	disk := fmt.Sprintf("/virt/disk/%s.qcow2", Vname)
 	os.Remove(disk)
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
 	if err != nil {
@@ -625,14 +611,14 @@ func undefine(w http.ResponseWriter, req *http.Request) {
 	orm := beedb.New(db)
 	t := make(map[string]interface{})
 	t["Status"] = 0
-	_, err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Update(t)
+	_, err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Update(t)
 	if err != nil {
 		cLog.Warn(err.Error())
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "删除失败", Data: err.Error()})
 		w.Write(msg)
 		return
 	}
-	err = control.Undefine(vname)
+	err = control.Undefine(Vname)
 	if err != nil {
 		cLog.Error(err.Error())
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "销毁失败", Data: err.Error()})
