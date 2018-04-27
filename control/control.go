@@ -35,6 +35,7 @@ func CheckEtime(Vname string) error {
 	if time.Now().After(dInfo.Etime) {
 		return errors.New("虚拟机到期")
 	}
+	return nil
 }
 
 func Connect() *libvirt.Connect {
