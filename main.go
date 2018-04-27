@@ -131,13 +131,8 @@ func create(w http.ResponseWriter, req *http.Request) {
 
 func edit(w http.ResponseWriter, req *http.Request) {
 	Vname := req.URL.Query().Get("Vname")
-	db, err := sql.Open("sqlite3", "./db/cpanel.db")
-	if err != nil {
-		cLog.Warn("打开数据库失败", err.Error())
-		return
-	}
-	orm := beedb.New(db)
 	var vvm table.Virtual
+	orm := control.Beedb()
 	err = orm.SetTable("Virtual").Where("Vname = ?", Vname).Find(&vvm)
 	if err != nil {
 		cLog.Warn(err.Error())
