@@ -74,14 +74,12 @@ func Watch() {
 						cLog.Warn("关机失败", err.Error())
 						continue
 					}
-					Bill <- fmt.Sprintf("%s", Vname)
-					cLog.Info("%s，到期关机", Vname)
+					Bill <- fmt.Sprintf("%s", name)
 					continue
 				}
 				//检查是否超过阀值
 				if virtual.ACpu > cpurate/1000 {
-					cLog.Warn("%s,cpu利用率超过阀值", Vname)
-					Alarm <- fmt.Sprintf("cpu/%s", Vname)
+					Alarm <- fmt.Sprintf("cpu/%s", name)
 				}
 				t[name] = info.CpuTime
 				dom.Free()
