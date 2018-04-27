@@ -132,7 +132,7 @@ func create(w http.ResponseWriter, req *http.Request) {
 func edit(w http.ResponseWriter, req *http.Request) {
 	Vname := req.URL.Query().Get("Vname")
 	var vvm table.Virtual
-	orm, err := control.Beedb()
+	orm, err := control.Bdb()
 	if err != nil {
 		cLog.Warn(err.Error())
 		return

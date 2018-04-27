@@ -21,7 +21,7 @@ func Start(vname string) error {
 	return dom.Create()
 }
 
-func Beedb() (beedb.Model, error) {
+func Bdb() (beedb.Model, error) {
 	db, err := sql.Open("sqlite3", "./db/cpanel.db")
 	if err != nil {
 		return beedb.Model{}, err
