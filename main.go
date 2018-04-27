@@ -143,7 +143,7 @@ func edit(w http.ResponseWriter, req *http.Request) {
 	// 	return
 	// }
 	t, _ := template.ParseFiles("html/create.html")
-	t.Execute(w, vvm)
+	t.Execute(w, map[string]struct{"Vname":Vname})
 }
 
 func info(w http.ResponseWriter, req *http.Request) {
