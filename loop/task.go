@@ -103,16 +103,11 @@ func WorkQueue() {
 			}()
 		case str := <-Alarm:
 			data := strings.Split(str, "/")
-			go func() {
-				//发短信 邮件 通知
-				cLog.Warn("%s,%s使用率过高超越阀值", data[1], data[0])
-			}()
+			//发短信 邮件 通知
+			cLog.Warn("%s,%s使用率过高超越阀值", data[1], data[0])
 		case Vname := <-Bill:
-			go func() {
-				fmt.Println(Vname)
-				cLog.Warn("%s已到期", Vname)
-				//发短信 邮件 通知
-			}()
+			cLog.Warn("%s已到期", Vname)
+			//发短信 邮件 通知
 		}
 	}
 }
