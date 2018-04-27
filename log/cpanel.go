@@ -6,7 +6,7 @@ import (
 
 var CLog = logs.NewLogger(1)
 
-var logFile = "./cpanel.log"
+var logFile = "/var/log/cpanel.log"
 
 func init() {
 	CLog.SetLogger("file", `{"filename":"`+logFile+`"}`)
