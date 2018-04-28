@@ -51,7 +51,6 @@ func Connect() *libvirt.Connect {
 	if err != nil {
 		return nil
 	}
-	defer conn.Close()
 	return conn
 }
 
@@ -60,7 +59,6 @@ func GetState(vname string) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	defer dom.Free()
 	s, _, _ := dom.GetState()
 	return int(s), nil
 }
@@ -70,7 +68,6 @@ func Shutdown(vname string) error {
 	if err != nil {
 		return err
 	}
-	defer dom.Free()
 	return dom.Shutdown()
 }
 
@@ -79,7 +76,6 @@ func Undefine(vname string) error {
 	if err != nil {
 		return err
 	}
-	defer dom.Free()
 	return dom.Undefine()
 }
 
@@ -88,7 +84,6 @@ func Reboot(vname string) error {
 	if err != nil {
 		return err
 	}
-	defer dom.Free()
 	return dom.Reboot(libvirt.DOMAIN_REBOOT_DEFAULT)
 }
 
