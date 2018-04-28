@@ -660,7 +660,7 @@ func createKvmXML(tvm table.Virtual) string {
 			</disk>
 			<interface type='bridge'>
 				<mac address='` + tvm.Mac + `'/>
-				<source bridge='` + tvm.Br + `'/>
+				<source network='default'/>
 				<bandwidth>
 					<inbound average='` + fmt.Sprintf("%d", tvm.Bandwidth*1000) + `' peak='` + fmt.Sprintf("%d", tvm.Bandwidth*3000) + `' burst='` + fmt.Sprintf("%d", tvm.Bandwidth*1024) + `'/>
 					<outbound average='` + fmt.Sprintf("%d", tvm.Bandwidth*1000) + `' peak='` + fmt.Sprintf("%d", tvm.Bandwidth*3000) + `' burst='` + fmt.Sprintf("%d", tvm.Bandwidth*1024) + `'/>
