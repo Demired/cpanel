@@ -69,6 +69,10 @@ func edit(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	orm.SetTable("Virtual").Where("Vname = ?", Vname).Find(&vvm)
+	if time.Now().After(vvm.Etime) {
+		w.Write([]byte("服务器已到期"))
+		return
+	}
 	t, _ := template.ParseFiles("html/create.html")
 	t.Execute(w, vvm)
 }
@@ -310,13 +314,94 @@ func editAPI(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, "/create.html", http.StatusFound)
 		return
 	}
+	orm, err := control.Bdb()
+	if err != nil {
+		cLog.Warn(err.Error())
+		return
+	}
+	var sourceVirtual table.Virtual
+	vname := req.PostFormValue("vname")
+	err := orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Find(&sourceVirtual)
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "机器不存在"})
+		w.Write(msg)
+		return
+	}
+	if time.Now().After(sourceVirtual.Etime) {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "机器已经到期"})
+		w.Write(msg)
+		return
+	}
+
 	vmemory, err := strconv.Atoi(req.PostFormValue("vmemory"))
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "内存大小必须为整数"})
 		w.Write(msg)
 		return
 	}
-	fmt.Println(vmemory)
+	if sourceVirtual.Vmemory == vmemory {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: ""})
+		w.Write(msg)
+	}
+
+	vcpu, err := strconv.Atoi(req.PostFormValue("vcpu"))
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "cpu个数必须为整数"})
+		w.Write(msg)
+		return
+	}
+
+	bandwidth, err := strconv.Atoi(req.PostFormValue("bandwidth"))
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "带宽必须位整数"})
+		w.Write(msg)
+		return
+	}
+
+	sys := req.PostFormValue("sys")
+	if sys == "" {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "镜像必填"})
+		w.Write(msg)
+		return
+	}
+
+	var vInfo table.Virtual
+	vInfo.Vname = string(rpwd.Init(8, true, true, true, false))
+	vInfo.Vcpu = vcpu
+	vInfo.Vmemory = vmemory
+	vInfo.Mac = tools.Rmac()
+	vInfo.Br = "br1"
+	vInfo.Status = 1
+	vInfo.Bandwidth = bandwidth
+	vInfo.Utime = time.Now()
+	vInfo.Sys = sys
+
+	_, err = createSysDisk(vInfo.Vname, vInfo.Sys)
+	if err != nil {
+		cLog.Info(err.Error())
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机硬盘失败", Data: err.Error()})
+		w.Write(msg)
+		return
+	}
+	xml := createKvmXML(vInfo)
+	_, err = control.Connect().DomainDefineXML(xml)
+	if err != nil {
+		cLog.Info(err.Error())
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机失败", Data: err.Error()})
+		w.Write(msg)
+		return
+	}
+
+	err = orm.SetTable("Virtual").SetPK("ID").Save(&vInfo)
+	if err != nil {
+		cLog.Info(err.Error())
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
+		w.Write(msg)
+		return
+	}
+	loop.InitPass <- fmt.Sprintf("%s/%s", vInfo.Vname, vInfo.Passwd)
+	msg, _ := json.Marshal(er{Ret: "v", Msg: fmt.Sprintf("你的虚拟机密码是：%s", vInfo.Passwd)})
+	w.Write(msg)
 }
 
 func alarm(w http.ResponseWriter, req *http.Request) {
