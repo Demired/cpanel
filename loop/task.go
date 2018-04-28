@@ -83,7 +83,6 @@ func Watch() {
 					cLog.Warn("in alarm")
 				}
 				t[name] = info.CpuTime
-				dom.Free()
 			}
 		}
 	}
