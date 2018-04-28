@@ -321,7 +321,7 @@ func editAPI(w http.ResponseWriter, req *http.Request) {
 	}
 	var sourceVirtual table.Virtual
 	vname := req.PostFormValue("vname")
-	err := orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Find(&sourceVirtual)
+	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Find(&sourceVirtual)
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "机器不存在"})
 		w.Write(msg)
@@ -339,10 +339,6 @@ func editAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	if sourceVirtual.Vmemory == vmemory {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: ""})
-		w.Write(msg)
-	}
 
 	vcpu, err := strconv.Atoi(req.PostFormValue("vcpu"))
 	if err != nil {
@@ -356,6 +352,10 @@ func editAPI(w http.ResponseWriter, req *http.Request) {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "带宽必须位整数"})
 		w.Write(msg)
 		return
+	}
+
+	if sourceVirtual.Vmemory != vmemory {
+
 	}
 
 	sys := req.PostFormValue("sys")
