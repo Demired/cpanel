@@ -30,12 +30,11 @@ func Bdb() (beedb.Model, error) {
 }
 
 func CheckEtime(Vname string) error {
-	db, err := sql.Open("sqlite3", "./db/cpanel.db")
+	var dInfo table.Virtual
+	orm, err := Bdb()
 	if err != nil {
 		return err
 	}
-	var dInfo table.Virtual
-	orm := beedb.New(db)
 	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Find(&dInfo)
 	if err != nil {
 		return err
