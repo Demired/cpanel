@@ -39,7 +39,7 @@ func CheckEtime(Vname string) error {
 	if err != nil {
 		return err
 	}
-	if time.Now().Before(dInfo.Etime) {
+	if time.Now().After(dInfo.Etime) {
 		return errors.New("虚拟机到期")
 	}
 	return nil
