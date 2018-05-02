@@ -30,6 +30,18 @@
             color: #f00;
             display: none;
         }
+        .form-button{
+            margin-top: 30px;
+            width: 100px;
+            background: #337ab7;
+            height: 40px;
+        }
+        .forget{
+            columns: #222222;
+        }
+        .register{
+            color: #337ab7
+        }
     </style>
 </head>
 <body class="login-bg">
@@ -47,7 +59,13 @@
                     <input type="password" name="passwd" id="passwd" class="form-input">
                     <div class="form-notice" id="passwd-notice"></div>
                 </div>
-                <button name="action">提交</button>
+                <div>
+                    <a href="#" class="forget">忘记密码</a>
+                    <a href="#" class="register">立即注册</a>
+                </div>
+                <div>
+                    <button name="action">提交</button>
+                </div>
             </from>
         </div>
     </div>
