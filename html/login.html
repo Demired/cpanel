@@ -15,21 +15,35 @@
             box-shadow: 0 4px 8px 0 rgba(0,0,0,.1);
             padding: 40px 35px;
         }
+        .form-name{
+            font-size: 20px;
+            color: #000033;
+        }
+        .form-input{
+            width: 100%;
+            height: 50px;
+            border-radius: 4px;
+            border: 1px solid #D9D9D9;
+        }
+        .form-notice{
+            color: #f00;
+            display: none;
+        }
     </style>
 </head>
 <body class="login-bg">
     <div class="container" style="padding-top: 80px;">
         <div class="col-lg-6 col-lg-offset-3 login-box">
             <h1>cpanel登录</h1>
-            <label for="username">用户名：
+            <from action="/login">
+                <label for="username" class="form-name">用户名：</label>
                 <input type="text" name="username" id="username">
-            </label>
-            <label for="passwd">密码：
+                <div class="form-notice" id="username-notice"></div>
+                <label for="passwd" class="form-name">密码：</label>
                 <input type="password" name="passwd" id="passwd">
-            </label>
-            <button name="action">
-                提交
-            </button>
+                <div class="form-notice" id="passwd-notice"></div>
+                <button name="action">提交</button>
+            </from>
         </div>
     </div>
 </body>
