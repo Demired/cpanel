@@ -77,11 +77,14 @@ func Watch() {
 					Bill <- fmt.Sprintf("%s", name)
 					continue
 				}
-				//检查是否超过阀值
-				if cpurate/100 > virtual.ACpu {
-					Alarm <- fmt.Sprintf("cpu/%s", name)
-					cLog.Warn("in alarm")
+				if virtual.AStatus == 1 {
+					//检查是否超过阀值
+					if cpurate/100 > virtual.ACpu {
+						Alarm <- fmt.Sprintf("cpu/%s", name)
+						cLog.Warn("in alarm")
+					}
 				}
+
 				t[name] = info.CpuTime
 			}
 		}
