@@ -25,10 +25,10 @@ var cLog = log.CLog
 func main() {
 	go loop.Watch()
 	go loop.WorkQueue()
-	http.HandleFunc("/login.html", login)
 	http.HandleFunc("/", index)
 	http.HandleFunc("/edit", editAPI)
 	http.HandleFunc("/list", list)
+	http.HandleFunc("/login.html", login)
 	http.HandleFunc("/info.html", info)
 	http.HandleFunc("/load.json", loadJSON)
 	http.HandleFunc("/start", start)
