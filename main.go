@@ -292,13 +292,11 @@ func reboot(w http.ResponseWriter, req *http.Request) {
 	err := control.Reboot(Vname)
 	if err != nil {
 		cLog.Info(err.Error())
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "重启失败", Data: err.Error()})
+		w.Write(msg)
 		return
 	}
-	msg, err := json.Marshal(er{Ret: "v", Msg: "正在重启"})
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
+	msg, _ := json.Marshal(er{Ret: "v", Msg: "正在重启"})
 	w.Write(msg)
 }
 
