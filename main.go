@@ -272,7 +272,7 @@ func shutdown(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	Vname := req.PostFormValue("Vname")
-	err = control.Shutdown(Vname)
+	err := control.Shutdown(Vname)
 	if err != nil {
 		cLog.Warn(err.Error())
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "关机失败", Data: err.Error()})
