@@ -80,6 +80,8 @@
             if(d.ret == "v"){
                 alert(d.msg);
                 location.reload('get');
+            }else if(d.ret == "e"){
+                alert(d.msg);
             }
         },"json");
         return false;

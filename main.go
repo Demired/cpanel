@@ -226,7 +226,7 @@ func start(w http.ResponseWriter, req *http.Request) {
 	Vname := req.PostFormValue("Vname")
 	err := control.CheckEtime(Vname)
 	if err != nil {
-		cLog.Warn("检查到期:%s,%s", Vname, err.Error())
+		cLog.Warn("检查到期：%s,%s", Vname, err.Error())
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "服务器已经到期", Data: err.Error()})
 		w.Write(msg)
 		return
@@ -272,13 +272,6 @@ func shutdown(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	Vname := req.PostFormValue("Vname")
-	err := control.CheckEtime(Vname)
-	if err != nil {
-		cLog.Warn("检查到期：%s,%s", Vname, err.Error())
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "服务器已到期", Data: err.Error()})
-		w.Write(msg)
-		return
-	}
 	err = control.Shutdown(Vname)
 	if err != nil {
 		cLog.Warn(err.Error())
