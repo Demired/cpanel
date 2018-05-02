@@ -78,13 +78,13 @@ func Watch() {
 					continue
 				}
 				if virtual.AStatus == 1 {
+					//TODO 连续
 					//检查是否超过阀值
 					if cpurate/100 > virtual.ACpu {
 						Alarm <- fmt.Sprintf("cpu/%s", name)
 						cLog.Warn("in alarm")
 					}
 				}
-
 				t[name] = info.CpuTime
 			}
 		}
