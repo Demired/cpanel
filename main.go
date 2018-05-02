@@ -25,6 +25,7 @@ var cLog = log.CLog
 func main() {
 	go loop.Watch()
 	go loop.WorkQueue()
+	http.HandleFunc("/login.html", login)
 	http.HandleFunc("/", index)
 	http.HandleFunc("/edit", editAPI)
 	http.HandleFunc("/list", list)
@@ -47,6 +48,11 @@ func main() {
 
 func index(w http.ResponseWriter, req *http.Request) {
 	t, _ := template.ParseFiles("html/index.html")
+	t.Execute(w, nil)
+}
+
+func login(w http.ResponseWriter, req *http.Request) {
+	t, _ := template.ParseFiles("html/login.html")
 	t.Execute(w, nil)
 }
 
@@ -625,7 +631,6 @@ func undefine(w http.ResponseWriter, req *http.Request) {
 }
 
 func createKvmXML(tvm table.Virtual) string {
-	// name := "test"
 	var templateXML = `
 	<domain type='kvm'>
 		<name>` + tvm.Vname + `</name>
