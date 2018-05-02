@@ -75,13 +75,11 @@
 </div>
 <script>
     $(".ajax").click(function () {
-        var vname = $(this).parent("td").attr("ret")
-        $.post(this.href,{vname:vname},function (d) {
+        var Vname = $(this).parent("td").attr("ret")
+        $.post(this.href,{Vname:Vname},function (d) {
+            alert(d.msg);
             if(d.ret == "v"){
-                alert(d.msg);
                 location.reload('get');
-            }else if(d.ret == "e"){
-                alert(d.msg);
             }
         },"json");
         return false;
