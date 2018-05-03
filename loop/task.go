@@ -11,7 +11,8 @@ import (
 	libvirt "github.com/libvirt/libvirt-go"
 )
 
-var InitPass = make(chan string) //设置初始密码的chan
+// var InitPass = make(chan string) //设置初始密码的chan
+var Init = make(chan string)
 
 var Bill = make(chan string)
 
@@ -46,15 +47,7 @@ func Watch() {
 					cLog.Warn(err.Error())
 					continue
 				}
-
-				intface, err := dom.InterfaceStats(fmt.Sprintf("net-%s", name))
-				if err != nil {
-					fmt.Println(err.Error())
-				} else {
-					fmt.Println(intface)
-					fmt.Println(fmt.Sprintf("rx 字节数：%d,tx 字节数：%d", intface.RxBytes, intface.TxBytes))
-				}
-
+				
 				var virtual table.Virtual
 				if err := orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", name).Find(&virtual); err != nil {
 					cLog.Warn("读取虚拟机信息失败", err.Error())
@@ -72,6 +65,14 @@ func Watch() {
 				watch.Vname = name
 				watch.Ctime = int(time.Now().Unix())
 				watch.Memory = int(info.Memory)
+				intface, err := dom.InterfaceStats(fmt.Sprintf("net-%s", name))
+				if err != nil {
+					cLog.Warn(err.Error())
+				}else{
+					fmt.Println(intface)
+					watch.Up = intface.RxBytes
+					watch.Down = intface.TxBytes
+				}
 				if err = orm.SetTable("Watch").SetPK("ID").Save(&watch); err != nil {
 					cLog.Warn("写入数据失败", err.Error())
 					continue
@@ -96,6 +97,7 @@ func Watch() {
 				}
 				t[name] = info.CpuTime
 			}
+			break
 		}
 	}
 }
@@ -103,16 +105,46 @@ func Watch() {
 func WorkQueue() {
 	for {
 		select {
-		case str := <-InitPass:
-			data := strings.Split(str, "/")
-			err := control.Start(data[0])
+		case vname := <-Init:
+			orm, err := control.Bdb()
 			if err != nil {
-				fmt.Println(err.Error())
+				cLog.Warn()
 			}
-			go func() {
-				time.Sleep(1 * time.Minute)
-				control.SetPasswd(data[0], "root", data[1])
-			}()
+			var vm table.Virtual
+			orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Find(&vm)
+			for {
+				net, _ := control.Connect().LookupNetworkByName("default")
+				dhcps, err := net.GetDHCPLeases()
+				if err != nil {
+					cLog.Warn(err.Error())
+					continue
+				}
+				for _, dhcp := range dhcps {
+					if dhcp.Mac == vm.Mac {
+						//ip地址入库
+						var date = map[string]string
+						date["LocalIP"] = dhcp.IPaddr
+						orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Update(date)
+						//设置外网ip
+						//设置密码
+						control.SetPasswd(vm.Vname, "root", vm.Passwd)
+						return
+					}
+				}
+				time.Sleep(3 * time.Second)
+			}
+
+			//
+
+			// data := strings.Split(str, "/")
+			// err := control.Start(data[0])
+			// if err != nil {
+			// 	fmt.Println(err.Error())
+			// }
+			// go func() {
+			// 	time.Sleep(1 * time.Minute)
+			// 	control.SetPasswd(data[0], "root", data[1])
+			// }()
 		case str := <-Alarm:
 			cLog.Warn("out alarm")
 			data := strings.Split(str, "/")
