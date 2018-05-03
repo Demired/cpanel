@@ -27,13 +27,17 @@ func main() {
 	go func() {
 		net, err := control.Connect().LookupNetworkByName("default")
 		if err != nil {
+			fmt.Println("---------")
 			fmt.Println(err.Error())
 			return
 		}
 		dhcp, err := net.GetDHCPLeases()
 		if err != nil {
-			fmt.Println(dhcp)
+			fmt.Println("=========")
+			fmt.Println(err.Error())
+			return
 		}
+		fmt.Println(dhcp)
 	}()
 
 	go loop.Watch()
