@@ -47,10 +47,11 @@ func Watch() {
 					continue
 				}
 
-				intface, err := dom.InterfaceStats(fmt.Sprintf("vnet-%s", name))
+				intface, err := dom.InterfaceStats(fmt.Sprintf("net-%s", name))
 				if err != nil {
 					fmt.Println(err.Error())
 				} else {
+					fmt.Println(intface)
 					fmt.Println(fmt.Sprintf("rx 字节数：%d,tx 字节数：%d", intface.RxBytes, intface.TxBytes))
 				}
 
