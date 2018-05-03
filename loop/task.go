@@ -133,7 +133,7 @@ func WorkQueue() {
 				}
 				time.Sleep(3 * time.Second)
 			}
-INITOVER:
+		INITOVER:
 		case str := <-Alarm:
 			cLog.Warn("out alarm")
 			data := strings.Split(str, "/")
