@@ -47,12 +47,11 @@ func Watch() {
 					continue
 				}
 
-				inface, err := dom.InterfaceStats("default")
+				intface, err := dom.InterfaceStats("vnet1")
 				if err != nil {
 					fmt.Println(err.Error())
 				} else {
-					fmt.Println(name)
-					fmt.Println(inface)
+					fmt.Println(intface)
 				}
 
 				var virtual table.Virtual
