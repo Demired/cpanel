@@ -70,8 +70,8 @@ func Watch() {
 					cLog.Warn(err.Error())
 				}else{
 					fmt.Println(intface)
-					watch.Up = intface.RxBytes
-					watch.Down = intface.TxBytes
+					watch.Up = int(intface.RxBytes)
+					watch.Down = int(intface.TxBytes)
 				}
 				if err = orm.SetTable("Watch").SetPK("ID").Save(&watch); err != nil {
 					cLog.Warn("写入数据失败", err.Error())
