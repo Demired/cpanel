@@ -697,7 +697,7 @@ func createKvmXML(tvm table.Virtual) string {
 					<inbound average='` + fmt.Sprintf("%d", tvm.Bandwidth*125) + `' peak='` + fmt.Sprintf("%d", tvm.Bandwidth*375) + `' burst='` + fmt.Sprintf("%d", tvm.Bandwidth*128) + `'/>
 					<outbound average='` + fmt.Sprintf("%d", tvm.Bandwidth*125) + `' peak='` + fmt.Sprintf("%d", tvm.Bandwidth*375) + `' burst='` + fmt.Sprintf("%d", tvm.Bandwidth*128) + `'/>
 				</bandwidth>
-				<target dev='` + tvm.Vname + `'/>
+				<target dev='vnet-` + tvm.Vname + `'/>
 			</interface>
 			<serial type='pty'>
 				<target port='1'/>
