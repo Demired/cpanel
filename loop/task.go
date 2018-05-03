@@ -51,6 +51,7 @@ func Watch() {
 				if err != nil {
 					fmt.Println(err.Error())
 				} else {
+					fmt.Println(name)
 					fmt.Println(inface)
 				}
 
