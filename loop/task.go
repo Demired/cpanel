@@ -122,7 +122,7 @@ func WorkQueue() {
 				for _, dhcp := range dhcps {
 					if dhcp.Mac == vm.Mac {
 						//ip地址入库
-						var date map[string]string
+						var date = make(map[string]interface{})
 						date["LocalIP"] = dhcp.IPaddr
 						orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Update(date)
 						//设置外网ip
