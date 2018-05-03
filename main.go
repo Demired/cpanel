@@ -29,6 +29,7 @@ func main() {
 	http.HandleFunc("/edit", editAPI)
 	http.HandleFunc("/list", list)
 	http.HandleFunc("/login.html", login)
+	http.HandleFunc("/login", loginAPI)
 	http.HandleFunc("/info.html", info)
 	http.HandleFunc("/load.json", loadJSON)
 	http.HandleFunc("/start", start)
@@ -54,6 +55,22 @@ func index(w http.ResponseWriter, req *http.Request) {
 func login(w http.ResponseWriter, req *http.Request) {
 	t, _ := template.ParseFiles("html/login.html")
 	t.Execute(w, nil)
+}
+
+func loginAPI(w http.ResponseWriter, req *http.Request) {
+	username := req.PostFormValue("username")
+	passwd := req.PostFormValue("passwd")
+	if username == "" {
+		msg, _ := json.Marshal(er{Ret: "e", Param: "username", Msg: "用户名不能为空"})
+		w.Write(msg)
+	}
+	if passwd == "" {
+		msg, _ := json.Marshal(er{Ret: "e", Param: "passwd", Msg: "密码不能为空"})
+		w.Write(msg)
+	}
+	orm, _ := control.Bdb()
+	orm.SetTable("")
+	w.Write()
 }
 
 func favicon(w http.ResponseWriter, req *http.Request) {

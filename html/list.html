@@ -37,6 +37,7 @@
                 <td>LocalIP</td>
                 <td>核心数</td>
                 <td>内存</td>
+                <td>带宽</td>
                 <td>运行状态</td>
                 <td>创建时间</td>
                 <td>到期时间</td>
@@ -53,6 +54,7 @@
                 <td>{{$v.LocalIP}}</td>
                 <td>{{$v.Vcpu}}</td>
                 <td>{{$v.Vmemory}}</td>
+                <td>{{$v.Bandwidth}}</td>
                 <td>{{if eq $v.Status 1}}运行中{{else}}关机中{{end}}</td>
                 <td>{{$v.Ctime.Format "2006-01-02 15:04:05"}}</td>
                 <td>{{$v.Etime.Format "2006-01-02 15:04:05"}}</td>

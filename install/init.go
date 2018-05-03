@@ -52,25 +52,19 @@ func Init() {
                 Write INT NOT NULL,
                 Ctime INT NOT NULL
             );
-            CREATE TABLE IF NOT EXISTS Alarm (
+            CREATE TABLE IF NOT EXISTS Developer (
                 ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                UID INT NOT NULL,
-                Vname CHAR(20),
-                CPU INT NOT NULL,
-                Memory INT NOT NULL,
-                Disk INT NOT NULL,
-                Status INT NOT NULL,
-                Bandwidth INT NOT NULL,
+                Username CHAR(20) NOT NULL,
+                Passwd CHAR(50) NOT NULL,
+                Tel CHAR(20) NOT NULL,
+                Email CHAR(20) NOT NULL,
+                Readname CHAR(20) NOT NULL,
+                Sex INT NOT NULL,
+                Company CHAR(20) NOT NULL,
+                City CHAR(20) NOT NULL,
                 Utime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
-            // CREATE TABLE IF NOT EXISTS billing (
-            //     ID INTEGER PRIMARY KEY AUTOINCREMENT,
-            //     UID INT NOT NULL,
-            //     VID INT NOT NULL,
-            //     Status INT NOT NULL,
-            //     Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            // );
             `
 	db.Exec(sql)
 
