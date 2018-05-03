@@ -47,7 +47,7 @@ func Watch() {
 					cLog.Warn(err.Error())
 					continue
 				}
-				
+
 				var virtual table.Virtual
 				if err := orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", name).Find(&virtual); err != nil {
 					cLog.Warn("读取虚拟机信息失败", err.Error())
@@ -68,7 +68,7 @@ func Watch() {
 				intface, err := dom.InterfaceStats(fmt.Sprintf("net-%s", name))
 				if err != nil {
 					cLog.Warn(err.Error())
-				}else{
+				} else {
 					fmt.Println(intface)
 					watch.Up = int(intface.RxBytes)
 					watch.Down = int(intface.TxBytes)
@@ -122,7 +122,7 @@ func WorkQueue() {
 				for _, dhcp := range dhcps {
 					if dhcp.Mac == vm.Mac {
 						//ip地址入库
-						var date = map[string]string
+						var date map[string]string
 						date["LocalIP"] = dhcp.IPaddr
 						orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Update(date)
 						//设置外网ip
