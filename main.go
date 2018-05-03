@@ -25,13 +25,13 @@ var cLog = log.CLog
 func main() {
 
 	go func() {
-		net,err control.Connect().LookupNetworkByName("default")
-		if err != nil{
+		net, err := control.Connect().LookupNetworkByName("default")
+		if err != nil {
 			fmt.Println(err.Error())
 			return
 		}
-		dhcp,err := net.GetDHCPLeases()
-		if err != nil{
+		dhcp, err := net.GetDHCPLeases()
+		if err != nil {
 			fmt.Println(dhcp)
 		}
 	}()
