@@ -68,9 +68,10 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 		msg, _ := json.Marshal(er{Ret: "e", Param: "passwd", Msg: "密码不能为空"})
 		w.Write(msg)
 	}
-	orm, _ := control.Bdb()
-	orm.SetTable("")
-	w.Write()
+	// orm, _ := control.Bdb()
+	// orm.SetTable("")
+	msg, _ := json.Marshal(er{Ret: "v", Msg: "登录成功"})
+	w.Write(msg)
 }
 
 func favicon(w http.ResponseWriter, req *http.Request) {
@@ -284,9 +285,10 @@ func repasswdAPI(w http.ResponseWriter, req *http.Request) {
 }
 
 type er struct {
-	Ret  string `json:"ret"`
-	Msg  string `json:"msg"`
-	Data string `json:"data"`
+	Ret   string `json:"ret"`
+	Msg   string `json:"msg"`
+	Data  string `json:"data"`
+	Param string `json:"param"`
 }
 
 func shutdown(w http.ResponseWriter, req *http.Request) {
