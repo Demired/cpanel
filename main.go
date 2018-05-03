@@ -23,6 +23,19 @@ import (
 var cLog = log.CLog
 
 func main() {
+
+	go func() {
+		net,err control.Connect().LookupNetworkByName("default")
+		if err != nil{
+			fmt.Println(err.Error())
+			return
+		}
+		dhcp,err := net.GetDHCPLeases()
+		if err != nil{
+			fmt.Println(dhcp)
+		}
+	}()
+
 	go loop.Watch()
 	go loop.WorkQueue()
 	http.HandleFunc("/", index)
