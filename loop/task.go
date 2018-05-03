@@ -108,7 +108,7 @@ func WorkQueue() {
 		case vname := <-Init:
 			orm, err := control.Bdb()
 			if err != nil {
-				cLog.Warn()
+				cLog.Warn(err.Error())
 			}
 			var vm table.Virtual
 			orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Find(&vm)
