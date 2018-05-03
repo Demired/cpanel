@@ -12,7 +12,7 @@ import (
 )
 
 // var InitPass = make(chan string) //设置初始密码的chan
-var Init = make(chan string)
+var VmInit = make(chan string)
 
 var Bill = make(chan string)
 
@@ -105,7 +105,7 @@ func Watch() {
 func WorkQueue() {
 	for {
 		select {
-		case vname := <-Init:
+		case vname := <-VmInit:
 			orm, err := control.Bdb()
 			if err != nil {
 				cLog.Warn(err.Error())
