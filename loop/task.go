@@ -46,6 +46,14 @@ func Watch() {
 					cLog.Warn(err.Error())
 					continue
 				}
+
+				inface, err := dom.InterfaceStats("default")
+				if err != nil {
+					fmt.Println(err.Error())
+				} else {
+					fmt.Println(inface)
+				}
+
 				var virtual table.Virtual
 				if err := orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", name).Find(&virtual); err != nil {
 					cLog.Warn("读取虚拟机信息失败", err.Error())
