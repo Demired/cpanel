@@ -415,7 +415,7 @@ func editAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	loop.Init <- vInfo.Vname
+	loop.VmInit <- vInfo.Vname
 	msg, _ := json.Marshal(er{Ret: "v", Msg: fmt.Sprintf("你的虚拟机密码是：%s", vInfo.Passwd)})
 	w.Write(msg)
 }
@@ -614,7 +614,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	loop.InitPass <- fmt.Sprintf("%s/%s", vInfo.Vname, vInfo.Passwd)
+	loop.VmInit <- fmt.Sprintf("%s/%s", vInfo.Vname, vInfo.Passwd)
 	msg, _ := json.Marshal(er{Ret: "v", Msg: fmt.Sprintf("你的虚拟机密码是：%s", vInfo.Passwd)})
 	w.Write(msg)
 }
