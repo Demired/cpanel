@@ -649,7 +649,7 @@ func undefine(w http.ResponseWriter, req *http.Request) {
 	w.Write(msg)
 }
 
-func createKvmXML(tvm table.Virtual, pmac string) string {
+func createKvmXML(tvm table.Virtual) string {
 	var templateXML = `
 	<domain type='kvm'>
 		<name>` + tvm.Vname + `</name>
@@ -682,7 +682,7 @@ func createKvmXML(tvm table.Virtual, pmac string) string {
 				</bandwidth>
 			</interface>
 			<interface type='network'>
-				<mac address='` + pmac + `'/>
+				<mac address='` + tools.Rmac() + `'/>
 				<source network='soft'/>
 				<bandwidth>
 					<inbound average='` + fmt.Sprintf("%d", tvm.Bandwidth*125) + `' peak='` + fmt.Sprintf("%d", tvm.Bandwidth*375) + `' burst='` + fmt.Sprintf("%d", tvm.Bandwidth*128) + `'/>
