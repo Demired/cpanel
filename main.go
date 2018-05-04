@@ -674,22 +674,13 @@ func createKvmXML(tvm table.Virtual) string {
 				<target dev="hdb" bus="ide"/>
 			</disk>
 			<interface type='network'>
-				<mac address='` + tools.Rmac() + `'/>
+				<mac address='` + tvm.Mac + `'/>
 				<source network='wan'/>
 				<bandwidth>
 					<inbound average='` + fmt.Sprintf("%d", tvm.Bandwidth*125) + `' peak='` + fmt.Sprintf("%d", tvm.Bandwidth*375) + `' burst='` + fmt.Sprintf("%d", tvm.Bandwidth*128) + `'/>
 					<outbound average='` + fmt.Sprintf("%d", tvm.Bandwidth*125) + `' peak='` + fmt.Sprintf("%d", tvm.Bandwidth*375) + `' burst='` + fmt.Sprintf("%d", tvm.Bandwidth*128) + `'/>
 				</bandwidth>
 				<target dev='wan-` + tvm.Vname + `'/>
-			</interface>
-			<interface type='network'>
-				<mac address='` + tools.Rmac() + `'/>
-				<source network='lan'/>
-				<bandwidth>
-					<inbound average='1280' peak='1500' burst='1024'/>
-					<outbound average='1280' peak='1500' burst='1024'/>
-				</bandwidth>
-				<target dev='lan-` + tvm.Vname + `'/>
 			</interface>
 			<serial type='pty'>
 				<target port='1'/>

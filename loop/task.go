@@ -65,7 +65,7 @@ func Watch() {
 				watch.Vname = name
 				watch.Ctime = int(time.Now().Unix())
 				watch.Memory = int(info.Memory)
-				intface, err := dom.InterfaceStats(fmt.Sprintf("net-%s", name))
+				intface, err := dom.InterfaceStats(fmt.Sprintf("wan-%s", name))
 				if err != nil {
 					cLog.Warn(err.Error())
 				} else {
@@ -115,7 +115,7 @@ func WorkQueue() {
 			var vm table.Virtual
 			orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Find(&vm)
 			for {
-				net, _ := control.Connect().LookupNetworkByName("default")
+				net, _ := control.Connect().LookupNetworkByName("wan")
 				dhcps, err := net.GetDHCPLeases()
 				if err != nil {
 					cLog.Warn(err.Error())
