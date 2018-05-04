@@ -65,7 +65,7 @@ func Watch() {
 				watch.Vname = name
 				watch.Ctime = int(time.Now().Unix())
 				watch.Memory = int(info.Memory)
-				intface, err := dom.InterfaceStats(fmt.Sprintf("wan-%s", name))
+				intface, err := dom.InterfaceStats(fmt.Sprintf("lan-%s", name))
 				if err != nil {
 					cLog.Warn(err.Error())
 				} else {
