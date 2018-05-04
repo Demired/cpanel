@@ -115,7 +115,7 @@ func WorkQueue() {
 			var vm table.Virtual
 			orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Find(&vm)
 			for {
-				net, _ := control.Connect().LookupNetworkByName("wan")
+				net, _ := control.Connect().LookupNetworkByName("lan")
 				dhcps, err := net.GetDHCPLeases()
 				if err != nil {
 					cLog.Warn(err.Error())
