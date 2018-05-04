@@ -675,7 +675,7 @@ func createKvmXML(tvm table.Virtual) string {
 			</disk>
 			<interface type='network'>
 				<mac address='` + tools.Rmac() + `'/>
-				<source network='eth-wan'/>
+				<source network='wan'/>
 				<bandwidth>
 					<inbound average='` + fmt.Sprintf("%d", tvm.Bandwidth*125) + `' peak='` + fmt.Sprintf("%d", tvm.Bandwidth*375) + `' burst='` + fmt.Sprintf("%d", tvm.Bandwidth*128) + `'/>
 					<outbound average='` + fmt.Sprintf("%d", tvm.Bandwidth*125) + `' peak='` + fmt.Sprintf("%d", tvm.Bandwidth*375) + `' burst='` + fmt.Sprintf("%d", tvm.Bandwidth*128) + `'/>
@@ -684,7 +684,7 @@ func createKvmXML(tvm table.Virtual) string {
 			</interface>
 			<interface type='network'>
 				<mac address='` + tools.Rmac() + `'/>
-				<source network='eth-lan'/>
+				<source network='lan'/>
 				<bandwidth>
 					<inbound average='1280' peak='1500' burst='1024'/>
 					<outbound average='1280' peak='1500' burst='1024'/>
