@@ -96,8 +96,8 @@ func Watch() {
 					}
 				}
 				t[name] = info.CpuTime
+				dom.free()
 			}
-			break
 		}
 	}
 }
