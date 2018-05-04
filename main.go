@@ -399,7 +399,7 @@ func editAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	xml := createKvmXML(vInfo, tools.Rmac())
+	xml := createKvmXML(vInfo)
 	_, err = control.Connect().DomainDefineXML(xml)
 	if err != nil {
 		cLog.Info(err.Error())
