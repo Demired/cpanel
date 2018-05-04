@@ -399,7 +399,7 @@ func editAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	xml := createKvmXML(vInfo)
+	xml := createKvmXML(vInfo, tools.Rmac())
 	_, err = control.Connect().DomainDefineXML(xml)
 	if err != nil {
 		cLog.Info(err.Error())
@@ -649,7 +649,7 @@ func undefine(w http.ResponseWriter, req *http.Request) {
 	w.Write(msg)
 }
 
-func createKvmXML(tvm table.Virtual) string {
+func createKvmXML(tvm table.Virtual, pmac string) string {
 	var templateXML = `
 	<domain type='kvm'>
 		<name>` + tvm.Vname + `</name>
@@ -680,6 +680,15 @@ func createKvmXML(tvm table.Virtual) string {
 					<inbound average='` + fmt.Sprintf("%d", tvm.Bandwidth*1000) + `' peak='` + fmt.Sprintf("%d", tvm.Bandwidth*3000) + `' burst='` + fmt.Sprintf("%d", tvm.Bandwidth*1024) + `'/>
 					<outbound average='` + fmt.Sprintf("%d", tvm.Bandwidth*1000) + `' peak='` + fmt.Sprintf("%d", tvm.Bandwidth*3000) + `' burst='` + fmt.Sprintf("%d", tvm.Bandwidth*1024) + `'/>
 				</bandwidth>
+			</interface>
+			<interface type='network'>
+				<mac address='` + pmac + `'/>
+				<source network='soft'/>
+				<bandwidth>
+					<inbound average='` + fmt.Sprintf("%d", tvm.Bandwidth*125) + `' peak='` + fmt.Sprintf("%d", tvm.Bandwidth*375) + `' burst='` + fmt.Sprintf("%d", tvm.Bandwidth*128) + `'/>
+					<outbound average='` + fmt.Sprintf("%d", tvm.Bandwidth*125) + `' peak='` + fmt.Sprintf("%d", tvm.Bandwidth*375) + `' burst='` + fmt.Sprintf("%d", tvm.Bandwidth*128) + `'/>
+				</bandwidth>
+				<target dev='` + tvm.Vname + `'/>
 			</interface>
 			<serial type='pty'>
 				<target port='1'/>
