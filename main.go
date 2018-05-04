@@ -673,6 +673,15 @@ func createKvmXML(tvm table.Virtual) string {
 				<source file="/virt/disk/` + tvm.Vname + `.qcow2"/>
 				<target dev="hdb" bus="ide"/>
 			</disk>
+			<interface type='bridge'>
+				<mac address='` + tvm.Mac + `'/>
+				<source bridge='` + tvm.Br + `'/>
+				<bandwidth>
+					<inbound average='` + fmt.Sprintf("%d", tvm.Bandwidth*1000) + `' peak='` + fmt.Sprintf("%d", tvm.Bandwidth*3000) + `' burst='` + fmt.Sprintf("%d", tvm.Bandwidth*1024) + `'/>
+					<outbound average='` + fmt.Sprintf("%d", tvm.Bandwidth*1000) + `' peak='` + fmt.Sprintf("%d", tvm.Bandwidth*3000) + `' burst='` + fmt.Sprintf("%d", tvm.Bandwidth*1024) + `'/>
+				</bandwidth>
+				<target dev='` + tvm.Vname + `'/>
+			</interface>
 			<interface type='network'>
 				<mac address='` + tvm.Mac + `'/>
 				<source network='soft'/>
@@ -680,7 +689,6 @@ func createKvmXML(tvm table.Virtual) string {
 					<inbound average='` + fmt.Sprintf("%d", tvm.Bandwidth*125) + `' peak='` + fmt.Sprintf("%d", tvm.Bandwidth*375) + `' burst='` + fmt.Sprintf("%d", tvm.Bandwidth*128) + `'/>
 					<outbound average='` + fmt.Sprintf("%d", tvm.Bandwidth*125) + `' peak='` + fmt.Sprintf("%d", tvm.Bandwidth*375) + `' burst='` + fmt.Sprintf("%d", tvm.Bandwidth*128) + `'/>
 				</bandwidth>
-				<target dev='` + tvm.Vname + `'/>
 			</interface>
 			<serial type='pty'>
 				<target port='1'/>
