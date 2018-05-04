@@ -106,6 +106,7 @@ func WorkQueue() {
 	for {
 		select {
 		case vname := <-VmInit:
+			control.Start(vname)
 			orm, err := control.Bdb()
 			if err != nil {
 				cLog.Warn(err.Error())
