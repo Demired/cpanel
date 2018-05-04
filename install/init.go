@@ -58,10 +58,12 @@ func Init() {
                 Passwd CHAR(50) NOT NULL,
                 Tel CHAR(20) NOT NULL,
                 Email CHAR(20) NOT NULL,
-                Readname CHAR(20) NOT NULL,
+                Realname CHAR(20) NOT NULL,
+                Idnumber CHAR(20) NOT NULL,
                 Sex INT NOT NULL,
                 Company CHAR(20) NOT NULL,
                 City CHAR(20) NOT NULL,
+                Status INT NOT NULL,
                 Utime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
             );

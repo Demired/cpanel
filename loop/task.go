@@ -128,12 +128,11 @@ func WorkQueue() {
 						//设置外网ip
 						//设置密码
 						control.SetPasswd(vm.Vname, "root", vm.Passwd)
-						goto INITOVER
+						return
 					}
 				}
 				time.Sleep(3 * time.Second)
 			}
-		INITOVER:
 		case str := <-Alarm:
 			cLog.Warn("out alarm")
 			data := strings.Split(str, "/")
