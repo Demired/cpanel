@@ -148,7 +148,7 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 	h := sha1.New()
 	h.Write([]byte(passwd))
 	bs := h.Sum(nil)
-	if user.Passwd != bs {
+	if user.Passwd != string(bs) {
 		msg, _ := json.Marshal(er{Ret: "e", Param: "email", Msg: "密码错误"})
 		w.Write(msg)
 		return
