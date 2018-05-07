@@ -82,7 +82,7 @@
             p.email = $("#email").val();
             p.passwd = $("#passwd").val();
             $.post("/login",p,function(d){
-                if (d.Ret == "e"){
+                if (d.ret == "e"){
                     switch(d.Param)
                     {
                     case "email":
@@ -94,7 +94,7 @@
                         $("#passwd-notice").html(d.Msg);
                         break;
                     }
-                }else if(d.Ret == "v"){
+                }else if(d.ret == "v"){
                     alert(d.Msg)
                 }
             },"json");
