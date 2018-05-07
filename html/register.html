@@ -69,7 +69,7 @@
                     <input type="password" name="repasswd" id="repasswd" class="form-input" maxlength="18" placeholder="重复密码">
                     <div class="form-notice" id="repasswd-notice"></div>
                 </div>
-                <div style="margin-top: 5px;">
+                <div style="margin-top: 15px;">
                     <a href="/forget.html" class="forget">忘记密码</a>
                     <a href="/login.html" class="login">立即注册</a>
                 </div>
@@ -81,8 +81,12 @@
     </div>
     <script>
         $("#register").click(function(){
+            $("#repasswd-notice").hide();
+            $("#email-notice").hide();
+            $("#passwd-notice").hide();
             var p = {}
             if($("#passwd").val() !== $("#repasswd").val()){
+                $("#repasswd-notice").show();
                 $("#repasswd-notice").html("两次密码不一致");
                 return
             }
@@ -93,10 +97,12 @@
                     switch(d.Param)
                     {
                     case "email":
-                        $("#email-notice").html(d.Msg)
+                        $("#email-notice").show();
+                        $("#email-notice").html(d.Msg);
                         break;
                     case "passwd":
-                        $("#passwd-notice").html(d.Msg)
+                        $("#passwd-notice").show();
+                        $("#passwd-notice").html(d.Msg);
                         break;
                     }
                 }else if(d.Ret == "v"){
