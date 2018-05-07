@@ -95,13 +95,18 @@ func registerAPI(w http.ResponseWriter, req *http.Request) {
 	userInfo.Utime = time.Now()
 	userInfo.Ctime = time.Now()
 	orm, _ := control.Bdb()
-	err := orm.SetTable("User").SetPK("ID").Save()
-
-	cLog.Info("%s登录成功", email)
-	//设置session
-	msg, _ := json.Marshal(er{Ret: "v", Msg: "登录成功"})
+	err := orm.SetTable("User").SetPK("ID").Save(&userInfo)
+	if err != nil {
+		cLog.Info(err.Error())
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "写入失败", Data: err.Error()})
+		w.Write(msg)
+		return
+	}
+	cLog.Info("%注册成功", email)
+	msg, _ := json.Marshal(er{Ret: "v", Msg: "注册完毕"})
 	w.Write(msg)
 }
+
 func login(w http.ResponseWriter, req *http.Request) {
 	t, _ := template.ParseFiles("html/login.html")
 	t.Execute(w, nil)
