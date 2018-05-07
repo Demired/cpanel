@@ -83,13 +83,12 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 	h := sha1.New()
 	h.Write([]byte(passwd))
 	bs := h.Sum(nil)
-	if bs != user.Passwd {
+	if string(bs) != user.Passwd {
 		msg, _ := json.Marshal(er{Ret: "e", Param: "passwd", Msg: "密码错误"})
 		w.Write(msg)
 		return
 	}
 	cLog.Info("%s登录成功", username)
-	//记录登录行为
 	//设置session
 	msg, _ := json.Marshal(er{Ret: "v", Msg: "登录成功"})
 	w.Write(msg)
