@@ -76,7 +76,9 @@
     </div>
     <script>
         $("#login").click(function(){
-            var p = {}
+            $("#email-notice").hide();
+            $("#passwd-notice").hide();
+            var p = {};
             p.email = $("#email").val();
             p.passwd = $("#passwd").val();
             $.post("/login",p,function(d){
@@ -84,10 +86,12 @@
                     switch(d.Param)
                     {
                     case "email":
-                        $("#email-notice").html(d.Msg)
+                        $("#email-notice").show();
+                        $("#email-notice").html(d.Msg);
                         break;
                     case "passwd":
-                        $("#passwd-notice").html(d.Msg)
+                        $("#passwd-notice").show();
+                        $("#passwd-notice").html(d.Msg);
                         break;
                     }
                 }else if(d.Ret == "v"){
