@@ -65,7 +65,7 @@ func registerAPI(w http.ResponseWriter, req *http.Request) {
 	email := req.PostFormValue("email")
 	passwd := req.PostFormValue("passwd")
 	if username == "" {
-		msg, _ := json.Marshal(er{Ret: "e", Param: "email", Msg: "用户名不能为空"})
+		msg, _ := json.Marshal(er{Ret: "e", Param: "email", Msg: "邮箱不能为空"})
 		w.Write(msg)
 		return
 	}
@@ -108,10 +108,10 @@ func login(w http.ResponseWriter, req *http.Request) {
 }
 
 func loginAPI(w http.ResponseWriter, req *http.Request) {
-	username := req.PostFormValue("username")
+	email := req.PostFormValue("email")
 	passwd := req.PostFormValue("passwd")
 	if username == "" {
-		msg, _ := json.Marshal(er{Ret: "e", Param: "username", Msg: "用户名不能为空"})
+		msg, _ := json.Marshal(er{Ret: "e", Param: "email", Msg: "用户名不能为空"})
 		w.Write(msg)
 		return
 	}
@@ -123,9 +123,9 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 
 	var user table.User
 	orm, _ := control.Bdb()
-	err := orm.SetTable("User").SetPK("ID").Where("Username = ?", username).Find(&user)
+	err := orm.SetTable("User").SetPK("ID").Where("Email = ?", email).Find(&user)
 	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Param: "username", Msg: "用户不存在"})
+		msg, _ := json.Marshal(er{Ret: "e", Param: "email", Msg: "用户不存在"})
 		w.Write(msg)
 		return
 	}
