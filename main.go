@@ -170,8 +170,11 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	sess, _ := cSession.SessionStart(w, req)
-	// defer sess.SessionRelease(w)
+	sess, err := cSession.SessionStart(w, req)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	defer sess.SessionRelease(w)
 	sess.Set("uid", user.ID)
 	msg, _ := json.Marshal(er{Ret: "v", Msg: "登录成功"})
 	w.Write(msg)
