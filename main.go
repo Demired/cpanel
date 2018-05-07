@@ -93,7 +93,7 @@ func registerAPI(w http.ResponseWriter, req *http.Request) {
 	orm, _ := control.Bdb()
 	fb := orm.SetTable("User").SetPK("ID").Where("Email = ?", email).Find(&tmpUser)
 	if fb == nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "邮箱已占用"})
+		msg, _ := json.Marshal(er{Ret: "e", Param: "email", Msg: "邮箱已占用"})
 		w.Write(msg)
 		return
 	}
