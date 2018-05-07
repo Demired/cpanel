@@ -34,6 +34,7 @@ func main() {
 	http.HandleFunc("/login.html", login)
 	http.HandleFunc("/login", loginAPI)
 	http.HandleFunc("/logout", logoutAPI)
+	http.HandleFunc("/userInfo.html", userInfo)
 	http.HandleFunc("/register.html", register)
 	http.HandleFunc("/register", registerAPI)
 	http.HandleFunc("/info.html", info)
@@ -51,6 +52,16 @@ func main() {
 	http.HandleFunc("/edit.html", edit)
 	http.HandleFunc("/create.html", create)
 	http.ListenAndServe(":8100", nil)
+}
+
+func userInfo(w http.ResponseWriter, req *http.Request) {
+	sess, err := cSession.SessionStart(w, req)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	defer sess.SessionRelease(w)
+	fmt.Println(sess.Get("uid"))
 }
 
 func index(w http.ResponseWriter, req *http.Request) {
