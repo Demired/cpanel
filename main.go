@@ -33,6 +33,7 @@ func main() {
 	http.HandleFunc("/list", list)
 	http.HandleFunc("/login.html", login)
 	http.HandleFunc("/login", loginAPI)
+	http.HandleFunc("/logout", logoutAPI)
 	http.HandleFunc("/register.html", register)
 	http.HandleFunc("/register", registerAPI)
 	http.HandleFunc("/info.html", info)
@@ -118,6 +119,14 @@ func registerAPI(w http.ResponseWriter, req *http.Request) {
 func login(w http.ResponseWriter, req *http.Request) {
 	t, _ := template.ParseFiles("html/login.html")
 	t.Execute(w, nil)
+}
+
+func logoutAPI(w http.ResponseWriter, req *http.Request) {
+	sess := cSession.SessionStart(w, req)
+	defer sess.SessionRelease(w)
+	sess.Delete("uid")
+	msg, _ := json.Marshal(er{Ret: "v", Msg: "注销完毕"})
+	w.Write(msg)
 }
 
 func loginAPI(w http.ResponseWriter, req *http.Request) {
