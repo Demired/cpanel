@@ -55,12 +55,12 @@
             <from action="/login">
                 <div>
                     <label for="username" class="form-name">用户名：</label>
-                    <input type="text" name="username" id="username" class="form-input">
+                    <input type="text" name="username" id="username" class="form-input" placeholder="邮箱或手机号">
                     <div class="form-notice" id="username-notice"></div>
                 </div>
                 <div>
                     <label for="passwd" class="form-name">密码：</label>
-                    <input type="password" name="passwd" id="passwd" class="form-input">
+                    <input type="password" name="passwd" id="passwd" class="form-input" maxlength="18" placeholder="数字字母下划线">
                     <div class="form-notice" id="passwd-notice"></div>
                 </div>
                 <div style="margin-top: 5px;">
@@ -79,7 +79,19 @@
             p.username = $("#username").val();
             p.passwd = $("#passwd").val();
             $.post("/login",p,function(d){
-                console.log(d);
+                if (d.Ret == "e"){
+                    switch(d.Param)
+                    {
+                    case "username":
+                        $("#username-notice").html(d.Msg)
+                        break;
+                    case "passwd":
+                        $("#passwd-notice").html(d.Msg)
+                        break;
+                    }
+                }else if(d.Ret == "v"){
+                    alert(d.Msg)
+                }
             },"json");
         });
     </script>

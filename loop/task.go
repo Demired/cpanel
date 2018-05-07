@@ -69,7 +69,6 @@ func Watch() {
 				if err != nil {
 					cLog.Warn(err.Error())
 				} else {
-					fmt.Println(intface)
 					watch.Up = int(intface.RxBytes)
 					watch.Down = int(intface.TxBytes)
 				}

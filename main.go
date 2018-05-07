@@ -6,6 +6,7 @@ import (
 	"cpanel/loop"
 	"cpanel/table"
 	"cpanel/tools"
+	"crypto/sha1"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -63,13 +64,29 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 	if username == "" {
 		msg, _ := json.Marshal(er{Ret: "e", Param: "username", Msg: "用户名不能为空"})
 		w.Write(msg)
+		return
 	}
 	if passwd == "" {
 		msg, _ := json.Marshal(er{Ret: "e", Param: "passwd", Msg: "密码不能为空"})
 		w.Write(msg)
+		return
 	}
-	// orm, _ := control.Bdb()
-	// orm.SetTable("")
+
+	var user table.User
+	orm, _ := control.Bdb()
+	err := orm.SetTable("User").SetPK("ID").Where("Username = ?", username).Find(&user)
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Param: "username", Msg: "用户不存在"})
+		w.Write(msg)
+		return
+	}
+	fmt.Println(user)
+
+	h := sha1.New()
+	h.Write([]byte(passwd))
+	bs := h.Sum(nil)
+	fmt.Println(bs)
+
 	msg, _ := json.Marshal(er{Ret: "v", Msg: "登录成功"})
 	w.Write(msg)
 }

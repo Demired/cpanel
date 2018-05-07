@@ -41,3 +41,33 @@ type Watch struct {
 	Memory int
 	Ctime  int
 }
+
+type User struct {
+	ID       int
+	Username string
+	Passwd   string
+	Tel      string
+	Email    string
+	Realname string
+	Idnumber string
+	Sex      int
+	Company  string
+	City     string
+	Status   int
+	Utime    time.Time
+	Ctime    time.Time
+}
+
+// ID INTEGER PRIMARY KEY AUTOINCREMENT,
+// Username CHAR(20) NOT NULL,
+// Passwd CHAR(50) NOT NULL,
+// Tel CHAR(20) NOT NULL,
+// Email CHAR(20) NOT NULL,
+// Realname CHAR(20) NOT NULL,
+// Idnumber CHAR(20) NOT NULL,
+// Sex INT NOT NULL,
+// Company CHAR(20) NOT NULL,
+// City CHAR(20) NOT NULL,
+// Status INT NOT NULL,
+// Utime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+// Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
