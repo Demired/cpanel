@@ -1,8 +1,8 @@
 package main
 
 import (
+	"cpanel/config"
 	"cpanel/control"
-	"cpanel/init"
 	"cpanel/loop"
 	"cpanel/table"
 	"cpanel/tools"
@@ -22,7 +22,7 @@ import (
 	"github.com/Demired/rpwd"
 )
 
-var cLog = init.CLog
+var cLog = config.CLog
 
 func main() {
 	go loop.Watch()

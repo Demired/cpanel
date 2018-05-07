@@ -1,8 +1,8 @@
 package loop
 
 import (
+	"cpanel/config"
 	"cpanel/control"
-	"cpanel/init"
 	"cpanel/table"
 	"fmt"
 	"strings"
@@ -18,7 +18,7 @@ var Bill = make(chan string)
 
 var Alarm = make(chan string)
 
-var cLog = init.CLog
+var cLog = config.CLog
 
 func Watch() {
 	var t = make(map[string]uint64)
