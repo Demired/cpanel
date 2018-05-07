@@ -173,6 +173,7 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 	sess, err := cSession.SessionStart(w, req)
 	if err != nil {
 		fmt.Println(err.Error())
+		return
 	}
 	defer sess.SessionRelease(w)
 	sess.Set("uid", user.ID)
