@@ -122,7 +122,7 @@ func login(w http.ResponseWriter, req *http.Request) {
 }
 
 func logoutAPI(w http.ResponseWriter, req *http.Request) {
-	sess := cSession.SessionStart(w, req)
+	sess, _ := cSession.SessionStart(w, req)
 	defer sess.SessionRelease(w)
 	sess.Delete("uid")
 	msg, _ := json.Marshal(er{Ret: "v", Msg: "注销完毕"})
@@ -170,7 +170,7 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	sess := cSession.SessionStart(w, req)
+	sess, _ := cSession.SessionStart(w, req)
 	defer sess.SessionRelease(w)
 	sess.Set("uid", user.ID)
 	msg, _ := json.Marshal(er{Ret: "v", Msg: "登录成功"})
