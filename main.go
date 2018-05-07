@@ -53,6 +53,47 @@ func index(w http.ResponseWriter, req *http.Request) {
 	t.Execute(w, nil)
 }
 
+func register(w http.ResponseWriter, req *http.Request) {
+	t, _ := template.ParseFiles("html/register.html")
+	t.Execute(w, nil)
+}
+
+func loginAPI(w http.ResponseWriter, req *http.Request) {
+	username := req.PostFormValue("username")
+	passwd := req.PostFormValue("passwd")
+	if username == "" {
+		msg, _ := json.Marshal(er{Ret: "e", Param: "username", Msg: "用户名不能为空"})
+		w.Write(msg)
+		return
+	}
+	if passwd == "" {
+		msg, _ := json.Marshal(er{Ret: "e", Param: "passwd", Msg: "密码不能为空"})
+		w.Write(msg)
+		return
+	}
+
+	var user table.User
+	orm, _ := control.Bdb()
+	err := orm.SetTable("User").SetPK("ID").Where("Username = ?", username).Find(&user)
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Param: "username", Msg: "用户不存在"})
+		w.Write(msg)
+		return
+	}
+	h := sha1.New()
+	h.Write([]byte(passwd))
+	bs := h.Sum(nil)
+	if bs != user.Passwd {
+		msg, _ := json.Marshal(er{Ret: "e", Param: "passwd", Msg: "密码错误"})
+		w.Write(msg)
+		return
+	}
+	cLog.Info("%s登录成功", username)
+	//记录登录行为
+	//设置session
+	msg, _ := json.Marshal(er{Ret: "v", Msg: "登录成功"})
+	w.Write(msg)
+}
 func login(w http.ResponseWriter, req *http.Request) {
 	t, _ := template.ParseFiles("html/login.html")
 	t.Execute(w, nil)
