@@ -64,7 +64,7 @@ func register(w http.ResponseWriter, req *http.Request) {
 func registerAPI(w http.ResponseWriter, req *http.Request) {
 	email := req.PostFormValue("email")
 	passwd := req.PostFormValue("passwd")
-	if username == "" {
+	if email == "" {
 		msg, _ := json.Marshal(er{Ret: "e", Param: "email", Msg: "邮箱不能为空"})
 		w.Write(msg)
 		return
@@ -97,7 +97,7 @@ func registerAPI(w http.ResponseWriter, req *http.Request) {
 	orm, _ := control.Bdb()
 	err := orm.SetTable("User").SetPK("ID").Save()
 
-	cLog.Info("%s登录成功", username)
+	cLog.Info("%s登录成功", email)
 	//设置session
 	msg, _ := json.Marshal(er{Ret: "v", Msg: "登录成功"})
 	w.Write(msg)
@@ -110,7 +110,7 @@ func login(w http.ResponseWriter, req *http.Request) {
 func loginAPI(w http.ResponseWriter, req *http.Request) {
 	email := req.PostFormValue("email")
 	passwd := req.PostFormValue("passwd")
-	if username == "" {
+	if email == "" {
 		msg, _ := json.Marshal(er{Ret: "e", Param: "email", Msg: "用户名不能为空"})
 		w.Write(msg)
 		return
