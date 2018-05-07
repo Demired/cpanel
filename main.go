@@ -23,6 +23,7 @@ import (
 )
 
 var cLog = config.CLog
+var cSession = config.CSession
 
 func main() {
 	go loop.Watch()
@@ -120,7 +121,6 @@ func login(w http.ResponseWriter, req *http.Request) {
 }
 
 func loginAPI(w http.ResponseWriter, req *http.Request) {
-
 	email := req.PostFormValue("email")
 	passwd := req.PostFormValue("passwd")
 	if email == "" {
@@ -161,6 +161,7 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
+	CSession
 	msg, _ := json.Marshal(er{Ret: "v", Msg: "登录成功"})
 	w.Write(msg)
 }

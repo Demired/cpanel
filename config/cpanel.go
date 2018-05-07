@@ -13,6 +13,6 @@ var logFile = "/var/log/cpanel.log"
 func init() {
 	CLog.SetLogger("file", `{"filename":"`+logFile+`"}`)
 	CLog.SetLevel(logs.LevelInformational)
-	CSession, _ := session.NewManager("memory", &session.ManagerConfig{CookieName: "gosession", Gclifetime: 3600})
+	CSession, _ := session.NewManager("memory", &session.ManagerConfig{CookieName: "PHPSESSID", Gclifetime: 3600})
 	go CSession.GC()
 }
