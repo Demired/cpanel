@@ -91,7 +91,7 @@ func registerAPI(w http.ResponseWriter, req *http.Request) {
 	bs := h.Sum(nil)
 	var userInfo table.User
 	userInfo.Email = email
-	userInfo.Passwd = passwd
+	userInfo.Passwd = bs
 	userInfo.Utime = time.Now()
 	userInfo.Ctime = time.Now()
 	orm, _ := control.Bdb()
@@ -125,7 +125,18 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-
+	emailReg := regexp.MustCompile(`^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$`)
+	if !emailReg.Match([]byte(email)) {
+		msg, _ := json.Marshal(er{Ret: "e", Param: "email", Msg: "请检查邮箱拼写是否有误"})
+		w.Write(msg)
+		return
+	}
+	passReg := regexp.MustCompile(`^[\w!@#$%^&*()-_=+]*$`)
+	if !passReg.Match([]byte(passwd)) {
+		msg, _ := json.Marshal(er{Ret: "e", Param: "passwd", Msg: "密码只支持数字，大小写字母，和\"!@#$%^&*()_-=+\""})
+		w.Write(msg)
+		return
+	}
 	var user table.User
 	orm, _ := control.Bdb()
 	err := orm.SetTable("User").SetPK("ID").Where("Email = ?", email).Find(&user)
@@ -134,13 +145,14 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	fmt.Println(user)
-
 	h := sha1.New()
 	h.Write([]byte(passwd))
 	bs := h.Sum(nil)
-	fmt.Println(bs)
-
+	if user.Passwd != bs {
+		msg, _ := json.Marshal(er{Ret: "e", Param: "email", Msg: "密码错误"})
+		w.Write(msg)
+		return
+	}
 	msg, _ := json.Marshal(er{Ret: "v", Msg: "登录成功"})
 	w.Write(msg)
 }
