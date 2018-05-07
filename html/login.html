@@ -83,19 +83,19 @@
             p.passwd = $("#passwd").val();
             $.post("/login",p,function(d){
                 if (d.ret == "e"){
-                    switch(d.Param)
+                    switch(d.param)
                     {
                     case "email":
                         $("#email-notice").show();
-                        $("#email-notice").html(d.Msg);
+                        $("#email-notice").html(d.msg);
                         break;
                     case "passwd":
                         $("#passwd-notice").show();
-                        $("#passwd-notice").html(d.Msg);
+                        $("#passwd-notice").html(d.msg);
                         break;
                     }
                 }else if(d.ret == "v"){
-                    alert(d.Msg)
+                    alert(d.msg)
                 }
             },"json");
         });

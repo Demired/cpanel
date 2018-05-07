@@ -93,20 +93,20 @@
             p.email = $("#email").val();
             p.passwd = $("#passwd").val();
             $.post("/register",p,function(d){
-                if (d.Ret == "e"){
-                    switch(d.Param)
+                if (d.ret == "e"){
+                    switch(d.param)
                     {
                     case "email":
                         $("#email-notice").show();
-                        $("#email-notice").html(d.Msg);
+                        $("#email-notice").html(d.msg);
                         break;
                     case "passwd":
                         $("#passwd-notice").show();
-                        $("#passwd-notice").html(d.Msg);
+                        $("#passwd-notice").html(d.msg);
                         break;
                     }
-                }else if(d.Ret == "v"){
-                    alert(d.Msg)
+                }else if(d.ret == "v"){
+                    alert(d.msg)
                 }
             },"json");
         });
