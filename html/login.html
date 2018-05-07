@@ -55,9 +55,9 @@
             <h1>cpanel登录</h1>
             <from action="/login">
                 <div>
-                    <label for="username" class="form-name">用户名：</label>
-                    <input type="text" name="username" id="username" class="form-input" placeholder="邮箱">
-                    <div class="form-notice" id="username-notice"></div>
+                    <label for="email" class="form-name">邮箱</label>
+                    <input type="text" name="email" id="email" class="form-input" placeholder="邮箱">
+                    <div class="form-notice" id="email-notice"></div>
                 </div>
                 <div>
                     <label for="passwd" class="form-name">密码：</label>
@@ -77,14 +77,14 @@
     <script>
         $("#login").click(function(){
             var p = {}
-            p.username = $("#username").val();
+            p.email = $("#email").val();
             p.passwd = $("#passwd").val();
             $.post("/login",p,function(d){
                 if (d.Ret == "e"){
                     switch(d.Param)
                     {
-                    case "username":
-                        $("#username-notice").html(d.Msg)
+                    case "email":
+                        $("#email-notice").html(d.Msg)
                         break;
                     case "passwd":
                         $("#passwd-notice").html(d.Msg)

@@ -12,6 +12,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"regexp"
 	"strconv"
 	"text/template"
 	"time"
@@ -31,6 +32,8 @@ func main() {
 	http.HandleFunc("/list", list)
 	http.HandleFunc("/login.html", login)
 	http.HandleFunc("/login", loginAPI)
+	http.HandleFunc("/register.html", register)
+	http.HandleFunc("/register", registerAPI)
 	http.HandleFunc("/info.html", info)
 	http.HandleFunc("/load.json", loadJSON)
 	http.HandleFunc("/start", start)
@@ -58,11 +61,11 @@ func register(w http.ResponseWriter, req *http.Request) {
 	t.Execute(w, nil)
 }
 
-func loginAPI(w http.ResponseWriter, req *http.Request) {
-	username := req.PostFormValue("username")
+func registerAPI(w http.ResponseWriter, req *http.Request) {
+	email := req.PostFormValue("email")
 	passwd := req.PostFormValue("passwd")
 	if username == "" {
-		msg, _ := json.Marshal(er{Ret: "e", Param: "username", Msg: "用户名不能为空"})
+		msg, _ := json.Marshal(er{Ret: "e", Param: "email", Msg: "用户名不能为空"})
 		w.Write(msg)
 		return
 	}
@@ -71,23 +74,29 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-
-	var user table.User
-	orm, _ := control.Bdb()
-	err := orm.SetTable("User").SetPK("ID").Where("Username = ?", username).Find(&user)
-	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Param: "username", Msg: "用户不存在"})
+	emailReg := regexp.MustCompile(`^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$`)
+	if !emailReg.Match([]byte(email)) {
+		msg, _ := json.Marshal(er{Ret: "e", Param: "email", Msg: "请检查邮箱拼写是否有误"})
+		w.Write(msg)
+		return
+	}
+	passReg := regexp.MustCompile(`^[\w!@#$%^&*()-_=+]*$`)
+	if !passReg.Match([]byte(passwd)) {
+		msg, _ := json.Marshal(er{Ret: "e", Param: "passwd", Msg: "密码只支持数字，大小写字母，和\"!@#$%^&*()_-=+\""})
 		w.Write(msg)
 		return
 	}
 	h := sha1.New()
 	h.Write([]byte(passwd))
 	bs := h.Sum(nil)
-	if string(bs) != user.Passwd {
-		msg, _ := json.Marshal(er{Ret: "e", Param: "passwd", Msg: "密码错误"})
-		w.Write(msg)
-		return
-	}
+	var userInfo table.User
+	userInfo.Email = email
+	userInfo.Passwd = passwd
+	userInfo.Utime = time.Now()
+	userInfo.Ctime = time.Now()
+	orm, _ := control.Bdb()
+	err := orm.SetTable("User").SetPK("ID").Save()
+
 	cLog.Info("%s登录成功", username)
 	//设置session
 	msg, _ := json.Marshal(er{Ret: "v", Msg: "登录成功"})
