@@ -91,7 +91,7 @@ func registerAPI(w http.ResponseWriter, req *http.Request) {
 	bs := h.Sum(nil)
 	var userInfo table.User
 	userInfo.Email = email
-	userInfo.Passwd = bs
+	userInfo.Passwd = string(bs)
 	userInfo.Utime = time.Now()
 	userInfo.Ctime = time.Now()
 	orm, _ := control.Bdb()
