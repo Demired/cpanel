@@ -89,9 +89,9 @@ func registerAPI(w http.ResponseWriter, req *http.Request) {
 	h := sha1.New()
 	h.Write([]byte(passwd))
 	bs := h.Sum(nil)
-
+	var tmpUser table.User
 	orm, _ := control.Bdb()
-	fb := orm.SetTable("User").SetPK("ID").Where("Email = ?", email).Find(nil)
+	fb := orm.SetTable("User").SetPK("ID").Where("Email = ?", email).Find(&tmpUser)
 	if fb != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "邮箱已占用"})
 		w.Write(msg)
