@@ -2,7 +2,7 @@ package main
 
 import (
 	"cpanel/control"
-	"cpanel/log"
+	"cpanel/init"
 	"cpanel/loop"
 	"cpanel/table"
 	"cpanel/tools"
@@ -22,7 +22,7 @@ import (
 	"github.com/Demired/rpwd"
 )
 
-var cLog = log.CLog
+var cLog = init.CLog
 
 func main() {
 	go loop.Watch()
@@ -120,6 +120,7 @@ func login(w http.ResponseWriter, req *http.Request) {
 }
 
 func loginAPI(w http.ResponseWriter, req *http.Request) {
+
 	email := req.PostFormValue("email")
 	passwd := req.PostFormValue("passwd")
 	if email == "" {
