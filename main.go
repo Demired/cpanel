@@ -227,13 +227,17 @@ func info(w http.ResponseWriter, req *http.Request) {
 	sess, _ := cSession.SessionStart(w, req)
 	defer sess.SessionRelease(w)
 	if k, e := sess.Get("uid").(int); !e {
-		cLog.Warn(err.Error())
 		http.Redirect(w, req, fmt.Sprintf("/login.html?url=%s", req.URL.String()), http.StatusFound)
+		return
+	}
+	orm, err := control.Bdb()
+	if err != nil {
+		cLog.Warn(err.Error())
 		return
 	}
 	Vname := req.URL.Query().Get("Vname")
 	var vvm table.Virtual
-	err = orm.SetTable("Virtual").Where("Vname = ?", Vname).Find(&vvm)
+	err := orm.SetTable("Virtual").Where("Vname = ?", Vname).Find(&vvm)
 	if err != nil {
 		cLog.Warn(err.Error())
 		http.Redirect(w, req, "/404.html", http.StatusFound)
@@ -256,12 +260,6 @@ func info(w http.ResponseWriter, req *http.Request) {
 			cLog.Warn(err.Error())
 		}
 	}
-	orm, err := control.Bdb()
-	if err != nil {
-		cLog.Warn(err.Error())
-		return
-	}
-
 	vvm.Status = int(s)
 	t, _ := template.ParseFiles("html/info.html")
 	t.Execute(w, vvm)
