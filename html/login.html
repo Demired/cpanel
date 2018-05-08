@@ -104,8 +104,9 @@
                     alert(d.msg);
                     var url = $("#login").attr("ret-data");
                     if( url != ""){
-                        window.location.href = url
+                        url = "/"
                     }
+                    window.location.href = url
                 }
             },"json");
         });
