@@ -334,8 +334,13 @@ func list(w http.ResponseWriter, req *http.Request) {
 		cLog.Warn(err.Error())
 		return
 	}
+	uid, e := sess.Get("uid").(int)
+	if !e {
+		http.Redirect(w, req, fmt.Sprintf("/login.html?url=%s", req.URL.String()), http.StatusFound)
+		return
+	}
 	var vvvm []table.Virtual
-	err = orm.SetTable("Virtual").Where("Status = ?", "1").FindAll(&vvvm)
+	err = orm.SetTable("Virtual").Where("Status = ? and Uid = ?", "1", uid).FindAll(&vvvm)
 	if err != nil {
 		cLog.Warn(err.Error())
 		return
