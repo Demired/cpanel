@@ -69,12 +69,18 @@
                     <a href="/register.html" class="register">立即注册</a>
                 </div>
                 <div>
-                    <button name="action" id="login" class="form-button">提交</button>
+                    <button name="action" id="login" class="form-button" ret-data="{{.}}">提交</button>
                 </div>
             </from>
         </div>
     </div>
     <script>
+        $(function(){
+            if(event.keyCode==13) {
+                $("#login").click();
+                return false;
+            }
+        })
         $("#login").click(function(){
             $("#email-notice").hide();
             $("#passwd-notice").hide();
@@ -95,7 +101,11 @@
                         break;
                     }
                 }else if(d.ret == "v"){
-                    alert(d.msg)
+                    alert(d.msg);
+                    var url = $("#login").attr("ret-data");
+                    if( url != ""){
+                        window.location.href = url
+                    }
                 }
             },"json");
         });

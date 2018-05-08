@@ -43,6 +43,7 @@ func main() {
 	http.HandleFunc("/shutdown", shutdown)
 	http.HandleFunc("/reboot", reboot)
 	http.HandleFunc("/create", createAPI)
+	http.HandleFunc("//404.html", notFound)
 	http.HandleFunc("/favicon.ico", favicon)
 	http.HandleFunc("/repasswd.html", repasswd)
 	http.HandleFunc("/alarm.html", alarm)
@@ -52,6 +53,11 @@ func main() {
 	http.HandleFunc("/edit.html", edit)
 	http.HandleFunc("/create.html", create)
 	http.ListenAndServe(":8100", nil)
+}
+
+func notFound(w http.ResponseWriter, req *http.Request) {
+	t, _ := template.ParseFiles("html/notFound.html")
+	t.Execute(w, nil)
 }
 
 func userInfo(w http.ResponseWriter, req *http.Request) {
@@ -128,8 +134,10 @@ func registerAPI(w http.ResponseWriter, req *http.Request) {
 }
 
 func login(w http.ResponseWriter, req *http.Request) {
+	url := req.URL.Query().Get("url")
+	//检查url域名
 	t, _ := template.ParseFiles("html/login.html")
-	t.Execute(w, nil)
+	t.Execute(w, url)
 }
 
 func logoutAPI(w http.ResponseWriter, req *http.Request) {
@@ -181,11 +189,7 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	sess, err := cSession.SessionStart(w, req)
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
+	sess, _ := cSession.SessionStart(w, req)
 	defer sess.SessionRelease(w)
 	sess.Set("uid", user.ID)
 	msg, _ := json.Marshal(er{Ret: "v", Msg: "登录成功"})
@@ -220,14 +224,31 @@ func edit(w http.ResponseWriter, req *http.Request) {
 }
 
 func info(w http.ResponseWriter, req *http.Request) {
+	sess, _ := cSession.SessionStart(w, req)
+	defer sess.SessionRelease(w)
+	if k, e := sess.Get("uid").(int); !e {
+		cLog.Warn(err.Error())
+		http.Redirect(w, req, fmt.Sprintf("/login.html?url=%s", req.URL.String()), http.StatusFound)
+		return
+	}
 	Vname := req.URL.Query().Get("Vname")
+	var vvm table.Virtual
+	err = orm.SetTable("Virtual").Where("Vname = ?", Vname).Find(&vvm)
+	if err != nil {
+		cLog.Warn(err.Error())
+		http.Redirect(w, req, "/404.html", http.StatusFound)
+		return
+	}
 	dom, err := control.Connect().LookupDomainByName(Vname)
 	if err != nil {
 		cLog.Warn(err.Error())
+		http.Redirect(w, req, "/404.html", http.StatusFound)
+		return
 	}
 	s, _, err := dom.GetState()
 	if err != nil {
 		cLog.Warn(err.Error())
+		return
 	}
 	if int(s) == 1 {
 		_, err := dom.GetInfo()
@@ -240,12 +261,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 		cLog.Warn(err.Error())
 		return
 	}
-	var vvm table.Virtual
-	err = orm.SetTable("Virtual").Where("Vname = ?", Vname).Find(&vvm)
-	if err != nil {
-		cLog.Warn(err.Error())
-		return
-	}
+
 	vvm.Status = int(s)
 	t, _ := template.ParseFiles("html/info.html")
 	t.Execute(w, vvm)
