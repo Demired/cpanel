@@ -408,7 +408,7 @@ func start(w http.ResponseWriter, req *http.Request) {
 	}
 	Vname := req.PostFormValue("Vname")
 	var tmpVirtual table.Virtual
-	err := orm.SetTable("Virtual").SetPK("ID").Where("Uid = ? and Vname = ?", uid, Vname).Find(&tmpVirtual)
+	err = orm.SetTable("Virtual").SetPK("ID").Where("Uid = ? and Vname = ?", uid, Vname).Find(&tmpVirtual)
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "权限不足"})
 		w.Write(msg)
@@ -478,7 +478,7 @@ func shutdown(w http.ResponseWriter, req *http.Request) {
 	}
 	Vname := req.PostFormValue("Vname")
 	var tmpVirtual table.Virtual
-	err := orm.SetTable("Virtual").SetPK("ID").Where("Uid = ? and Vname = ?", uid, Vname).Find(&tmpVirtual)
+	err = orm.SetTable("Virtual").SetPK("ID").Where("Uid = ? and Vname = ?", uid, Vname).Find(&tmpVirtual)
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "权限不足"})
 		w.Write(msg)
@@ -516,13 +516,13 @@ func reboot(w http.ResponseWriter, req *http.Request) {
 	}
 	Vname := req.PostFormValue("Vname")
 	var tmpVirtual table.Virtual
-	err := orm.SetTable("Virtual").SetPK("ID").Where("Uid = ? and Vname = ?", uid, Vname).Find(&tmpVirtual)
+	err = orm.SetTable("Virtual").SetPK("ID").Where("Uid = ? and Vname = ?", uid, Vname).Find(&tmpVirtual)
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "权限不足"})
 		w.Write(msg)
 		return
 	}
-	err := control.Reboot(Vname)
+	err = control.Reboot(Vname)
 	if err != nil {
 		cLog.Info(err.Error())
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "重启失败", Data: err.Error()})
@@ -849,7 +849,7 @@ func undefine(w http.ResponseWriter, req *http.Request) {
 	}
 	Vname := req.PostFormValue("Vname")
 	var tmpVirtual table.Virtual
-	err := orm.SetTable("Virtual").SetPK("ID").Where("Uid = ? and Vname = ?", uid, Vname).Find(&tmpVirtual)
+	err = orm.SetTable("Virtual").SetPK("ID").Where("Uid = ? and Vname = ?", uid, Vname).Find(&tmpVirtual)
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "权限不足"})
 		w.Write(msg)
@@ -859,11 +859,6 @@ func undefine(w http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
 	disk := fmt.Sprintf("/virt/disk/%s.qcow2", Vname)
 	os.Remove(disk)
-	orm, err := control.Bdb()
-	if err != nil {
-		cLog.Warn(err.Error())
-		return
-	}
 	t := make(map[string]interface{})
 	t["Status"] = 0
 	_, err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Update(t)
