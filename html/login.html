@@ -61,7 +61,7 @@
                 </div>
                 <div>
                     <label for="passwd" class="form-name">密码：</label>
-                    <input type="password" name="passwd" id="passwd" class="form-input" maxlength="18" placeholder="数字字母下划线">
+                    <input type="password" name="passwd" id="passwd" class="form-input" maxlength="18" onkeydown="keyCode()" placeholder="数字字母下划线">
                     <div class="form-notice" id="passwd-notice"></div>
                 </div>
                 <div style="margin-top: 15px;">
@@ -75,12 +75,12 @@
         </div>
     </div>
     <script>
-        $(function(){
+        function keyCode(){
             if(event.keyCode==13) {
                 $("#login").click();
                 return false;
             }
-        })
+        }
         $("#login").click(function(){
             $("#email-notice").hide();
             $("#passwd-notice").hide();
