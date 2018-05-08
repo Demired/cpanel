@@ -237,7 +237,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 	}
 	Vname := req.URL.Query().Get("Vname")
 	var vvm table.Virtual
-	err := orm.SetTable("Virtual").Where("Vname = ?", Vname).Find(&vvm)
+	err = orm.SetTable("Virtual").Where("Vname = ?", Vname).Find(&vvm)
 	if err != nil {
 		cLog.Warn(err.Error())
 		http.Redirect(w, req, "/404.html", http.StatusFound)
