@@ -675,6 +675,13 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 
 //创建虚拟机
 func createAPI(w http.ResponseWriter, req *http.Request) {
+	sess, _ := cSession.SessionStart(w, req)
+	defer sess.SessionRelease(w)
+	_, e := sess.Get("uid").(int)
+	if !e {
+		http.Redirect(w, req, fmt.Sprintf("/login.html?url=%s", req.URL.String()), http.StatusFound)
+		return
+	}
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/create.html", http.StatusFound)
 		return
