@@ -684,7 +684,7 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 func createAPI(w http.ResponseWriter, req *http.Request) {
 	sess, _ := cSession.SessionStart(w, req)
 	defer sess.SessionRelease(w)
-	_, e := sess.Get("uid").(int)
+	uid, e := sess.Get("uid").(int)
 	if !e {
 		http.Redirect(w, req, fmt.Sprintf("/login.html?url=%s", req.URL.String()), http.StatusFound)
 		return
@@ -694,40 +694,35 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	vmemory, err := strconv.Atoi(req.PostFormValue("vmemory"))
-
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "内存大小必须为整数"})
 		w.Write(msg)
 		return
 	}
-
 	vcpu, err := strconv.Atoi(req.PostFormValue("vcpu"))
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "cpu个数必须为整数"})
 		w.Write(msg)
 		return
 	}
-
 	vpasswd := req.PostFormValue("vpasswd")
 	if vpasswd == "" {
 		vpasswd = string(rpwd.Init(16, true, true, true, false))
 	}
-
 	bandwidth, err := strconv.Atoi(req.PostFormValue("bandwidth"))
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "带宽必须位整数"})
 		w.Write(msg)
 		return
 	}
-
 	sys := req.PostFormValue("sys")
 	if sys == "" {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "镜像必填"})
 		w.Write(msg)
 		return
 	}
-
 	var vInfo table.Virtual
+	vInfo.UID = uid
 	vInfo.Vname = string(rpwd.Init(8, true, true, true, false))
 	vInfo.Vcpu = vcpu
 	vInfo.Vmemory = vmemory
@@ -740,7 +735,6 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	vInfo.Etime = time.Now().Add(24 * 30 * time.Hour)
 	vInfo.Utime = time.Now()
 	vInfo.Sys = sys
-
 	_, err = createSysDisk(vInfo.Vname, vInfo.Sys)
 	if err != nil {
 		cLog.Info(err.Error())
