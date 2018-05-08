@@ -226,7 +226,8 @@ func edit(w http.ResponseWriter, req *http.Request) {
 func info(w http.ResponseWriter, req *http.Request) {
 	sess, _ := cSession.SessionStart(w, req)
 	defer sess.SessionRelease(w)
-	if uid, e := sess.Get("uid").(int); !e {
+	uid, e := sess.Get("uid").(int)
+	if !e {
 		http.Redirect(w, req, fmt.Sprintf("/login.html?url=%s", req.URL.String()), http.StatusFound)
 		return
 	}
