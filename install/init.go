@@ -52,7 +52,7 @@ func Init() {
                 Write INT NOT NULL,
                 Ctime INT NOT NULL
             );
-            CREATE TABLE IF NOT EXISTS Developer (
+            CREATE TABLE IF NOT EXISTS User (
                 ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 Username CHAR(20) NOT NULL,
                 Passwd CHAR(50) NOT NULL,

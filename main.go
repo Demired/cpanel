@@ -389,13 +389,32 @@ func createSysDisk(Vname, mirror string) (w int64, err error) {
 }
 
 func start(w http.ResponseWriter, req *http.Request) {
-	defer req.Body.Close()
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/", http.StatusFound)
 		return
 	}
+	sess, _ := cSession.SessionStart(w, req)
+	defer sess.SessionRelease(w)
+	uid, e := sess.Get("uid").(int)
+	if !e {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "请登录", Param: "login"})
+		w.Write(msg)
+		return
+	}
+	orm, err := control.Bdb()
+	if err != nil {
+		cLog.Warn(err.Error())
+		return
+	}
 	Vname := req.PostFormValue("Vname")
-	err := control.CheckEtime(Vname)
+	var tmpVirtual table.Virtual
+	err := orm.SetTable("Virtual").SetPK("ID").Where("Uid = ? and Vname = ?", uid, Vname).Find(&tmpVirtual)
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "权限不足"})
+		w.Write(msg)
+		return
+	}
+	err = control.CheckEtime(Vname)
 	if err != nil {
 		cLog.Warn("检查到期：%s,%s", Vname, err.Error())
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "服务器已经到期", Data: err.Error()})
@@ -439,12 +458,33 @@ type er struct {
 }
 
 func shutdown(w http.ResponseWriter, req *http.Request) {
+
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/", http.StatusFound)
 		return
 	}
+	sess, _ := cSession.SessionStart(w, req)
+	defer sess.SessionRelease(w)
+	uid, e := sess.Get("uid").(int)
+	if !e {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "请登录", Param: "login"})
+		w.Write(msg)
+		return
+	}
+	orm, err := control.Bdb()
+	if err != nil {
+		cLog.Warn(err.Error())
+		return
+	}
 	Vname := req.PostFormValue("Vname")
-	err := control.Shutdown(Vname)
+	var tmpVirtual table.Virtual
+	err := orm.SetTable("Virtual").SetPK("ID").Where("Uid = ? and Vname = ?", uid, Vname).Find(&tmpVirtual)
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "权限不足"})
+		w.Write(msg)
+		return
+	}
+	err = control.Shutdown(Vname)
 	if err != nil {
 		cLog.Warn(err.Error())
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "关机失败", Data: err.Error()})
@@ -456,11 +496,32 @@ func shutdown(w http.ResponseWriter, req *http.Request) {
 }
 
 func reboot(w http.ResponseWriter, req *http.Request) {
+
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/", http.StatusFound)
 		return
 	}
+	sess, _ := cSession.SessionStart(w, req)
+	defer sess.SessionRelease(w)
+	uid, e := sess.Get("uid").(int)
+	if !e {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "请登录", Param: "login"})
+		w.Write(msg)
+		return
+	}
+	orm, err := control.Bdb()
+	if err != nil {
+		cLog.Warn(err.Error())
+		return
+	}
 	Vname := req.PostFormValue("Vname")
+	var tmpVirtual table.Virtual
+	err := orm.SetTable("Virtual").SetPK("ID").Where("Uid = ? and Vname = ?", uid, Vname).Find(&tmpVirtual)
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "权限不足"})
+		w.Write(msg)
+		return
+	}
 	err := control.Reboot(Vname)
 	if err != nil {
 		cLog.Info(err.Error())
@@ -768,8 +829,34 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 }
 
 func undefine(w http.ResponseWriter, req *http.Request) {
-	defer req.Body.Close()
+
+	if req.Method != "POST" {
+		http.Redirect(w, req, "/", http.StatusFound)
+		return
+	}
+	sess, _ := cSession.SessionStart(w, req)
+	defer sess.SessionRelease(w)
+	uid, e := sess.Get("uid").(int)
+	if !e {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "请登录", Param: "login"})
+		w.Write(msg)
+		return
+	}
+	orm, err := control.Bdb()
+	if err != nil {
+		cLog.Warn(err.Error())
+		return
+	}
 	Vname := req.PostFormValue("Vname")
+	var tmpVirtual table.Virtual
+	err := orm.SetTable("Virtual").SetPK("ID").Where("Uid = ? and Vname = ?", uid, Vname).Find(&tmpVirtual)
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "权限不足"})
+		w.Write(msg)
+		return
+	}
+
+	defer req.Body.Close()
 	disk := fmt.Sprintf("/virt/disk/%s.qcow2", Vname)
 	os.Remove(disk)
 	orm, err := control.Bdb()
