@@ -103,7 +103,7 @@
                 }else if(d.ret == "v"){
                     alert(d.msg);
                     var url = $("#login").attr("ret-data");
-                    if( url != ""){
+                    if(url == undefined){
                         url = "/"
                     }
                     window.location.href = url
