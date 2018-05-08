@@ -202,6 +202,13 @@ func favicon(w http.ResponseWriter, req *http.Request) {
 }
 
 func create(w http.ResponseWriter, req *http.Request) {
+	sess, _ := cSession.SessionStart(w, req)
+	defer sess.SessionRelease(w)
+	_, e := sess.Get("uid").(int)
+	if !e {
+		http.Redirect(w, req, fmt.Sprintf("/login.html?url=%s", req.URL.String()), http.StatusFound)
+		return
+	}
 	t, _ := template.ParseFiles("html/create.html")
 	t.Execute(w, nil)
 }
