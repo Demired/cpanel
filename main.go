@@ -43,7 +43,7 @@ func main() {
 	http.HandleFunc("/shutdown", shutdown)
 	http.HandleFunc("/reboot", reboot)
 	http.HandleFunc("/create", createAPI)
-	http.HandleFunc("//404.html", notFound)
+	http.HandleFunc("/404.html", notFound)
 	http.HandleFunc("/favicon.ico", favicon)
 	http.HandleFunc("/repasswd.html", repasswd)
 	http.HandleFunc("/alarm.html", alarm)
