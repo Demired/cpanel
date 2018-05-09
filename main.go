@@ -215,7 +215,7 @@ func create(w http.ResponseWriter, req *http.Request) {
 	defer sess.SessionRelease(w)
 	_, e := sess.Get("uid").(int)
 	if !e {
-		http.Redirect(w, req, fmt.Sprintf("/login.html?url=%s", req.URL.String()), http.StatusFound)
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "你还没有登录", fmt.Sprintf("/login.html?url=%s", req.URL.String())), http.StatusFound)
 		return
 	}
 	t, _ := template.ParseFiles("html/create.html")
@@ -228,11 +228,12 @@ func edit(w http.ResponseWriter, req *http.Request) {
 	orm, err := control.Bdb()
 	if err != nil {
 		cLog.Warn(err.Error())
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "系统错误，请联系管理员"), http.StatusFound)
 		return
 	}
 	orm.SetTable("Virtual").Where("Vname = ?", Vname).Find(&vvm)
 	if time.Now().After(vvm.Etime) {
-		w.Write([]byte("服务器已到期"))
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "服务器已经到期", "/list"), http.StatusFound)
 		return
 	}
 	t, _ := template.ParseFiles("html/create.html")
@@ -244,7 +245,7 @@ func info(w http.ResponseWriter, req *http.Request) {
 	defer sess.SessionRelease(w)
 	uid, e := sess.Get("uid").(int)
 	if !e {
-		http.Redirect(w, req, fmt.Sprintf("/login.html?url=%s", req.URL.String()), http.StatusFound)
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "你没有登录", fmt.Sprintf("/login.html?url=%s", req.URL.String())), http.StatusFound)
 		return
 	}
 	orm, err := control.Bdb()
@@ -256,26 +257,27 @@ func info(w http.ResponseWriter, req *http.Request) {
 	var vvm table.Virtual
 	err = orm.SetTable("Virtual").Where("Vname = ? and Uid = ?", Vname, uid).Find(&vvm)
 	if err != nil {
-		cLog.Warn(err.Error())
-		http.Redirect(w, req, "/404.html", http.StatusFound)
+		cLog.Info(err.Error())
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "服务器不存在", "/list"), http.StatusFound)
+		return
+	}
+	err = control.CheckEtime(Vname)
+	if err != nil {
+		cLog.Info(err.Error())
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "服务器已到期", "/list"), http.StatusFound)
 		return
 	}
 	dom, err := control.Connect().LookupDomainByName(Vname)
 	if err != nil {
 		cLog.Warn(err.Error())
-		http.Redirect(w, req, "/404.html", http.StatusFound)
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "系统错误，请联系管理员"), http.StatusFound)
 		return
 	}
 	s, _, err := dom.GetState()
 	if err != nil {
 		cLog.Warn(err.Error())
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "系统错误，请联系管理员"), http.StatusFound)
 		return
-	}
-	if int(s) == 1 {
-		_, err := dom.GetInfo()
-		if err != nil {
-			cLog.Warn(err.Error())
-		}
 	}
 	vvm.Status = int(s)
 	t, _ := template.ParseFiles("html/info.html")
@@ -654,8 +656,7 @@ func alarm(w http.ResponseWriter, req *http.Request) {
 	var dInfo table.Virtual
 	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ? and Uid = ?", Vname, uid).Find(&dInfo)
 	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "权限不足", Data: err.Error()})
-		w.Write(msg)
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "没有权限"), http.StatusFound)
 		return
 	}
 	if time.Now().After(dInfo.Etime) {
