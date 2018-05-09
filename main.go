@@ -64,8 +64,9 @@ func notFound(w http.ResponseWriter, req *http.Request) {
 	if url == "" {
 		url = "/"
 	}
+
 	t, _ := template.ParseFiles("html/notFound.html")
-	t.Execute(w, interface{"msg":msg,"url":url})
+	t.Execute(w, map[string]string{"msg": msg, "url": url})
 }
 
 func userInfo(w http.ResponseWriter, req *http.Request) {
