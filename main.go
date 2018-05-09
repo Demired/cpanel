@@ -651,6 +651,7 @@ func alarm(w http.ResponseWriter, req *http.Request) {
 	orm, err := control.Bdb()
 	if err != nil {
 		cLog.Warn(err.Error())
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "系统错误，请联系管理员"), http.StatusFound)
 		return
 	}
 	var dInfo table.Virtual
@@ -660,8 +661,7 @@ func alarm(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	if time.Now().After(dInfo.Etime) {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "虚拟机已到期"})
-		w.Write(msg)
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "虚拟机已到期", "/list"), http.StatusFound)
 		return
 	}
 	if dInfo.AStatus == 0 {
