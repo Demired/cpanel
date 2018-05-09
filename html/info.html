@@ -184,6 +184,8 @@
             if(d.ret=="v"){
                 alert(d.msg)
                 location.reload('get');
+            }else if(d.ret == "e"&&d.msg == "login"){
+                window.location.href="/login.html?url=/info.html?Vname={{.Vname}}"
             }
         },"json")
     }
@@ -192,6 +194,8 @@
             if(d.ret=="v"){
                 alert(d.msg)
                 setTimeout(function(){location.reload('get')},2000)
+            }else if(d.ret == "e"&&d.msg == "login"){
+                window.location.href="/login.html?url=/info.html?Vname={{.Vname}}"
             }
         },"json")
     }
@@ -199,6 +203,8 @@
         $.post("/reboot",{Vname:Vname},function(d){
             if(d.ret=="v"){
                 alert(d.msg)
+            }else if(d.ret == "e"&&d.msg == "login"){
+                window.location.href="/login.html?url=/info.html?Vname={{.Vname}}"
             }
         },"json")
     }

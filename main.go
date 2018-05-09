@@ -56,8 +56,16 @@ func main() {
 }
 
 func notFound(w http.ResponseWriter, req *http.Request) {
+	msg := req.URL.Query().Get("msg")
+	url := req.URL.Query().Get("url")
+	if msg == "" {
+		msg = "页面找不到"
+	}
+	if url == "" {
+		url = "/"
+	}
 	t, _ := template.ParseFiles("html/notFound.html")
-	t.Execute(w, nil)
+	t.Execute(w, interface{"msg":msg,"url":url})
 }
 
 func userInfo(w http.ResponseWriter, req *http.Request) {
@@ -629,6 +637,13 @@ func editAPI(w http.ResponseWriter, req *http.Request) {
 }
 
 func alarm(w http.ResponseWriter, req *http.Request) {
+	sess, _ := cSession.SessionStart(w, req)
+	defer sess.SessionRelease(w)
+	uid, e := sess.Get("uid").(int)
+	if !e {
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "没有登录", fmt.Sprintf("/login.html?url=%s", req.URL.String())), http.StatusFound)
+		return
+	}
 	Vname := req.URL.Query().Get("Vname")
 	orm, err := control.Bdb()
 	if err != nil {
@@ -636,7 +651,7 @@ func alarm(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	var dInfo table.Virtual
-	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Find(&dInfo)
+	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ? ", Vname).Find(&dInfo)
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "发生错误", Data: err.Error()})
 		w.Write(msg)
@@ -663,6 +678,14 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, "/create.html", http.StatusFound)
 		return
 	}
+	sess, _ := cSession.SessionStart(w, req)
+	defer sess.SessionRelease(w)
+	uid, e := sess.Get("uid").(int)
+	if !e {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "请登录", Param: "login"})
+		w.Write(msg)
+		return
+	}
 	orm, err := control.Bdb()
 	if err != nil {
 		cLog.Warn(err.Error())
@@ -670,9 +693,9 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 	}
 	var dInfo table.Virtual
 	Vname := req.PostFormValue("Vname")
-	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Find(&dInfo)
+	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ? and Uid = ?", Vname, uid).Find(&dInfo)
 	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "发生错误", Data: err.Error()})
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "没有权限", Data: err.Error()})
 		w.Write(msg)
 		return
 	}

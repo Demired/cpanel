@@ -55,7 +55,7 @@
                 <td>{{$v.Vcpu}}</td>
                 <td>{{$v.Vmemory}}</td>
                 <td>{{$v.Bandwidth}}</td>
-                <td>{{if eq $v.Status 1}}运行中{{else}}关机中{{end}}</td>
+                <td>{{if eq $v.Status 1}}运行中{{else}}未开机{{end}}</td>
                 <td>{{$v.Ctime.Format "2006-01-02 15:04:05"}}</td>
                 <td>{{$v.Etime.Format "2006-01-02 15:04:05"}}</td>
                 <td ret="{{$v.Vname}}">
@@ -82,6 +82,8 @@
             alert(d.msg);
             if(d.ret == "v"){
                 location.reload('get');
+            }else if(d.ret == "e"&&d.msg == "login"){
+                window.location.href="/login.html?url=/list"
             }
         },"json");
         return false;
