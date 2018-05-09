@@ -652,9 +652,9 @@ func alarm(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	var dInfo table.Virtual
-	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ? ", Vname).Find(&dInfo)
+	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ? and Uid = ?", Vname, uid).Find(&dInfo)
 	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "发生错误", Data: err.Error()})
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "权限不足", Data: err.Error()})
 		w.Write(msg)
 		return
 	}
