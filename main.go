@@ -350,21 +350,18 @@ func list(w http.ResponseWriter, req *http.Request) {
 	orm, err := control.Bdb()
 	if err != nil {
 		cLog.Warn(err.Error())
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "系统错误，请联系管理员"), http.StatusFound)
 		return
 	}
 	sess, _ := cSession.SessionStart(w, req)
 	defer sess.SessionRelease(w)
 	uid, e := sess.Get("uid").(int)
 	if !e {
-		http.Redirect(w, req, fmt.Sprintf("/login.html?url=%s", req.URL.String()), http.StatusFound)
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "你没有登录", fmt.Sprintf("/login.html?url=%s", req.URL.String())), http.StatusFound)
 		return
 	}
 	var vvvm []table.Virtual
 	err = orm.SetTable("Virtual").Where("Status = ? and Uid = ?", "1", uid).FindAll(&vvvm)
-	if err != nil {
-		cLog.Warn(err.Error())
-		return
-	}
 	for k, v := range vvvm {
 		dom, err := control.Connect().LookupDomainByName(v.Vname)
 		if err != nil {
