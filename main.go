@@ -77,9 +77,9 @@ func userInfo(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	defer sess.SessionRelease(w)
-	uid , e:= sess.Get("uid").(int)
+	uid, e := sess.Get("uid").(int)
 	if !e {
-		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "你没有登录", fmt.Sprintf("login.html?url=%s",req.URL.String()), http.StatusFound)
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "你没有登录", fmt.Sprintf("login.html?url=%s", req.URL.String())), http.StatusFound)
 		return
 	}
 
@@ -91,7 +91,7 @@ func userInfo(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	t, _ := template.ParseFiles("html/userInfo.html")
-	t.Execute(w,)
+	t.Execute(w)
 }
 
 func index(w http.ResponseWriter, req *http.Request) {
