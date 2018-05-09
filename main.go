@@ -91,7 +91,7 @@ func userInfo(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	t, _ := template.ParseFiles("html/userInfo.html")
-	t.Execute(w)
+	t.Execute(w, nil)
 }
 
 func index(w http.ResponseWriter, req *http.Request) {
