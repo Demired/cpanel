@@ -72,11 +72,26 @@ func notFound(w http.ResponseWriter, req *http.Request) {
 func userInfo(w http.ResponseWriter, req *http.Request) {
 	sess, err := cSession.SessionStart(w, req)
 	if err != nil {
-		fmt.Println(err.Error())
+		cLog.Warn(err.Error())
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "系统错误，请联系管理员")), http.StatusFound)
 		return
 	}
 	defer sess.SessionRelease(w)
-	fmt.Println(sess.Get("uid"))
+	uid , e:= sess.Get("uid").(int)
+	if !e {
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "你没有登录", fmt.Sprintf("login.html?url=%s",req.URL.String()))), http.StatusFound)
+		return
+	}
+
+	var tmpUser table.User
+	orm, _ := control.Bdb()
+	fb := orm.SetTable("User").SetPK("ID").Where("ID = ?", uid).Find(&tmpUser)
+	if fb != nil {
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "用户不存在")), http.StatusFound)
+		return
+	}
+	t, _ := template.ParseFiles("html/userInfo.html")
+	t.Execute(w,)
 }
 
 func index(w http.ResponseWriter, req *http.Request) {
