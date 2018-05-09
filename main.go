@@ -80,8 +80,11 @@ func userInfo(w http.ResponseWriter, req *http.Request) {
 }
 
 func index(w http.ResponseWriter, req *http.Request) {
+	sess, _ := cSession.SessionStart(w, req)
+	defer sess.SessionRelease(w)
+	uid, e := sess.Get("uid").(int)
 	t, _ := template.ParseFiles("html/index.html")
-	t.Execute(w, nil)
+	t.Execute(w, map[string]int{"uid": uid})
 }
 
 func register(w http.ResponseWriter, req *http.Request) {

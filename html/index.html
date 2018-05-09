@@ -25,7 +25,11 @@
                 <li><a href="/create.html">创建虚拟机</a></li>
             </ul>
             <ul class="nav navbar-nav" style="line-height: 50px;float: right;">
+                {{with .uid}}
+                <li><a href="/info.html">个人中心</a></li>
+                {{else}}
                 <li><a href="/login.html">登录</a></li>
+                {{end}}
             </ul>
         </div>
     </div>
