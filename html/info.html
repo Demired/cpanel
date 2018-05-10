@@ -171,6 +171,7 @@
                 <div class="panel-body">
                     <div id="cpu" class="col-lg-6" style="height:400px"></div>
                     <div id="memory" class="col-lg-6" style="height:400px"></div>
+                    <div id="network" class="col-lg-6" style="height:400px"></div>
                 </div>
             </div>
         </div>
@@ -366,6 +367,74 @@
                 data: d.cpus.map(function(item){
                     return [item[0]*1000,item[1]/100]
                     })
+            }],
+        });
+        Highcharts.chart('bandwidth', {
+            credits: {
+                text: '带宽'
+            },
+            colors: ['#61A5E8'],
+            title: {
+                text: '带宽使用率'
+            },
+            xAxis: {
+                title: {
+                    text:"时间"
+                },
+                type: 'datetime',
+                dateTimeLabelFormats: {
+                    millisecond: '%H:%M:%S',
+                    second: '%H:%M:%S',
+                    minute: '%H:%M',
+                    hour: '%H:%M',
+                    day: '%Y-%m-%d',
+                    week: '%m-%d',
+                    month: '%Y-%m',
+                    year: '%Y'
+                }
+            },
+            yAxis: {
+                title: {
+                    text:"带宽"
+                }
+            },
+            tooltip: {
+                xDateFormat: '%Y-%m-%d %H:%M:%S',
+                shared: true
+            },
+            legend: {
+                layout: 'veritcal',
+                align: 'right',
+                verticalAlign: 'top',
+                y: 30,
+                floating: true,
+                borderWidth: 1
+            },
+            plotOptions: {
+                series: {
+                    fillColor: {
+                        linearGradient: [0, 0, 0, 300],
+                        stops: [
+                            [0,"#ff0"],
+                            [1,"#f00"]
+                        ]
+                    },
+                    lineWidth: 3,
+                    states: {
+                        hover: {
+                            lineWidth: 3
+                        }
+                    }
+                }
+            },
+            series: [{
+                type: 'line',
+                name: 'up',
+                data: d.up
+            },{
+                type: 'line',
+                name: 'down',
+                data: d.down
             }],
         });
     },"json")
