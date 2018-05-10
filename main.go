@@ -408,7 +408,8 @@ func loadJSON(w http.ResponseWriter, req *http.Request) {
 	var down [][]int
 
 	for _, v := range watchs {
-		up = append(up, []int{})
+		up = append(up, []int{v.Ctime, v.Up})
+		down = append(down, []int{v.Ctime, v.Down})
 		memorys = append(memorys, []int{v.Ctime, v.Memory})
 		cpus = append(cpus, []int{v.Ctime, v.CPU})
 	}
