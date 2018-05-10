@@ -229,6 +229,8 @@
             useUTC: false
         }
     })
+    var up = [];
+    var down = [];
     $.post("/load.json?Vname={{.Vname}}","",function(d){
         dd = d;
         Highcharts.chart('memory',{
@@ -369,8 +371,7 @@
                     })
             }],
         });
-        var up
-        var down
+
 
         var n = 0;
         d.up.forEach(function(item){
