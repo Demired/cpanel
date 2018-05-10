@@ -21,6 +21,11 @@
         height: 30px;
         border-radius: 5px;
     }
+    .notice{
+        line-height: 65px;
+        color: #f00;
+        height: 40px;
+    }
     </style>
 </head>
 <body>
@@ -120,7 +125,6 @@
         $.post("/userInfo",p,function(d){
             if(d.ret == "e"){
                 if(d.param != ""){
-                    console.log(d.param)
                     $("#"+d.param).append("<p class='notice'>"+d.msg+"</p>")
                 }
             }else if(d.ret == "v"){
