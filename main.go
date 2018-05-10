@@ -146,17 +146,17 @@ func userInfoAPI(w http.ResponseWriter, req *http.Request) {
 	} else {
 		date["Sex"] = 1
 	}
-	if date["Username"] != "" {
+	if req.PostFormValue("username") != "" {
 		usernameReg := regexp.MustCompile(`^[a-zA-Z0-9]{4,16}$`)
-		if !usernameReg.Match([]byte(date["Username"])) {
+		if !usernameReg.Match([]byte(req.PostFormValue("username"))) {
 			msg, _ := json.Marshal(er{Ret: "e", Param: "username-box", Msg: "用户名只允许大小写字母和数字"})
 			w.Write(msg)
 			return
 		}
 	}
-	if date["Tel"] != "" {
+	if req.PostFormValue("tel") != "" {
 		telReg := regexp.MustCompile(`^1[0-9]{10}$`)
-		if !telReg.Match([]byte(date["tel"])) {
+		if !telReg.Match([]byte(req.PostFormValue("tel"))) {
 			msg, _ := json.Marshal(er{Ret: "e", Param: "tel-box", Msg: "手机号有误"})
 			w.Write(msg)
 			return
