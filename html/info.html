@@ -381,7 +381,7 @@
         n = 0;
         d.down.forEach(function(item){
             if(n > 0){
-                down.push([item[0],int(item[1] - n)/1024])
+                down.push([item[0],parseInt(item[1] - n)/1024])
             }
             n = item[1];
         })
