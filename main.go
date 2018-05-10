@@ -85,7 +85,7 @@ func userInfo(w http.ResponseWriter, req *http.Request) {
 
 	var userInfo table.User
 	orm, _ := control.Bdb()
-	fb := orm.SetTable("User").SetPK("ID").Where("ID = ?", uid).Find(&tmpUser)
+	fb := orm.SetTable("User").SetPK("ID").Where("ID = ?", uid).Find(&userInfo)
 	if fb != nil {
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "用户不存在"), http.StatusFound)
 		return
