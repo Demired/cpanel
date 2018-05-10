@@ -83,7 +83,7 @@ func userInfo(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	var tmpUser table.User
+	var userInfo table.User
 	orm, _ := control.Bdb()
 	fb := orm.SetTable("User").SetPK("ID").Where("ID = ?", uid).Find(&tmpUser)
 	if fb != nil {
@@ -91,7 +91,7 @@ func userInfo(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	t, _ := template.ParseFiles("html/userInfo.html")
-	t.Execute(w, nil)
+	t.Execute(w, userInfo)
 }
 
 func index(w http.ResponseWriter, req *http.Request) {
