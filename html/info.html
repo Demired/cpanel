@@ -374,7 +374,7 @@
         var n = 0;
         d.up.forEach(function(item){
             if(n > 0){
-                up.push([item[0]*1000,item[1] - n])
+                up.push([item[0],item[1] - n])
             }
             n = item[1];
         })
@@ -445,13 +445,13 @@
             },
             series: [{
                 type: 'line',
-                name: 'up',
-                data: up
-            },{
-                type: 'line',
                 name: 'down',
                 data: down
-            }],
+            },{
+                type: 'line',
+                name: 'up',
+                data: up
+            }]
         });
     },"json")
 
