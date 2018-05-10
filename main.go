@@ -35,6 +35,7 @@ func main() {
 	http.HandleFunc("/login", loginAPI)
 	http.HandleFunc("/logout", logoutAPI)
 	http.HandleFunc("/userInfo.html", userInfo)
+	http.HandleFunc("/userInfo", userInfoAPI)
 	http.HandleFunc("/register.html", register)
 	http.HandleFunc("/register", registerAPI)
 	http.HandleFunc("/info.html", info)
@@ -107,7 +108,72 @@ func register(w http.ResponseWriter, req *http.Request) {
 	t.Execute(w, nil)
 }
 
+func userInfoAPI(w http.ResponseWriter, req *http.Request) {
+	if req.Method != "POST" {
+		http.Redirect(w, req, "/", http.StatusFound)
+		return
+	}
+	sess, err := cSession.SessionStart(w, req)
+	if err != nil {
+		cLog.Warn(err.Error())
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "系统错误，请联系管理员"})
+		w.Write(msg)
+		return
+	}
+	defer sess.SessionRelease(w)
+	uid, e := sess.Get("uid").(int)
+	if !e {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "未登录"})
+		w.Write(msg)
+		return
+	}
+	var date = make(map[string]interface{})
+	date["Username"] := req.PostFormValue("username")
+	date["Tel"] := req.PostFormValue("tel")
+	date["Realname"] := req.PostFormValue("realname")
+	date["Idtype"] := req.PostFormValue("idtype")
+	date["Idnumber"] := req.PostFormValue("idnumber")
+	date["City"] := req.PostFormValue("city")
+	date["Company"] := req.PostFormValue("company")
+	date["Address"] := req.PostFormValue("address")
+	if req.PostFormValue("idtype") == "1"{
+		date["idtype"] := 1
+	}else if req.PostFormValue("idtype") == "2"{
+		date["idtype"] := 2
+	}
+	if req.PostFormValue("sex") == "0"{
+		date["Sex"] := 0
+	}else{
+		date["Sex"] := 1
+	}
+	usernameReg := regexp.MustCompile(`^[a-zA-Z0-9]+$`)
+	if !usernameReg.Match([]byte(date["Username"])) {
+		msg, _ := json.Marshal(er{Ret: "e", Param: "username-box", Msg: "用户名只允许大小写字母和数字"})
+		w.Write(msg)
+		return
+	}
+	telReg := regexp.MustCompile(`^1[0-9]{10}$`)
+	if !telReg.Match([]byte(datep["tel"])) {
+		msg, _ := json.Marshal(er{Ret: "e", Param: "tel-box", Msg: "手机号有误"})
+		w.Write(msg)
+		return
+	}
+	orm, _ := control.Bdb()
+	_, err = orm.SetTable("User").SetPK("ID").Where("ID = ?", uid).Update(date)
+	if err != nil{
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "修改失败"})
+		w.Write(msg)
+		return
+	}
+	msg, _ := json.Marshal(er{Ret: "v", Msg: "修改成功"})
+	w.Write(msg)
+}
+
 func registerAPI(w http.ResponseWriter, req *http.Request) {
+	if req.Method != "POST" {
+		http.Redirect(w, req, "/", http.StatusFound)
+		return
+	}
 	email := req.PostFormValue("email")
 	passwd := req.PostFormValue("passwd")
 	if email == "" {
