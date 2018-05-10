@@ -26,7 +26,9 @@ func Watch() {
 	for {
 		select {
 		case <-w.C:
-			doms, err := control.Connect().ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_ACTIVE)
+			connect := control.Connect()
+			defer connect.Close()
+			doms, err := connect.ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_ACTIVE)
 			if err != nil {
 				cLog.Warn(err.Error())
 				continue
@@ -114,7 +116,9 @@ func WorkQueue() {
 			var vm table.Virtual
 			orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Find(&vm)
 			for {
-				net, _ := control.Connect().LookupNetworkByName("lan")
+				connect := control.Connect()
+				defer connect.Close()
+				net, _ := connect.LookupNetworkByName("lan")
 				dhcps, err := net.GetDHCPLeases()
 				if err != nil {
 					cLog.Warn(err.Error())

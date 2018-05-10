@@ -355,7 +355,9 @@ func info(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "服务器已到期", "/list"), http.StatusFound)
 		return
 	}
-	dom, err := control.Connect().LookupDomainByName(Vname)
+	connect := control.Connect()
+	defer connect.Close()
+	dom, err := connect.LookupDomainByName(Vname)
 	if err != nil {
 		cLog.Warn(err.Error())
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "系统错误，请联系管理员"), http.StatusFound)
@@ -402,7 +404,11 @@ func loadJSON(w http.ResponseWriter, req *http.Request) {
 	}
 	var cpus [][]int
 	var memorys [][]int
+	var up [][]int
+	var down [][]int
+
 	for _, v := range watchs {
+		up = append(up, []int{})
 		memorys = append(memorys, []int{v.Ctime, v.Memory})
 		cpus = append(cpus, []int{v.Ctime, v.CPU})
 	}
@@ -451,7 +457,9 @@ func list(w http.ResponseWriter, req *http.Request) {
 	var vvvm []table.Virtual
 	err = orm.SetTable("Virtual").Where("Status = ? and Uid = ?", "1", uid).FindAll(&vvvm)
 	for k, v := range vvvm {
-		dom, err := control.Connect().LookupDomainByName(v.Vname)
+		connect := control.Connect()
+		defer connect.Close()
+		dom, err := connect.LookupDomainByName(v.Vname)
 		if err != nil {
 			cLog.Warn(err.Error())
 			continue
@@ -704,7 +712,9 @@ func editAPI(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	xml := createKvmXML(vInfo)
-	_, err = control.Connect().DomainDefineXML(xml)
+	connect := control.Connect()
+	defer connect.Close()
+	_, err = connect.DomainDefineXML(xml)
 	if err != nil {
 		cLog.Info(err.Error())
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机失败", Data: err.Error()})
@@ -914,7 +924,9 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	xml := createKvmXML(vInfo)
-	_, err = control.Connect().DomainDefineXML(xml)
+	connect := control.Connect()
+	defer connect.Close()
+	_, err = connect.DomainDefineXML(xml)
 	if err != nil {
 		cLog.Info(err.Error())
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "创建虚拟机失败", Data: err.Error()})
