@@ -369,6 +369,23 @@
                     })
             }],
         });
+        var up
+        var down
+
+        var n = 0;
+        d.up.forEach(function(item){
+            if(n > 0){
+                up.push([item[0],item[1] - n])
+            }
+            n = item;
+        })
+        var n = 0;
+        d.down.forEach(function(item){
+            if(n > 0){
+                up.push([item[0],item[1] - n])
+            }
+            n = item;
+        })
         Highcharts.chart('bandwidth', {
             credits: {
                 text: '带宽'
@@ -430,17 +447,16 @@
             series: [{
                 type: 'line',
                 name: 'up',
-                data: d.up.reduce(function (x, y) {
-                    return y - x;
-                })
+                data: up
             },{
                 type: 'line',
                 name: 'down',
-                data: d.down.reduce(function (x, y) {
-                    return y - x;
-                })
+                data: down
             }],
         });
     },"json")
+
+    
+
 </script>
 </html>
