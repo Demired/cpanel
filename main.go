@@ -128,23 +128,23 @@ func userInfoAPI(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	var date = make(map[string]interface{})
-	date["Username"] := req.PostFormValue("username")
-	date["Tel"] := req.PostFormValue("tel")
-	date["Realname"] := req.PostFormValue("realname")
-	date["Idtype"] := req.PostFormValue("idtype")
-	date["Idnumber"] := req.PostFormValue("idnumber")
-	date["City"] := req.PostFormValue("city")
-	date["Company"] := req.PostFormValue("company")
-	date["Address"] := req.PostFormValue("address")
-	if req.PostFormValue("idtype") == "1"{
-		date["idtype"] := 1
-	}else if req.PostFormValue("idtype") == "2"{
-		date["idtype"] := 2
+	date["Username"] = req.PostFormValue("username")
+	date["Tel"] = req.PostFormValue("tel")
+	date["Realname"] = req.PostFormValue("realname")
+	date["Idtype"] = req.PostFormValue("idtype")
+	date["Idnumber"] = req.PostFormValue("idnumber")
+	date["City"] = req.PostFormValue("city")
+	date["Company"] = req.PostFormValue("company")
+	date["Address"] = req.PostFormValue("address")
+	if req.PostFormValue("idtype") == "1" {
+		date["idtype"] = 1
+	} else if req.PostFormValue("idtype") == "2" {
+		date["idtype"] = 2
 	}
-	if req.PostFormValue("sex") == "0"{
-		date["Sex"] := 0
-	}else{
-		date["Sex"] := 1
+	if req.PostFormValue("sex") == "0" {
+		date["Sex"] = 0
+	} else {
+		date["Sex"] = 1
 	}
 	usernameReg := regexp.MustCompile(`^[a-zA-Z0-9]+$`)
 	if !usernameReg.Match([]byte(date["Username"])) {
@@ -160,7 +160,7 @@ func userInfoAPI(w http.ResponseWriter, req *http.Request) {
 	}
 	orm, _ := control.Bdb()
 	_, err = orm.SetTable("User").SetPK("ID").Where("ID = ?", uid).Update(date)
-	if err != nil{
+	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Msg: "修改失败"})
 		w.Write(msg)
 		return
