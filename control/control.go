@@ -50,6 +50,7 @@ func Connect() *libvirt.Connect {
 	if err != nil {
 		return nil
 	}
+	defer conn.Close()
 	return conn
 }
 
