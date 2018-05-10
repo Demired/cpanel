@@ -374,9 +374,9 @@
         var n = 0;
         d.up.forEach(function(item){
             if(n > 0){
-                up.push([item[0],item[1] - n])
+                up.push([item[0],paraseInt(item[1] - n)/1024])
             }
-            n = int(item[1]/1024);
+            n = item[1];
         })
         n = 0;
         d.down.forEach(function(item){
