@@ -417,6 +417,8 @@ func loadJSON(w http.ResponseWriter, req *http.Request) {
 	date["maxMemory"] = virtual.Vmemory * 1024
 	date["cpus"] = cpus
 	date["memorys"] = memorys
+	date["up"] = up
+	date["down"] = down
 	dj, _ := json.Marshal(date)
 	w.Write(dj)
 }
