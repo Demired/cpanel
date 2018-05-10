@@ -430,11 +430,15 @@
             series: [{
                 type: 'line',
                 name: 'up',
-                data: d.up
+                data: d.up.reduce(function (x, y) {
+                    return y - x;
+                })
             },{
                 type: 'line',
                 name: 'down',
-                data: d.down
+                data: d.down.reduce(function (x, y) {
+                    return y - x;
+                })
             }],
         });
     },"json")
