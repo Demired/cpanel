@@ -374,14 +374,14 @@
         var n = 0;
         d.up.forEach(function(item){
             if(n > 0){
-                up.push([item[0]*1000,Math.round((item[1] - n)/1024)])
+                up.push([item[0]*1000,Math.round((item[1] - n)/20480)])
             }
             n = item[1];
         })
         n = 0;
         d.down.forEach(function(item){
             if(n > 0){
-                down.push([item[0]*1000,Math.round((item[1] - n)/1024)])
+                down.push([item[0]*1000,Math.round((item[1] - n)/20480)])
             }
             n = item[1];
         })
