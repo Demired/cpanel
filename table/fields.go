@@ -50,7 +50,9 @@ type User struct {
 	Email    string
 	Realname string
 	Idnumber string
+	Idtype   int
 	Sex      int
+	Address  string
 	Company  string
 	City     string
 	Status   int

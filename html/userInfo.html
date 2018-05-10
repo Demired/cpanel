@@ -64,12 +64,12 @@
                     <input type="tel" class="form-control" id="realname" name="realname" value="{{with .Realname}}{{.}}{{end}}">
                 </div>
                 <div class="form-group">
-                    <label for="type"><h3>证件类型</h3></label>
-                    <select name="type" id="type" class="form-control">
-                        <option value="1" {{with .Type}}{{if eq . 1}}selected{{end}}{{end}}>
+                    <label for="idtype"><h3>证件类型</h3></label>
+                    <select name="type" id="idtype" class="form-control">
+                        <option value="1" {{with .Idtype}}{{if eq . 1}}selected{{end}}{{end}}>
                             身份证
                         </option>
-                        <option value="2" {{with .Type}}{{if eq . 2}}selected{{end}}{{end}}>
+                        <option value="2" {{with .Idtype}}{{if eq . 2}}selected{{end}}{{end}}>
                             军官证
                         </option>
                     </select>
@@ -88,6 +88,18 @@
                             女
                         </option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label for="city"><h3>城市</h3></label>
+                    <input type="text" class="form-control" id="city" name="city" value="{{with .City}}{{.}}{{end}}">
+                </div>
+                <div class="form-group">
+                    <label for="company"><h3>公司名</h3></label>
+                    <input type="text" class="form-control" id="company" name="company" value="{{with .Company}}{{.}}{{end}}">
+                </div>
+                <div class="form-group">
+                    <label for="address"><h3>地址</h3></label>
+                    <input type="text" class="form-control" id="address" name="address" value="{{with .Address}}{{.}}{{end}}">
                 </div>
                 <button type="button" class="btn btn-default" id="submit">修改</button>
             </form>
