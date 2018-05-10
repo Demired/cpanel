@@ -146,17 +146,21 @@ func userInfoAPI(w http.ResponseWriter, req *http.Request) {
 	} else {
 		date["Sex"] = 1
 	}
-	usernameReg := regexp.MustCompile(`^[a-zA-Z0-9]+$`)
-	if !usernameReg.Match([]byte(date["Username"])) {
-		msg, _ := json.Marshal(er{Ret: "e", Param: "username-box", Msg: "用户名只允许大小写字母和数字"})
-		w.Write(msg)
-		return
+	if date["Username"] != "" {
+		usernameReg := regexp.MustCompile(`^[a-zA-Z0-9]{4,16}$`)
+		if !usernameReg.Match([]byte(date["Username"])) {
+			msg, _ := json.Marshal(er{Ret: "e", Param: "username-box", Msg: "用户名只允许大小写字母和数字"})
+			w.Write(msg)
+			return
+		}
 	}
-	telReg := regexp.MustCompile(`^1[0-9]{10}$`)
-	if !telReg.Match([]byte(datep["tel"])) {
-		msg, _ := json.Marshal(er{Ret: "e", Param: "tel-box", Msg: "手机号有误"})
-		w.Write(msg)
-		return
+	if date["Tel"] != "" {
+		telReg := regexp.MustCompile(`^1[0-9]{10}$`)
+		if !telReg.Match([]byte(date["tel"])) {
+			msg, _ := json.Marshal(er{Ret: "e", Param: "tel-box", Msg: "手机号有误"})
+			w.Write(msg)
+			return
+		}
 	}
 	orm, _ := control.Bdb()
 	_, err = orm.SetTable("User").SetPK("ID").Where("ID = ?", uid).Update(date)
