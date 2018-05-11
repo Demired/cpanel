@@ -27,7 +27,6 @@ func Watch() {
 		select {
 		case <-w.C:
 			connect := control.Connect()
-			defer connect.Close()
 			doms, err := connect.ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_ACTIVE)
 			if err != nil {
 				cLog.Warn(err.Error())
@@ -99,6 +98,7 @@ func Watch() {
 				t[name] = info.CpuTime
 				dom.Free()
 			}
+			connect.Close()
 		}
 	}
 }

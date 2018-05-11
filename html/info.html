@@ -235,7 +235,7 @@
         dd = d;
         Highcharts.chart('memory',{
             credits: {
-                text: '内存'
+                enabled: false
             },
             colors: ['#61A5E8','#7ECF51'],
             title: {
@@ -307,7 +307,7 @@
         });
         Highcharts.chart('cpu', {
             credits: {
-                text: 'cpu'
+                enabled: false
             },
             colors: ['#61A5E8'],
             title: {
@@ -387,7 +387,7 @@
         })
         Highcharts.chart('bandwidth', {
             credits: {
-                text: '带宽'
+                enabled: false
             },
             colors: ['#61A5E8','#7ECF51'],
             title: {
@@ -454,8 +454,5 @@
             }]
         });
     },"json")
-
-    
-
 </script>
 </html>
