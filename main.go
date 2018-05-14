@@ -218,6 +218,7 @@ func registerAPI(w http.ResponseWriter, req *http.Request) {
 	userInfo.Passwd = string(bs)
 	userInfo.Utime = time.Now()
 	userInfo.Ctime = time.Now()
+	userInfo.Status = 0
 	err := orm.SetTable("User").SetPK("ID").Save(&userInfo)
 	if err != nil {
 		cLog.Info(err.Error())
@@ -226,8 +227,23 @@ func registerAPI(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	cLog.Info("%注册成功", email)
+	//注册验证
+	code := 
+	var v table.Verify
+	v.Ctime = time.Now()
+	v.Vtime = tiem.Now()
+	v.Code = string(rpwd.Init(16, true, true, true, false))
+	v.Email = email
+	v.Status = 0
+	orm.SetTable("Verify").SetPK("ID").Save(&v)
+	htmlBody := fmt.Sprintf("<h1>注册验证</h1><p>点击<a href='http://172.16.1.181:8100/verify?code=%s'>链接</a>验证注册，非本人操作请忽略</p>",v.Code)
+	tools.SendMail(email, "注册验证", htmlBody)
 	msg, _ := json.Marshal(er{Ret: "v", Msg: "注册完毕"})
 	w.Write(msg)
+}
+
+func ref(w http.ResponseWriter, req *http.Request) {
+
 }
 
 func login(w http.ResponseWriter, req *http.Request) {

@@ -69,6 +69,14 @@ func Init() {
                 Utime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
+            CREATE TABLE IF NOT EXISTS Verify (
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                Email CHAR(20) NOT NULL,
+                Code CHAR(20) NOT NULL,
+                Status INT NOT NULL,
+                Vtime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+            );
             `
 	db.Exec(sql)
 

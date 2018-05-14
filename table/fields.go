@@ -60,6 +60,15 @@ type User struct {
 	Ctime    time.Time
 }
 
+type Verify struct {
+	ID     int
+	Email  string
+	Code   string
+	Status int
+	Ctime  time.Time
+	Vtime  time.Time
+}
+
 // ID INTEGER PRIMARY KEY AUTOINCREMENT,
 // Username CHAR(20) NOT NULL,
 // Passwd CHAR(50) NOT NULL,
