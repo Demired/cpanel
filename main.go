@@ -86,9 +86,7 @@ func verify(w http.ResponseWriter, req *http.Request) {
 		vData["Status"] = 1
 		vData["Vtime"] = time.Now()
 		orm.SetTable("Verify").SetPK("ID").Where("Code = ? and Email = ?", code, email).Update(vData)
-		var uData = make(map[string]interface{})
-		uData["Status"] = 1
-		orm.SetTable("User").SetPK("ID").Where("Email = ?", email).Update(vData)
+		orm.SetTable("User").SetPK("ID").Where("Email = ?", email).Update(map[string]int{"Status": 1})
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "邮箱验证完毕，请登录", "/login.html"), http.StatusFound)
 		return
 	} else if tmpVerify.Type == "forget" {
