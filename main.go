@@ -62,7 +62,7 @@ func main() {
 func verify(w http.ResponseWriter, req *http.Request) {
 	code := req.URL.Query().Get("code")
 	email := req.URL.Query().Get("email")
-	var tmpVerify = table.Verify
+	var tmpVerify table.Verify
 	orm, _ := control.Bdb()
 	fb := orm.SetTable("Verify").SetPK("ID").Where("Code = ? and Email = ?", code, email).Find(&tmpVerify)
 	if fb != nil {
@@ -105,7 +105,7 @@ func repwd(w http.ResponseWriter, req *http.Request) {
 	code := req.PostFormValue("code")
 	email := req.PostFormValue("email")
 	passwd := req.PostFormValue("passwd")
-	var tmpVerify = table.Verify
+	var tmpVerify table.Verify
 	fb := orm.SetTable("Verify").SetPK("ID").Where("Code = ? and Email = ?", code, email).Find(&tmpVerify)
 	if fb != nil {
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "验证失败"), http.StatusFound)
