@@ -321,7 +321,9 @@ func forgetAPI(w http.ResponseWriter, req *http.Request) {
 		//找回密码
 	}
 	orm.SetTable("Verify").SetPK("ID").Save(&v)
-
+	msg, _ := json.Marshal(er{Ret: "v", Msg: "邮件已发送"})
+	w.Write(msg)
+	return
 }
 
 func registerAPI(w http.ResponseWriter, req *http.Request) {
