@@ -69,17 +69,17 @@ func verify(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "验证失败"), http.StatusFound)
 		return
 	}
-	var t = time.Now()
-	t.ParseDuration("-24h")
-	if t.After(tmpVerify.Ctime) {
-		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "已过期，请通过找回密码，重新发起验证","/forget.html"), http.StatusFound)
+	var tm = time.Now()
+	tm.ParseDuration("-24h")
+	if tm.After(tmpVerify.Ctime) {
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "已过期，请通过找回密码，重新发起验证", "/forget.html"), http.StatusFound)
 		return
 	}
 	if tmpVerify.Status == 1 {
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "不要重复验证"), http.StatusFound)
 		return
 	}
-	if tmpVerify.Type == "verify"{
+	if tmpVerify.Type == "verify" {
 		var vData = make(map[string]interface{})
 		vData["Status"] = 1
 		vData["Vtime"] = time.Now()
@@ -89,7 +89,7 @@ func verify(w http.ResponseWriter, req *http.Request) {
 		orm.SetTable("User").SetPK("ID").Where("Email = ?", email).Update(vData)
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "邮箱验证完毕，请登录", "/login.html"), http.StatusFound)
 		return
-	}else if tmpVerify.Type == "forget"{
+	} else if tmpVerify.Type == "forget" {
 		t, _ := template.ParseFiles("html/verify.html")
 		t.Execute(w, map[string]string{"email": email, "code": code})
 	}
@@ -108,15 +108,15 @@ func repwd(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "验证失败"), http.StatusFound)
 		return
 	}
-	var t time.Now()
-	t.ParseDuration("-24h")
-	if t.After(tmpVerify.Ctime) {
-		msg,_:=json.Marshal(er{Ret:"e",Msg:"已过期，请通过找回密码，重新发起验证"})
+	var tm = time.Now()
+	tm.ParseDuration("-24h")
+	if tm.After(tmpVerify.Ctime) {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "已过期，请通过找回密码，重新发起验证"})
 		w.Write(msg)
 		return
 	}
 	if tmpVerify.Status == 1 {
-		msg,_:=json.Marshal(er{Ret:"e",Msg:"不要重复验证"})
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "不要重复验证"})
 		w.Write(msg)
 		return
 	}
@@ -130,7 +130,7 @@ func repwd(w http.ResponseWriter, req *http.Request) {
 	vData["Status"] = 1
 	vData["Vtime"] = time.Now()
 	orm.SetTable("Verify").SetPK("ID").Where("Code = ? and Email = ?", code, email).Update(vData)
-	
+
 	h := sha1.New()
 	h.Write([]byte(passwd))
 	bs := h.Sum(nil)
