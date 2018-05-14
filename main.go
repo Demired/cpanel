@@ -69,7 +69,7 @@ func verify(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "验证失败"), http.StatusFound)
 		return
 	}
-	var t time.Now()
+	var t = time.Now()
 	t.ParseDuration("-24h")
 	if t.After(tmpVerify.Ctime) {
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "已过期，请通过找回密码，重新发起验证","/forget.html"), http.StatusFound)
