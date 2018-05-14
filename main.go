@@ -30,7 +30,6 @@ func main() {
 	go loop.WorkQueue()
 	http.HandleFunc("/", index)
 	http.HandleFunc("/verify", verify)
-	http.HandleFunc("/repwd", repwd)
 	http.HandleFunc("/edit", editAPI)
 	http.HandleFunc("/list", list)
 	http.HandleFunc("/login.html", login)
