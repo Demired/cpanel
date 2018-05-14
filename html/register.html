@@ -100,6 +100,9 @@
             p.passwd = $("#passwd").val();
             $.post("/register",p,function(d){
                 if (d.ret == "e"){
+                    if (d.param == ""){
+                        alert(d.msg)
+                    }
                     switch(d.param)
                     {
                     case "email":
