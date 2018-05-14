@@ -42,6 +42,7 @@ func main() {
 	http.HandleFunc("/register.html", register)
 	http.HandleFunc("/register", registerAPI)
 	http.HandleFunc("/info.html", info)
+	http.HandleFunc("/setpwd", setpwd)
 	http.HandleFunc("/load.json", loadJSON)
 	http.HandleFunc("/start", start)
 	http.HandleFunc("/shutdown", shutdown)
@@ -96,7 +97,7 @@ func verify(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func repwd(w http.ResponseWriter, req *http.Request) {
+func setpwd(w http.ResponseWriter, req *http.Request) {
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/", http.StatusFound)
 		return
@@ -159,7 +160,6 @@ func notFound(w http.ResponseWriter, req *http.Request) {
 	if url == "" {
 		url = "/"
 	}
-
 	t, _ := template.ParseFiles("html/notFound.html")
 	t.Execute(w, map[string]string{"msg": msg, "url": url})
 }
@@ -286,14 +286,42 @@ func forgetAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	var tmpVerify table.Verify
-	err = orm.SetTable("Verify").SetPK("ID").Where("Email = ?", email).Find(&tmpVerify)
-	tmpVerify
+
+	var nowTime = time.Now()
+	subTime, _ := time.ParseDuration("-24h")
+	lastTime := nowTime.Add(subTime)
+
+	var tmpVerify []table.Verify
+	err = orm.SetTable("Verify").SetPK("ID").Where("Email = ? and Ctime > ?", email, lastTime).FindAll(&tmpVerify)
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Param: "email", Msg: "账号不存在"})
+		w.Write(msg)
+		return
+	}
+	if len(tmpVerify) > 5 {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "找回密码太频繁"})
+		w.Write(msg)
+		return
+	}
+	var v table.Verify
+	v.Email = email
+	v.Code = rpwd.Init(16, true, true, true, false)
+	v.Ctime = time.Now()
+	v.Status = 0
 	if tmpUser.Status == 0 {
+		v.Type = "verify"
+		htmlBody := fmt.Sprintf("<h1>注册验证</h1><p>点击<a href='http://172.16.1.181:8100/verify?code=%s&email=%s'>链接</a>验证注册，非本人操作请忽略</p>", v.Code, v.Email)
+		tools.SendMail(email, "注册验证", htmlBody)
+		//发送邮件
 		//注册
 	} else {
+
+		v.Type = "forget"
+		htmlBody := fmt.Sprintf("<h1>找回密码</h1><p>点击<a href='http://172.16.1.181:8100/repasswd.html?code=%s&email=%s'>链接</a>找回密码，非本人操作请忽略</p>", v.Code, v.Email)
+		tools.SendMail(email, "注册验证", htmlBody)
 		//找回密码
 	}
+	orm.SetTable("Verify").SetPK("ID").Save(&v)
 
 }
 
