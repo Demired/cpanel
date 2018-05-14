@@ -64,6 +64,7 @@ type Verify struct {
 	ID     int
 	Email  string
 	Code   string
+	Type   string
 	Status int
 	Ctime  time.Time
 	Vtime  time.Time
