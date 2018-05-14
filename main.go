@@ -116,7 +116,7 @@ func setpwd(w http.ResponseWriter, req *http.Request) {
 	subTime, _ := time.ParseDuration("-24h")
 	lastTime := nowTime.Add(subTime)
 	if lastTime.After(tmpVerify.Ctime) {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "已过期，请通过找回密码，重新发起验证"})
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "链接已过期，请通过找回密码，重新发起验证"})
 		w.Write(msg)
 		return
 	}
