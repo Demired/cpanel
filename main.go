@@ -74,11 +74,11 @@ func verify(w http.ResponseWriter, req *http.Request) {
 	subTime, _ := time.ParseDuration("-24h")
 	lastTime := nowTime.Add(subTime)
 	if lastTime.After(tmpVerify.Ctime) {
-		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "已过期，请通过找回密码，重新发起验证", "/forget.html"), http.StatusFound)
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "链接已过期，请通过找回密码，重新发起验证", "/forget.html"), http.StatusFound)
 		return
 	}
 	if tmpVerify.Status == 1 {
-		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "不要重复验证"), http.StatusFound)
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "链接已作废，请通过找回密码，重新发起验证"), http.StatusFound)
 		return
 	}
 	if tmpVerify.Type == "verify" {
@@ -121,7 +121,7 @@ func setpwd(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	if tmpVerify.Status == 1 {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "不要重复验证"})
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "链接已作废，请通过找回密码，重新发起验证"})
 		w.Write(msg)
 		return
 	}
