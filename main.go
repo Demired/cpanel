@@ -316,8 +316,8 @@ func forgetAPI(w http.ResponseWriter, req *http.Request) {
 		//注册
 	} else {
 		v.Type = "forget"
-		htmlBody := fmt.Sprintf("<h1>找回密码</h1><p>点击<a href='http://172.16.1.181:8100/repasswd.html?code=%s&email=%s'>链接</a>找回密码，非本人操作请忽略</p>", v.Code, v.Email)
-		tools.SendMail(email, "注册验证", htmlBody)
+		htmlBody := fmt.Sprintf("<h1>找回密码</h1><p>点击<a href='http://172.16.1.181:8100/verify?code=%s&email=%s'>链接</a>找回密码，非本人操作请忽略</p>", v.Code, v.Email)
+		tools.SendMail(email, "找回密码", htmlBody)
 		//找回密码
 	}
 	orm.SetTable("Verify").SetPK("ID").Save(&v)

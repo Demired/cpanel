@@ -23,6 +23,7 @@ type Virtual struct {
 	Etime      time.Time `json:"etime"`     //Expire time
 	Ctime      time.Time `json:"ctime"`
 	Utime      time.Time `json:"utime"`
+	AutoPay    int       `json:"autopay"`
 	ACpu       int       `json:"acpu"`
 	ABandwidth int       `json:"abandwidth"`
 	AMemory    int       `json:"amemory"`
@@ -68,6 +69,15 @@ type Verify struct {
 	Status int
 	Ctime  time.Time
 	Vtime  time.Time
+}
+
+type Billing struct {
+	ID    int
+	UID   int
+	Value int
+	Model string
+	Desc  string
+	Ctime time.Time
 }
 
 // ID INTEGER PRIMARY KEY AUTOINCREMENT,
