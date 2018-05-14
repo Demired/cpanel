@@ -142,8 +142,9 @@ func setpwd(w http.ResponseWriter, req *http.Request) {
 	var uData = make(map[string]interface{})
 	uData["Passwd"] = string(bs)
 	orm.SetTable("User").SetPK("ID").Where("Email = ?", email).Update(vData)
-	t, _ := template.ParseFiles("html/forget.html")
-	t.Execute(w, nil)
+	msg, _ := json.Marshal(er{Ret: "v", Msg: "重置完毕"})
+	w.Write(msg)
+	return
 }
 
 func forget(w http.ResponseWriter, req *http.Request) {
