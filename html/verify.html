@@ -93,8 +93,9 @@
             p.passwd = $("#passwd").val();
             $.post("/setpwd",p,function(d){
                 if (d.ret == "e"){
-                    if(d.param == undefined){
+                    if(d.param == ""){
                         alert(d.msg);
+                        return
                     }
                     switch(d.param)
                     {
