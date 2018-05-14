@@ -74,6 +74,7 @@ func Init() {
                 Email CHAR(20) NOT NULL,
                 Code CHAR(20) NOT NULL,
                 Status INT NOT NULL,
+                Type CHAR(20) NOT NULL,
                 Vtime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
             );

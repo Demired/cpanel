@@ -29,10 +29,13 @@ func main() {
 	go loop.Watch()
 	go loop.WorkQueue()
 	http.HandleFunc("/", index)
+	http.HandleFunc("/verify", verify)
+	http.HandleFunc("/repwd", repwd)
 	http.HandleFunc("/edit", editAPI)
 	http.HandleFunc("/list", list)
 	http.HandleFunc("/login.html", login)
 	http.HandleFunc("/login", loginAPI)
+	http.HandleFunc("/forget.html", forget)
 	http.HandleFunc("/logout", logoutAPI)
 	http.HandleFunc("/userInfo.html", userInfo)
 	http.HandleFunc("/userInfo", userInfoAPI)
@@ -54,6 +57,93 @@ func main() {
 	http.HandleFunc("/edit.html", edit)
 	http.HandleFunc("/create.html", create)
 	http.ListenAndServe(":8100", nil)
+}
+
+func verify(w http.ResponseWriter, req *http.Request) {
+	code := req.URL.Query().Get("code")
+	email := req.URL.Query().Get("email")
+	var tmpVerify = table.Verify
+	orm, _ := control.Bdb()
+	fb := orm.SetTable("Verify").SetPK("ID").Where("Code = ? and Email = ?", code, email).Find(&tmpVerify)
+	if fb != nil {
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "验证失败"), http.StatusFound)
+		return
+	}
+	var t time.Now()
+	t.ParseDuration("-24h")
+	if t.After(tmpVerify.Ctime) {
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "已过期，请通过找回密码，重新发起验证","/forget.html"), http.StatusFound)
+		return
+	}
+	if tmpVerify.Status == 1 {
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "不要重复验证"), http.StatusFound)
+		return
+	}
+	if tmpVerify.Type == "verify"{
+		var vData = make(map[string]interface{})
+		vData["Status"] = 1
+		vData["Vtime"] = time.Now()
+		orm.SetTable("Verify").SetPK("ID").Where("Code = ? and Email = ?", code, email).Update(vData)
+		var uData = make(map[string]interface{})
+		uData["Status"] = 1
+		orm.SetTable("User").SetPK("ID").Where("Email = ?", email).Update(vData)
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "邮箱验证完毕，请登录", "/login.html"), http.StatusFound)
+		return
+	}else if tmpVerify.Type == "forget"{
+		t, _ := template.ParseFiles("html/verify.html")
+		t.Execute(w, map[string]string{"email": email, "code": code})
+	}
+}
+
+func repwd(w http.ResponseWriter, req *http.Request) {
+	if req.Method != "POST" {
+		http.Redirect(w, req, "/", http.StatusFound)
+		return
+	}
+	code := req.PostFormValue("code")
+	email := req.PostFormValue("email")
+	passwd := req.PostFormValue("passwd")
+	fb := orm.SetTable("Verify").SetPK("ID").Where("Code = ? and Email = ?", code, email).Find(&tmpVerify)
+	if fb != nil {
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "验证失败"), http.StatusFound)
+		return
+	}
+	var t time.Now()
+	t.ParseDuration("-24h")
+	if t.After(tmpVerify.Ctime) {
+		msg,_:=json.Marshal(er{Ret:"e",Msg:"已过期，请通过找回密码，重新发起验证"})
+		w.Write(msg)
+		return
+	}
+	if tmpVerify.Status == 1 {
+		msg,_:=json.Marshal(er{Ret:"e",Msg:"不要重复验证"})
+		w.Write(msg)
+		return
+	}
+	passReg := regexp.MustCompile(`^[\w!@#$%^&*()-_=+]*$`)
+	if !passReg.Match([]byte(passwd)) {
+		msg, _ := json.Marshal(er{Ret: "e", Param: "passwd", Msg: "密码只支持数字，大小写字母，和\"!@#$%^&*()_-=+\""})
+		w.Write(msg)
+		return
+	}
+	var vData = make(map[string]interface{})
+	vData["Status"] = 1
+	vData["Vtime"] = time.Now()
+	orm.SetTable("Verify").SetPK("ID").Where("Code = ? and Email = ?", code, email).Update(vData)
+	
+	h := sha1.New()
+	h.Write([]byte(passwd))
+	bs := h.Sum(nil)
+	var uData = make(map[string]interface{})
+	uData["Passwd"] = string(bs)
+	orm.SetTable("User").SetPK("ID").Where("Email = ?", email).Update(vData)
+	t, _ := template.ParseFiles("html/forget.html")
+	t.Execute(w, nil)
+}
+
+func forget(w http.ResponseWriter, req *http.Request) {
+	t, _ := template.ParseFiles("html/forget.html")
+	t.Execute(w, nil)
 }
 
 func notFound(w http.ResponseWriter, req *http.Request) {
@@ -173,6 +263,36 @@ func userInfoAPI(w http.ResponseWriter, req *http.Request) {
 	w.Write(msg)
 }
 
+func forgetAPI(w http.ResponseWriter, req *http.Request) {
+	if req.Method != "POST" {
+		http.Redirect(w, req, "/", http.StatusFound)
+		return
+	}
+	email := req.PostFormValue("email")
+	if email == "" {
+		msg, _ := json.Marshal(er{Ret: "e", Param: "email", Msg: "邮箱不能为空"})
+		w.Write(msg)
+		return
+	}
+	var tmpUser table.User
+	orm, _ := control.Bdb()
+	err := orm.SetTable("User").SetPK("ID").Where("Email = ?", email).Find(&tmpUser)
+	if err != nil {
+		msg, _ := json.Marshal(er{Ret: "e", Param: "email", Msg: "账号不存在"})
+		w.Write(msg)
+		return
+	}
+	var tmpVerify table.Verify
+	err = orm.SetTable("Verify").SetPK("ID").Where("Email = ?", email).Find(&tmpVerify)
+	tmpVerify
+	if tmpUser.Status == 0 {
+		//注册
+	} else {
+		//找回密码
+	}
+
+}
+
 func registerAPI(w http.ResponseWriter, req *http.Request) {
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/", http.StatusFound)
@@ -235,7 +355,7 @@ func registerAPI(w http.ResponseWriter, req *http.Request) {
 	v.Email = email
 	v.Status = 0
 	orm.SetTable("Verify").SetPK("ID").Save(&v)
-	htmlBody := fmt.Sprintf("<h1>注册验证</h1><p>点击<a href='http://172.16.1.181:8100/verify?code=%s'>链接</a>验证注册，非本人操作请忽略</p>", v.Code)
+	htmlBody := fmt.Sprintf("<h1>注册验证</h1><p>点击<a href='http://172.16.1.181:8100/verify?code=%s&email=%s'>链接</a>验证注册，非本人操作请忽略</p>", v.Code, v.Email)
 	tools.SendMail(email, "注册验证", htmlBody)
 	msg, _ := json.Marshal(er{Ret: "v", Msg: "注册完毕,请前往邮箱查收验证邮件"})
 	w.Write(msg)

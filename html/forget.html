@@ -52,68 +52,48 @@
 <body class="login-bg">
     <div class="container" style="padding-top: 80px;">
         <div class="col-lg-6 col-lg-offset-3 login-box">
-            <h1>cpanel注册</h1>
-            <from action="/register">
+            <h1>cpanel登录</h1>
+            <from action="/forget">
                 <div>
-                    <label for="email" class="form-name">邮箱：</label>
-                    <input type="text" name="email" id="email" class="form-input" placeholder="邮箱">
+                    <label for="email" class="form-name">邮箱:</label>
+                    <input type="text" name="email" id="email" class="form-input" onkeydown="keyCode()" placeholder="邮箱">
                     <div class="form-notice" id="email-notice"></div>
                 </div>
-                <div>
-                    <label for="passwd" class="form-name">密码：</label>
-                    <input type="password" name="passwd" id="passwd" class="form-input" maxlength="18" placeholder="数字字母下划线">
-                    <div class="form-notice" id="passwd-notice"></div>
-                </div>
-                <div>
-                    <label for="repasswd" class="form-name">重复密码：</label>
-                    <input type="password" name="repasswd" id="repasswd" class="form-input" onkeydown="keyCode()" maxlength="18" placeholder="重复密码">
-                    <div class="form-notice" id="repasswd-notice"></div>
-                </div>
                 <div style="margin-top: 15px;">
-                    <a href="/forget.html" class="forget">忘记密码</a>
-                    <a href="/login.html" class="login">立即登录</a>
+                    <a href="/login.html" class="forget">立即登录</a>
+                    <a href="/register.html" class="register">立即注册</a>
                 </div>
                 <div>
-                    <button name="action" id="register" class="form-button">立即注册</button>
+                    <button name="action" id="login" class="form-button" ret-data="{{.}}">提交</button>
                 </div>
             </from>
         </div>
     </div>
     <script>
-          function keyCode(){
+        function keyCode(){
             if(event.keyCode==13) {
-                $("#register").click();
+                $("#forget").click();
                 return false;
             }
         }
-        $("#register").click(function(){
-            $("#repasswd-notice").hide();
+        $("#forget").click(function(){
             $("#email-notice").hide();
-            $("#passwd-notice").hide();
-            var p = {}
-            if($("#passwd").val() !== $("#repasswd").val()){
-                $("#repasswd-notice").show();
-                $("#repasswd-notice").html("两次密码不一致");
-                return
-            }
+            var p = {};
             p.email = $("#email").val();
-            p.passwd = $("#passwd").val();
-            $.post("/register",p,function(d){
+            $.post("/forget",p,function(d){
                 if (d.ret == "e"){
+                    if(d.param == undefined){
+                        alert(d.msg);
+                    }
                     switch(d.param)
                     {
                     case "email":
                         $("#email-notice").show();
                         $("#email-notice").html(d.msg);
                         break;
-                    case "passwd":
-                        $("#passwd-notice").show();
-                        $("#passwd-notice").html(d.msg);
-                        break;
                     }
                 }else if(d.ret == "v"){
                     alert(d.msg);
-                    window.location.href = "/login.html";
                 }
             },"json");
         });
