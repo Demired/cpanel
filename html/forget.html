@@ -82,7 +82,7 @@
             p.email = $("#email").val();
             $.post("/forget",p,function(d){
                 if (d.ret == "e"){
-                    if(d.param == undefined){
+                    if(d.param == ""){
                         alert(d.msg);
                     }
                     switch(d.param)
