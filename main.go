@@ -209,7 +209,7 @@ func registerAPI(w http.ResponseWriter, req *http.Request) {
 	orm, _ := control.Bdb()
 	fb := orm.SetTable("User").SetPK("ID").Where("Email = ?", email).Find(&tmpUser)
 	if fb == nil {
-		msg, _ := json.Marshal(er{Ret: "e", Param: "email", Msg: "邮箱已占用"})
+		msg, _ := json.Marshal(er{Ret: "e", Param: "email", Msg: "邮箱已注册，你可以尝试登录或者找回密码"})
 		w.Write(msg)
 		return
 	}
@@ -237,7 +237,7 @@ func registerAPI(w http.ResponseWriter, req *http.Request) {
 	orm.SetTable("Verify").SetPK("ID").Save(&v)
 	htmlBody := fmt.Sprintf("<h1>注册验证</h1><p>点击<a href='http://172.16.1.181:8100/verify?code=%s'>链接</a>验证注册，非本人操作请忽略</p>", v.Code)
 	tools.SendMail(email, "注册验证", htmlBody)
-	msg, _ := json.Marshal(er{Ret: "v", Msg: "注册完毕"})
+	msg, _ := json.Marshal(er{Ret: "v", Msg: "注册完毕,请前往邮箱查收验证邮件"})
 	w.Write(msg)
 }
 
@@ -290,6 +290,11 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 	err := orm.SetTable("User").SetPK("ID").Where("Email = ?", email).Find(&user)
 	if err != nil {
 		msg, _ := json.Marshal(er{Ret: "e", Param: "email", Msg: "用户不存在"})
+		w.Write(msg)
+		return
+	}
+	if user.Status == 0 {
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "邮箱验证未通过"})
 		w.Write(msg)
 		return
 	}
