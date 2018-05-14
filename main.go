@@ -304,7 +304,7 @@ func forgetAPI(w http.ResponseWriter, req *http.Request) {
 	}
 	var v table.Verify
 	v.Email = email
-	v.Code = rpwd.Init(16, true, true, true, false)
+	v.Code = string(rpwd.Init(16, true, true, true, false))
 	v.Ctime = time.Now()
 	v.Status = 0
 	if tmpUser.Status == 0 {
@@ -314,7 +314,6 @@ func forgetAPI(w http.ResponseWriter, req *http.Request) {
 		//发送邮件
 		//注册
 	} else {
-
 		v.Type = "forget"
 		htmlBody := fmt.Sprintf("<h1>找回密码</h1><p>点击<a href='http://172.16.1.181:8100/repasswd.html?code=%s&email=%s'>链接</a>找回密码，非本人操作请忽略</p>", v.Code, v.Email)
 		tools.SendMail(email, "注册验证", htmlBody)
