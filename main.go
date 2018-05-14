@@ -35,6 +35,7 @@ func main() {
 	http.HandleFunc("/login.html", login)
 	http.HandleFunc("/login", loginAPI)
 	http.HandleFunc("/forget.html", forget)
+	http.HandleFunc("/forgetAPI", forgetAPI)
 	http.HandleFunc("/logout", logoutAPI)
 	http.HandleFunc("/userInfo.html", userInfo)
 	http.HandleFunc("/userInfo", userInfoAPI)
