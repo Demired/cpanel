@@ -141,7 +141,7 @@ func setpwd(w http.ResponseWriter, req *http.Request) {
 	bs := h.Sum(nil)
 	var uData = make(map[string]interface{})
 	uData["Passwd"] = string(bs)
-	orm.SetTable("User").SetPK("ID").Where("Email = ?", email).Update(vData)
+	orm.SetTable("User").SetPK("ID").Where("Email = ?", email).Update(uData)
 	msg, _ := json.Marshal(er{Ret: "v", Msg: "重置完毕"})
 	w.Write(msg)
 	return
