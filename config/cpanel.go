@@ -1,7 +1,9 @@
 package config
 
 import (
+	"fmt"
 	"io/ioutil"
+	"os"
 
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/session"
@@ -25,7 +27,8 @@ func init() {
 	//获取配置文件
 	conf, err := ioutil.ReadFile("./config.yaml")
 	if err != nil {
-		panic(err)
+		fmt.Println(err.Error())
+		os.Exit(1)
 	}
 	yaml.Unmarshal(conf, &Yaml)
 
