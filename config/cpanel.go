@@ -10,7 +10,7 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-type config struct {
+type Config struct {
 	LogFile         string
 	CookieName      string
 	Gclifetime      int64
@@ -21,7 +21,7 @@ type config struct {
 var CLog = logs.NewLogger(1)
 var CSession *session.Manager
 
-var Yaml config
+var Yaml Config
 
 func init() {
 	//获取配置文件
@@ -31,6 +31,8 @@ func init() {
 		os.Exit(1)
 	}
 	yaml.Unmarshal(conf, &Yaml)
+
+	fmt.Println(Yaml)
 
 	CLog.SetLogger("file", `{"filename":"`+Yaml.LogFile+`"}`)
 	CLog.SetLevel(logs.LevelInformational)
