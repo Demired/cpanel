@@ -27,6 +27,7 @@
             <ul class="nav navbar-nav" style="line-height: 50px;float: right;">
                 {{with .uid}}
                 <li><a href="/userInfo.html">个人中心</a></li>
+                <li><a href="/logout" class="ajax">注销</a></li>
                 {{else}}
                 <li><a href="/login.html">登录</a></li>
                 {{end}}
@@ -41,5 +42,17 @@
         <p><a class="btn btn-primary btn-lg" href="https://www.ipip.net" role="button">Learn more</a></p>
     </div>
 </div>
+<script>
+$(".ajax").click(function(){
+    var url = $(".ajax").attr("href");
+    $.post(url,"",function(d){
+        if(d.ret == "v"){
+            alert("注销完毕")
+        }
+    })
+    return false
+})
+    
+</script>
 </body>
 </html>

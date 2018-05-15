@@ -87,8 +87,10 @@ func Watch() {
 					Bill <- fmt.Sprintf("%s", name)
 					continue
 				}
+				//TODO 将要到期
+
 				if virtual.AStatus == 1 {
-					//TODO 连续
+					//TODO 连续3次
 					//检查是否超过阀值
 					if cpurate/100 > virtual.ACpu {
 						Alarm <- fmt.Sprintf("cpu/%s", name)

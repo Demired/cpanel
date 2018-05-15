@@ -380,7 +380,7 @@ func registerAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	cLog.Info("%注册成功", email)
+	cLog.Info("%s注册成功", email)
 	//注册验证
 	var v table.Verify
 	v.Ctime = time.Now()
