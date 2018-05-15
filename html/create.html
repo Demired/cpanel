@@ -61,7 +61,7 @@
                 </option>
             </select>
         </div>
-        <dir>
+        <div>
             <label for="autopay"><h3>自动续费</h3></label>
             <select name="autopay" id="autopay" class="form-control">
                 <option value="0" {{with .Autopay}}{{if eq . "0"}}selected{{end}}{{end}}>
@@ -71,8 +71,8 @@
                     是
                 </option>
             </select>
-        </dir>
-        <dir>
+        </div>
+        <div>
             <label for="cycle"><h3>付款周期</h3></label>
             <select name="cycle" id="cycle" class="form-control">
                 <option value="0" {{with .Cycle}}{{if eq . "0"}}selected{{end}}{{end}}>
@@ -85,7 +85,7 @@
                     年付
                 </option>
             </select>
-        </dir>
+        </div>
         {{with .ID}}
         {{else}}
         <div class="form-group">
@@ -105,6 +105,8 @@
         p.vmemory = $("#vmemory").val()
         p.vpasswd = $("#vpasswd").val()
         p.bandwidth = $("#bandwidth").val()
+        p.autopay = $("#autopay").val()
+        p.cycle = $("#cycle").val()
         $.post("/{{with .ID}}edit{{else}}create{{end}}",p,function(d){
             alert(d.msg);
             if(d.ret=="v"){
