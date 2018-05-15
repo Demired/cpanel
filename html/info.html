@@ -155,6 +155,10 @@
                                 <td>测试</td>
                             </tr>
                             <tr>
+                                <th>计费周期:</th>
+                                <td>{{if eq .Cycle 0}}月付{{else if .Cycle 1}}季付{{else}}年付{{end}}</td>
+                            </tr>
+                            <tr>
                                 <th>到期时间:</th>
                                 <td>{{.Etime.Format "2006-01-02 15:04:05"}}</td>
                             </tr>
