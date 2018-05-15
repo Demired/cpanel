@@ -12,7 +12,7 @@ import (
 )
 
 // var InitPass = make(chan string) //设置初始密码的chan
-var VmInit = make(chan string)
+var VmInit = make(chan string, 100, 100)
 
 var Bill = make(chan string)
 
