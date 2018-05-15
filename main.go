@@ -385,6 +385,7 @@ func registerAPI(w http.ResponseWriter, req *http.Request) {
 	var v table.Verify
 	v.Ctime = time.Now()
 	v.Vtime = time.Now()
+	v.Type = "verify"
 	v.Code = string(rpwd.Init(16, true, true, true, false))
 	v.Email = email
 	v.Status = 0
