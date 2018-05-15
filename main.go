@@ -1070,7 +1070,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	}
 	bandwidth, err := strconv.Atoi(req.PostFormValue("bandwidth"))
 	if err != nil {
-		msg, _ := json.Marshal(er{Ret: "e", Msg: "带宽必须位整数"})
+		msg, _ := json.Marshal(er{Ret: "e", Msg: "带宽必须为整数"})
 		w.Write(msg)
 		return
 	}
@@ -1080,6 +1080,15 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
+
+	//计算费用
+
+	//查询余额
+
+	//扣费
+
+	//事务支持
+
 	var vInfo table.Virtual
 	vInfo.UID = uid
 	vInfo.Vname = string(rpwd.Init(8, true, true, true, false))
