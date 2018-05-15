@@ -1080,6 +1080,22 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
+	var vInfo table.Virtual
+	autopay := req.PostFormValue("autopay")
+	if autopay == "0" {
+		vInfo.AutoPay = 0
+	} else {
+		vInfo.AutoPay = 1
+	}
+
+	cycle := req.PostFormValue("cycle")
+	if cycle == "2" {
+		vInfo.Cycle = 2
+	} else if cycle == "1" {
+		vInfo.Cycle = 1
+	} else {
+		vInfo.Cycle = 0
+	}
 
 	//计算费用
 
@@ -1089,7 +1105,6 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 
 	//事务支持
 
-	var vInfo table.Virtual
 	vInfo.UID = uid
 	vInfo.Vname = string(rpwd.Init(8, true, true, true, false))
 	vInfo.Vcpu = vcpu

@@ -9,21 +9,20 @@ import (
 var cLog = config.CLog
 
 func SendMail(address, subject, htmlBody string) {
-	dmClient, err := dm.NewClientWithAccessKey("cn-hangzhou", "LTAIG47RA2EJ06qP", "jmEqG2mrGxXNpGSkTB6lWYY9xdUnfN")
+	dmClient, err := dm.NewClientWithAccessKey(config.Yaml.RegionID, config.Yaml.AccessKeyID, config.Yaml.AccessKeySecret)
 	if err != nil {
 		panic(err)
 	}
 	request := dm.CreateSingleSendMailRequest()
 	request.ToAddress = address
-	request.AccountName = "send@mail.0x8c.com"
-	request.ReplyAddress = "zhangyuan8087@gmail.com"
+	request.AccountName = config.Yaml.AccountName
+	request.ReplyAddress = config.Yaml.ReplyAddress
 	request.Subject = subject
 	request.ReplyToAddress = "false"
 	request.AddressType = "0"
-	request.FromAlias = "cpanl"
+	request.FromAlias = config.Yaml.Alias
 	request.HtmlBody = htmlBody
-	//"<h1>注册验证</h1><p>点击<a href='https://t.0x8c.com/qwertyuiop'>链接</a>验证注册，非本人操作请忽略</p>"
-	request.Domain = "dm.aliyuncs.com"
+	request.Domain = config.Yaml.Domain
 	_, err = dmClient.SingleSendMail(request)
 	if err != nil {
 		cLog.Warn(err.Error())
