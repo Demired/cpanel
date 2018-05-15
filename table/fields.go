@@ -5,30 +5,31 @@ import (
 )
 
 type Virtual struct {
-	ID        int       `json:"id"`
-	UID       int       `json:"uid"`
-	IPv4      string    `json:"ipv4"`
-	IPv6      string    `json:"ipv6"`
-	LocalIP   string    `json:"local"`
-	Vcpu      int       `json:"vcpu"`
-	Status    int       `json:"status"`
-	Vmemory   int       `json:"vmemory"` //GiB
-	Passwd    string    `json:"vpasswd"`
-	Vname     string    `json:"vname"`
-	Tag       string    `json:"tag"`
-	Br        string    `json:"br"`
-	Mac       string    `json:"mac"`
-	Sys       string    `json:"sys"`
-	Bandwidth int       `json:"bandwidth"` //Mbps
-	Etime     time.Time `json:"etime"`     //Expire time
-	Ctime     time.Time `json:"ctime"`
-	Utime     time.Time `json:"utime"`
-	// AutoPay    int       `json:"autopay"`
-	ACpu       int `json:"acpu"`
-	ABandwidth int `json:"abandwidth"`
-	AMemory    int `json:"amemory"`
-	ADisk      int `json:"adisk"`
-	AStatus    int `json:"astatus"`
+	ID         int       `json:"id"`
+	UID        int       `json:"uid"`
+	IPv4       string    `json:"ipv4"`
+	IPv6       string    `json:"ipv6"`
+	LocalIP    string    `json:"local"`
+	Vcpu       int       `json:"vcpu"`
+	Status     int       `json:"status"`
+	Vmemory    int       `json:"vmemory"` //GiB
+	Passwd     string    `json:"vpasswd"`
+	Vname      string    `json:"vname"`
+	Tag        string    `json:"tag"`
+	Br         string    `json:"br"`
+	Mac        string    `json:"mac"`
+	Sys        string    `json:"sys"`
+	Bandwidth  int       `json:"bandwidth"` //Mbps
+	Etime      time.Time `json:"etime"`     //Expire time
+	Ctime      time.Time `json:"ctime"`
+	Utime      time.Time `json:"utime"`
+	AutoPay    int       `json:"autopay"`
+	Cycle      int       `json:"cycle"`
+	ACpu       int       `json:"acpu"`
+	ABandwidth int       `json:"abandwidth"`
+	AMemory    int       `json:"amemory"`
+	ADisk      int       `json:"adisk"`
+	AStatus    int       `json:"astatus"`
 }
 
 type Watch struct {
@@ -74,10 +75,32 @@ type Verify struct {
 type Billing struct {
 	ID    int
 	UID   int
-	Value int
-	Model string
-	Desc  string
+	Value int //金额 单位：分
+	// Model string
+	Desc  string //描述
 	Ctime time.Time
+}
+
+// CREATE TABLE IF NOT EXISTS Prompt (
+// 	ID INTEGER PRIMARY KEY AUTOINCREMENT,
+// 	Vname CHAR(20) NOT NULL,
+// 	Email CHAR(20) NOT NULL,
+// 	Type CHAR(20) NOT NULL,
+// 	Subject CHAR(20) NOT NULL,
+// 	Desc CHAR(50) NOT NULL,
+// 	Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+// );
+
+//提示盒子
+type Prompt struct {
+	ID      int
+	UID     int
+	Vname   string
+	Email   string
+	Type    string //提示类型 余额不足 到期提醒 将要扣款通知
+	Subject string //主题
+	Desc    string //描述
+	Ctime   time.Time
 }
 
 // ID INTEGER PRIMARY KEY AUTOINCREMENT,

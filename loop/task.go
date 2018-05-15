@@ -77,8 +77,10 @@ func Watch() {
 					cLog.Warn("写入数据失败", err.Error())
 					continue
 				}
+				var nowTime = time.Now()
+
 				//检查是否到期
-				if time.Now().After(virtual.Etime) {
+				if nowTime.After(virtual.Etime) {
 					err := control.Shutdown(name)
 					if err != nil {
 						cLog.Warn("关机失败", err.Error())
@@ -87,7 +89,24 @@ func Watch() {
 					Bill <- fmt.Sprintf("%s", name)
 					continue
 				}
-				//TODO 将要到期
+
+				//TODO 将要到期，7天报警
+				var subTime = time.ParseDuration(-24 * 7)
+				var last7DayTime = nowTime.Add(subTime)
+				if last7DayTime.After(virtual.Etime) {
+					if virtual.AutoPay == 1 {
+						//自动付款
+
+						//检查是否余额充足
+						if true {
+							//充足发送将要续费提醒
+						} else {
+							//不充足余额不足提醒
+						}
+					} else {
+						//发送续费提醒
+					}
+				}
 
 				if virtual.AStatus == 1 {
 					//TODO 连续3次

@@ -32,6 +32,7 @@ func Init() {
                 Br CHAR(10),
                 Mac CHAR(20),
                 Sys CHAR(20),
+                Autopay INT NOT NULL,
                 ACpu INT NOT NULL,
                 ABandwidth INT NOT NULL,
                 AMemory INT NOT NULL,
@@ -78,8 +79,34 @@ func Init() {
                 Vtime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
+            CREATE TABLE IF NOT EXISTS Prompt (
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                UID INT NOT NULL,
+                Vname CHAR(20) NOT NULL,
+                Email CHAR(20) NOT NULL,
+                Type CHAR(20) NOT NULL,
+                Subject CHAR(20) NOT NULL,
+                Desc CHAR(50) NOT NULL,
+                Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+            );
+            CREATE TABLE IF NOT EXISTS Billing (
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                UID INT NOT NULL,
+                Value INT NOT NULL,
+                DESC CHAR(50) NOT NULL,
+                Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+            );
             `
 	db.Exec(sql)
+
+	// type Billing struct {
+	//     ID    int
+	//     UID   int
+	//     Value int //金额 单位：分
+	//     Model string
+	//     Desc  string //描述
+	//     Ctime time.Time
+	// }
 
 	// `CREATE TABLE IF NOT EXISTS vv (
 	//     ID INTEGER PRIMARY KEY AUTOINCREMENT,

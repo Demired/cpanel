@@ -61,6 +61,31 @@
                 </option>
             </select>
         </div>
+        <dir>
+            <label for="autopay"><h3>自动续费</h3></label>
+            <select name="autopay" id="autopay" class="form-control">
+                <option value="0" {{with .Autopay}}{{if eq . "0"}}selected{{end}}{{end}}>
+                    否
+                </option>
+                <option value="1" {{with .Autopay}}{{if eq . "1"}}selected{{end}}{{end}}>
+                    是
+                </option>
+            </select>
+        </dir>
+        <dir>
+            <label for="cycle"><h3>付款周期</h3></label>
+            <select name="cycle" id="cycle" class="form-control">
+                <option value="0" {{with .Cycle}}{{if eq . "0"}}selected{{end}}{{end}}>
+                    月付
+                </option>
+                <option value="1" {{with .Cycle}}{{if eq . "1"}}selected{{end}}{{end}}>
+                    季付
+                </option>
+                <option value="2" {{with .Cycle}}{{if eq . "1"}}selected{{end}}{{end}}>
+                    年付
+                </option>
+            </select>
+        </dir>
         {{with .ID}}
         {{else}}
         <div class="form-group">
@@ -86,7 +111,8 @@
                 location.href = "/list"
             }
         },"json")
-   });
+    });
+    //计算花费
 </script>
 </body>
 </html>
