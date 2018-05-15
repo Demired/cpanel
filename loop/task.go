@@ -89,11 +89,11 @@ func Watch() {
 					Bill <- fmt.Sprintf("%s", name)
 					continue
 				}
-
 				//TODO 将要到期，7天报警
-				var subTime = time.ParseDuration(-24 * 7)
+				subTime, _ := time.ParseDuration("-168h")
 				var last7DayTime = nowTime.Add(subTime)
 				if last7DayTime.After(virtual.Etime) {
+					//检查是否已经发过通知
 					if virtual.AutoPay == 1 {
 						//自动付款
 
