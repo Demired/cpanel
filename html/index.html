@@ -48,6 +48,7 @@ $(".ajax").click(function(){
     $.post(url,"",function(d){
         if(d.ret == "v"){
             alert("注销完毕")
+            window.location.reload()
         }
     },"json")
     return false
