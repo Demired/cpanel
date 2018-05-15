@@ -11,11 +11,11 @@ import (
 )
 
 type Config struct {
-	LogFile         string
-	CookieName      string
-	Gclifetime      int64
-	CookieLifeTime  int
-	EnableSetCookie bool
+	LogFile         string `yaml:"LogFile"`
+	CookieName      string `yaml:"CookieName"`
+	Gclifetime      int64  `yaml:"Gclifetime"`
+	CookieLifeTime  int    `yaml:"CookieLifeTime"`
+	EnableSetCookie bool   `yaml:"EnableSetCookie"`
 }
 
 var CLog = logs.NewLogger(1)

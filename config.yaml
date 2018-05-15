@@ -1,5 +1,5 @@
-logFile : /var/log/cpanel.log
-cookieName: PHPSESSID
-gclifetime: 3600
-cookieLifeTime: 3600
+LogFile : /var/log/cpanel.log
+CookieName: PHPSESSID
+Gclifetime: 3600
+CookieLifeTime: 3600
 EnableSetCookie: true
