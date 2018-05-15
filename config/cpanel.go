@@ -25,7 +25,7 @@ var Yaml config
 
 func init() {
 	//获取配置文件
-	conf, err := ioutil.ReadFile("./config.yaml")
+	conf, err := ioutil.ReadFile("./config/config.yaml")
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
