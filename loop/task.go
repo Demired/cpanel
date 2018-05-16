@@ -128,7 +128,7 @@ func WorkQueue() {
 	for {
 		select {
 		case vname := <-VmInit:
-			go func(vname string){
+			go func(vname string) {
 				fmt.Printf("正在初始化的虚拟机，%s\n", vname)
 				control.Start(vname)
 				orm, err := control.Bdb()
@@ -163,8 +163,8 @@ func WorkQueue() {
 					time.Sleep(3 * time.Second)
 				}
 			HERE:
-				fmt.Println("over",vname)
-			}
+				fmt.Println("over", vname)
+			}(vname)
 		case str := <-Alarm:
 			cLog.Warn("out alarm")
 			data := strings.Split(str, "/")
