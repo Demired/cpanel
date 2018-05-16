@@ -154,11 +154,13 @@ func WorkQueue() {
 						//设置外网ip
 						//设置密码
 						control.SetPasswd(vm.Vname, "root", vm.Passwd)
-						return
+						//this ok
 					}
 				}
+				fmt.Println("sleep")
 				time.Sleep(3 * time.Second)
 			}
+
 		case str := <-Alarm:
 			cLog.Warn("out alarm")
 			data := strings.Split(str, "/")
