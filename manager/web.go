@@ -28,7 +28,7 @@ func login(w http.ResponseWriter, req *http.Request) {
 	// defer sess.SessionRelease(w)
 	// token := string(rpwd.Init(16, true, true, true, false))
 	// sess.Set("loginToken", token)
-	t, _ := template.ParseFiles("html/managre/login.html")
+	t, _ := template.ParseFiles("html/manager/login.html")
 	t.Execute(w, nil)
 }
 
