@@ -16,8 +16,8 @@ var cLog = config.CLog
 var cSession = config.CSession
 
 func Web() {
-	http.HandleFunc("/login.html", login)
-	http.HandleFunc("/login", loginAPI)
+	http.HandleFunc("/manager/login.html", login)
+	http.HandleFunc("/manager/login", loginAPI)
 	http.ListenAndServe(fmt.Sprintf(":%d", config.Yaml.ManagerPort), nil)
 }
 
