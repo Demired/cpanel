@@ -64,6 +64,7 @@
                     <input type="password" name="passwd" id="passwd" class="form-input" maxlength="18" onkeydown="keyCode()" placeholder="数字字母下划线">
                     <div class="form-notice" id="passwd-notice"></div>
                 </div>
+                <input type="hidden" value="{{.token}}" name="token" id="token">
                 <div>
                     <button name="action" id="login" class="form-button" ret-data="{{.}}">提交</button>
                 </div>
@@ -82,6 +83,7 @@
             $("#passwd-notice").hide();
             var p = {};
             p.email = $("#email").val();
+            p.token = $("#token").val();
             p.passwd = $("#passwd").val();
             $.post("/login",p,function(d){
                 if (d.ret == "e"){

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cpanel/home"
 	"cpanel/loop"
 	"cpanel/manager"
 )
@@ -8,6 +9,6 @@ import (
 func main() {
 	go loop.Watch()
 	go loop.WorkQueue()
-	// go home.Web()
+	go home.Web()
 	manager.Web()
 }
