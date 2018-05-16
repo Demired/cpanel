@@ -128,41 +128,40 @@ func WorkQueue() {
 	for {
 		select {
 		case vname := <-VmInit:
-			fmt.Printf("正在初始化的虚拟机，%s\n", vname)
-			control.Start(vname)
-			orm, err := control.Bdb()
-			if err != nil {
-				cLog.Warn(err.Error())
-			}
-			var vm table.Virtual
-			orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Find(&vm)
-			for {
-				connect := control.Connect()
-				defer connect.Close()
-				net, _ := connect.LookupNetworkByName("lan")
-				dhcps, err := net.GetDHCPLeases()
+			go func(vname) {
+				orm, err := control.Bdb()
 				if err != nil {
 					cLog.Warn(err.Error())
-					continue
 				}
-				for _, dhcp := range dhcps {
-					if dhcp.Mac == vm.Mac {
-						//ip地址入库
-						var date = make(map[string]interface{})
-						date["LocalIP"] = dhcp.IPaddr
-						orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Update(date)
-						//设置外网ip
-						//设置密码
-						control.SetPasswd(vm.Vname, "root", vm.Passwd)
-						goto HERE
-						//this ok
+				var vm table.Virtual
+				orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Find(&vm)
+				for {
+					connect := control.Connect()
+					defer connect.Close()
+					net, _ := connect.LookupNetworkByName("lan")
+					dhcps, err := net.GetDHCPLeases()
+					if err != nil {
+						cLog.Warn(err.Error())
+						continue
 					}
+					for _, dhcp := range dhcps {
+						if dhcp.Mac == vm.Mac {
+							//ip地址入库
+							var date = make(map[string]interface{})
+							date["LocalIP"] = dhcp.IPaddr
+							orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Update(date)
+							//设置外网ip
+							//设置密码
+							control.SetPasswd(vm.Vname, "root", vm.Passwd)
+							goto HERE
+							//this ok
+						}
+					}
+					fmt.Println("sleep")
+					time.Sleep(3 * time.Second)
 				}
-				fmt.Println("sleep")
-				time.Sleep(3 * time.Second)
-			}
-		HERE:
-			fmt.Println("over")
+			HERE:
+			}(vname)
 		case str := <-Alarm:
 			cLog.Warn("out alarm")
 			data := strings.Split(str, "/")
