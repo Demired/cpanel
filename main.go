@@ -10,5 +10,5 @@ func main() {
 	go loop.Watch()
 	go loop.WorkQueue()
 	go home.Web()
-	go manager.Web()
+	manager.Web()
 }
