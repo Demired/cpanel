@@ -7,8 +7,6 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-
-	"github.com/Demired/rpwd"
 )
 
 var cLog = config.CLog
@@ -26,12 +24,12 @@ func Web() {
 }
 
 func login(w http.ResponseWriter, req *http.Request) {
-	sess, _ := cSession.SessionStart(w, req)
-	defer sess.SessionRelease(w)
-	token := string(rpwd.Init(16, true, true, true, false))
-	sess.Set("loginToken", token)
+	// sess, _ := cSession.SessionStart(w, req)
+	// defer sess.SessionRelease(w)
+	// token := string(rpwd.Init(16, true, true, true, false))
+	// sess.Set("loginToken", token)
 	t, _ := template.ParseFiles("html/managre/login.html")
-	t.Execute(w, map[string]string{"token": token})
+	t.Execute(w, nil)
 }
 
 func loginAPI(w http.ResponseWriter, req *http.Request) {
