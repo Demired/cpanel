@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"github.com/Demired/rpwd"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 var cLog = config.CLog
