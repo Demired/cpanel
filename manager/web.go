@@ -7,7 +7,8 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"rpwd"
+
+	"github.com/Demired/rpwd"
 )
 
 var cLog = config.CLog
@@ -44,4 +45,6 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
+	fmt.Println(email)
+	fmt.Println(passwd)
 }
