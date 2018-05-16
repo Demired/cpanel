@@ -15,9 +15,10 @@ var cSession = config.CSession
 func Web() {
 	homeMux := http.NewServeMux()
 
-	homeMux.HandleFunc("/login.html", login)
-	homeMux.HandleFunc("/login", loginAPI)
+	homeMux.HandleFunc("/m/login.html", login)
+	homeMux.HandleFunc("/m/login", loginAPI)
 	http.ListenAndServe(fmt.Sprintf(":%d", config.Yaml.ManagerPort), homeMux)
+
 }
 
 func login(w http.ResponseWriter, req *http.Request) {
