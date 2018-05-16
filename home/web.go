@@ -14,9 +14,10 @@ import (
 	"net/http"
 	"os"
 	"regexp"
-	"github.com/Demired/rpwd"
 	"strconv"
 	"time"
+
+	"github.com/Demired/rpwd"
 )
 
 var cLog = config.CLog
@@ -53,7 +54,7 @@ func Web() {
 	http.HandleFunc("/undefine", undefine)
 	http.HandleFunc("/edit.html", edit)
 	http.HandleFunc("/create.html", create)
-	http.ListenAndServe(fmt.Srintf(":%d", config.Yaml.HomePort), nil)
+	http.ListenAndServe(fmt.Sprintf(":%d", config.Yaml.HomePort), nil)
 }
 
 func registerAPI(w http.ResponseWriter, req *http.Request) {
@@ -721,7 +722,7 @@ func repasswdAPI(w http.ResponseWriter, req *http.Request) {
 	passwd := req.PostFormValue("passwd")
 	err := control.SetPasswd(Vname, "root", passwd)
 	if err != nil {
-		msg, _ := json.Marshal(tools.tools.Er{Ret: "e", Msg: err.Error()})
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: err.Error()})
 		w.Write(msg)
 		return
 	}
