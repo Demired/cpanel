@@ -129,6 +129,7 @@ func WorkQueue() {
 		select {
 		case vname := <-VmInit:
 			go func(vname) {
+				fmt.Println("正在初始化的虚拟机，", vname)
 				orm, err := control.Bdb()
 				if err != nil {
 					cLog.Warn(err.Error())
@@ -157,10 +158,11 @@ func WorkQueue() {
 							//this ok
 						}
 					}
-					fmt.Println("sleep")
+					fmt.Println("sleep", vname)
 					time.Sleep(3 * time.Second)
 				}
 			HERE:
+				fmt.Println("over", vname)
 			}(vname)
 		case str := <-Alarm:
 			cLog.Warn("out alarm")
