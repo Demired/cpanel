@@ -30,7 +30,7 @@ func login(w http.ResponseWriter, req *http.Request) {
 	token := string(rpwd.Init(16, true, true, true, false))
 	sess.Set("loginToken", token)
 	t, _ := template.ParseFiles("html/manager/login.html")
-	t.Execute(w, nil)
+	t.Execute(w, map[string]string{"token": token})
 }
 
 func loginAPI(w http.ResponseWriter, req *http.Request) {
