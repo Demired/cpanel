@@ -13,10 +13,11 @@ var cLog = config.CLog
 var cSession = config.CSession
 
 func Web() {
+
 	homeMux := http.NewServeMux()
 
-	homeMux.HandleFunc("/m/login.html", login)
-	homeMux.HandleFunc("/m/login", loginAPI)
+	homeMux.HandleFunc("/", login)
+
 	http.ListenAndServe(fmt.Sprintf(":%d", config.Yaml.ManagerPort), homeMux)
 
 }
