@@ -41,8 +41,6 @@ func init() {
 
 	yaml.Unmarshal(conf, &Yaml)
 
-	fmt.Println(Yaml)
-
 	CLog.SetLogger("file", `{"filename":"`+Yaml.LogFile+`"}`)
 	CLog.SetLevel(logs.LevelInformational)
 	CSession, _ = session.NewManager("memory",
