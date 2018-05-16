@@ -2,6 +2,7 @@ package manager
 
 import (
 	"cpanel/config"
+	"cpanel/table"
 	"cpanel/tools"
 	"encoding/json"
 	"fmt"
@@ -9,6 +10,7 @@ import (
 	"net/http"
 
 	"github.com/Demired/rpwd"
+	"github.com/astaxie/beego/orm"
 )
 
 var cLog = config.CLog
@@ -45,10 +47,28 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 	defer sess.SessionRelease(w)
 	loginToken := sess.Get("loginToken")
 	if token != loginToken {
-		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "密码不能为空"})
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "密码错误"})
 		w.Write(msg)
 		return
 	}
-	fmt.Println(email)
-	fmt.Println(passwd)
+
+	orm.RegisterModel(new(table.Manager))
+
+	orm.RegisterDataBase("default", "sqlite", "./db/cpanel_manager.db", 30)
+
+	orm.RunSyncdb("default", false, true)
+
+	o := orm.NewOrm()
+
+	manager := table.Manager{Email: email, Passwd: passwd}
+
+	id, err := o.Insert(&manager)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	fmt.Println(id)
+	// fmt.Println(email)
+	// fmt.Println(passwd)
 }

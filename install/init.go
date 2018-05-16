@@ -59,7 +59,7 @@ func Init() {
                 Username CHAR(20) NOT NULL,
                 Passwd CHAR(50) NOT NULL,
                 Tel CHAR(20) NOT NULL,
-                Email CHAR(20) NOT NULL,
+                Email CHAR(320) NOT NULL,
                 Realname CHAR(20) NOT NULL,
                 Idtype INT NOT NULL,
                 Idnumber CHAR(20) NOT NULL,
@@ -73,7 +73,7 @@ func Init() {
             );
             CREATE TABLE IF NOT EXISTS Verify (
                 ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                Email CHAR(20) NOT NULL,
+                Email CHAR(320) NOT NULL,
                 Code CHAR(20) NOT NULL,
                 Status INT NOT NULL,
                 Type CHAR(20) NOT NULL,
@@ -84,7 +84,7 @@ func Init() {
                 ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 UID INT NOT NULL,
                 Vname CHAR(20) NOT NULL,
-                Email CHAR(20) NOT NULL,
+                Email CHAR(320) NOT NULL,
                 Type CHAR(20) NOT NULL,
                 Subject CHAR(20) NOT NULL,
                 Desc CHAR(50) NOT NULL,
@@ -98,9 +98,9 @@ func Init() {
                 Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
             CREATE TABLE IF NOT EXISTS Manager (
-                ID INITEGER PRIMARY KEY AUTOINCREMENT,
-                Email INT NOT NULL,
-                Passwd INT NOT NULL,
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                Email CHAR(320) NOT NULL,
+                Passwd CHAR(50) NOT NULL,
                 Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
             `

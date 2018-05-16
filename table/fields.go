@@ -81,6 +81,20 @@ type Billing struct {
 	Ctime time.Time
 }
 
+type Manager struct {
+	ID     int       `orm:"auto"`
+	Email  string    `orm:"size(320)"`
+	Passwd string    `orm:"size(50)"`
+	Ctime  time.Time `orm:"time.Time"`
+}
+
+// CREATE TABLE IF NOT EXISTS Manager (
+// 	ID INTEGER PRIMARY KEY AUTOINCREMENT,
+// 	Email CHAR(320) NOT NULL,
+// 	Passwd CHAR(50) NOT NULL,
+// 	Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+// );
+
 // CREATE TABLE IF NOT EXISTS Prompt (
 // 	ID INTEGER PRIMARY KEY AUTOINCREMENT,
 // 	Vname CHAR(20) NOT NULL,
