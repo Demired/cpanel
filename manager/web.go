@@ -16,9 +16,10 @@ func Web() {
 
 	homeMux := http.NewServeMux()
 
-	homeMux.HandleFunc("/", login)
+	homeMux.HandleFunc("/login.html", login)
+	homeMux.HandleFunc("/login", loginAPI)
+	http.ListenAndServe(fmt.Sprintf(":%d", config.Yaml.ManagerPort), homeMux)
 
-	http.ListenAndServe(fmt.Sprintf(":%d", config.Yaml.HomePort), homeMux)
 }
 
 func login(w http.ResponseWriter, req *http.Request) {
