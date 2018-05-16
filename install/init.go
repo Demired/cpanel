@@ -102,7 +102,7 @@ func Init() {
                 Email INT NOT NULL,
                 Passwd INT NOT NULL,
                 Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-            )
+            );
             `
 	db.Exec(sql)
 
