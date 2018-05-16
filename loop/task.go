@@ -154,6 +154,7 @@ func WorkQueue() {
 						//设置外网ip
 						//设置密码
 						control.SetPasswd(vm.Vname, "root", vm.Passwd)
+						return
 						//this ok
 					}
 				}
