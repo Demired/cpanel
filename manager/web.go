@@ -62,13 +62,14 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 
 	manager := table.Manager{Email: email, Passwd: passwd}
 
-	id, err := o.Insert(&manager)
+	err := o.Read(manager)
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-	fmt.Println(id)
+
+	fmt.Println(manager)
 	// fmt.Println(email)
 	// fmt.Println(passwd)
 }
