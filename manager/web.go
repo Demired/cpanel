@@ -18,7 +18,7 @@ func Web() {
 
 	homeMux.HandleFunc("/", login)
 
-	http.ListenAndServe(fmt.Sprintf(":%d", config.Yaml.ManagerPort), homeMux)
+	http.ListenAndServe(fmt.Sprintf(":%d", config.Yaml.HomePort), homeMux)
 
 }
 
