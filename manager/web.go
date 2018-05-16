@@ -54,7 +54,7 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 
 	orm.RegisterModel(new(table.Manager))
 
-	orm.RegisterDataBase("default", "sqlite", "./db/cpanel_manager.db", 30)
+	orm.RegisterDataBase("default", "sqlite3", "./db/cpanel_manager.db", 30)
 
 	orm.RunSyncdb("default", false, true)
 
