@@ -5,7 +5,9 @@ import (
 	"cpanel/tools"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"net/http"
+	"rpwd"
 )
 
 var cLog = config.CLog
@@ -23,13 +25,12 @@ func Web() {
 }
 
 func login(w http.ResponseWriter, req *http.Request) {
-	w.Write([]byte("123"))
-	// sess, _ := cSession.SessionStart(w, req)
-	// defer sess.SessionRelease(w)
-	// token := string(rpwd.Init(16, true, true, true, false))
-	// sess.Set("loginToken", token)
-	// t, _ := template.ParseFiles("html/managre/login.html")
-	// t.Execute(w, map[string]string{"token": token})
+	sess, _ := cSession.SessionStart(w, req)
+	defer sess.SessionRelease(w)
+	token := string(rpwd.Init(16, true, true, true, false))
+	sess.Set("loginToken", token)
+	t, _ := template.ParseFiles("html/managre/login.html")
+	t.Execute(w, map[string]string{"token": token})
 }
 
 func loginAPI(w http.ResponseWriter, req *http.Request) {
