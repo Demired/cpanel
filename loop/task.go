@@ -128,7 +128,7 @@ func WorkQueue() {
 	for {
 		select {
 		case vname := <-VmInit:
-			go func(vname) {
+			go func(vname string) {
 				fmt.Println("正在初始化的虚拟机，", vname)
 				orm, err := control.Bdb()
 				if err != nil {
