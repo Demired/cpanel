@@ -19,7 +19,6 @@ func Web() {
 	homeMux.HandleFunc("/", login)
 
 	http.ListenAndServe(fmt.Sprintf(":%d", config.Yaml.HomePort), homeMux)
-
 }
 
 func login(w http.ResponseWriter, req *http.Request) {
