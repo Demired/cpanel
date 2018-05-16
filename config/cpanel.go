@@ -23,6 +23,8 @@ type Config struct {
 	AccessKeySecret string `yaml:"AccessKeySecret"`
 	AccountName     string `yaml:"AccountName"`
 	ReplyAddress    string `yaml:"ReplyAddress"`
+	ManagerPort     int    `yaml:"ManagerPort"`
+	HomePort        int    `yaml:"HomePort"`
 }
 
 var CLog = logs.NewLogger(1)

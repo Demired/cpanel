@@ -1,5 +1,10 @@
 LogFile : /var/log/cpanel.log
 
+# home listen port
+HomePort: 8100
+
+# manager listen port
+ManagerPort: 8010
 
 # cookie session
 CookieName: PHPSESSID
@@ -16,3 +21,4 @@ AccessKeyId: LTAIG47RA2EJ06qP
 AccessKeySecret: jmEqG2mrGxXNpGSkTB6lWYY9xdUnfN
 AccountName: send@mail.0x8c.com
 ReplyAddress: zhangyuan8087@gmail.com
+

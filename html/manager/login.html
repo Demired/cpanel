@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>控制面板</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.0/jquery.min.js" charset="UTF-8"></script>
+    <style>
+        .login-bg{
+            background: rgb(249, 250, 250)
+        }
+        .login-box{
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,.1);
+            padding: 40px 35px;
+        }
+        .form-name{
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 20px;
+            color: #000033;
+        }
+        .form-input{
+            padding-left: 10px;
+            width: 100%;
+            height: 40px;
+            border-radius: 4px;
+            border: 1px solid #D9D9D9;
+        }
+        .form-notice{
+            color: #f00;
+            display: none;
+        }
+        .form-button{
+            margin-top: 30px;
+            width: 100%;
+            border: 1px solid #D9D9D9;
+            border-radius: 4px;
+            color: #fff;
+            background: #337ab7;
+            height: 40px;
+        }
+        .forget{
+            columns: #222222;
+        }
+        .register{
+            color: #337ab7
+        }
+    </style>
+</head>
+<body class="login-bg">
+    <div class="container" style="padding-top: 80px;">
+        <div class="col-lg-6 col-lg-offset-3 login-box">
+            <h1>manager 登录</h1>
+            <from action="/login">
+                <div>
+                    <label for="email" class="form-name">邮箱:</label>
+                    <input type="text" name="email" id="email" class="form-input" placeholder="邮箱">
+                    <div class="form-notice" id="email-notice"></div>
+                </div>
+                <div>
+                    <label for="passwd" class="form-name">密码：</label>
+                    <input type="password" name="passwd" id="passwd" class="form-input" maxlength="18" onkeydown="keyCode()" placeholder="数字字母下划线">
+                    <div class="form-notice" id="passwd-notice"></div>
+                </div>
+                <div>
+                    <button name="action" id="login" class="form-button" ret-data="{{.}}">提交</button>
+                </div>
+            </from>
+        </div>
+    </div>
+    <script>
+        function keyCode(){
+            if(event.keyCode==13) {
+                $("#login").click();
+                return false;
+            }
+        }
+        $("#login").click(function(){
+            $("#email-notice").hide();
+            $("#passwd-notice").hide();
+            var p = {};
+            p.email = $("#email").val();
+            p.passwd = $("#passwd").val();
+            $.post("/login",p,function(d){
+                if (d.ret == "e"){
+                    if(d.param == ""){
+                        alert(d.msg);
+                        return
+                    }
+                    switch(d.param)
+                    {
+                    case "email":
+                        $("#email-notice").show();
+                        $("#email-notice").html(d.msg);
+                        break;
+                    case "passwd":
+                        $("#passwd-notice").show();
+                        $("#passwd-notice").html(d.msg);
+                        break;
+                    }
+                }else if(d.ret == "v"){
+                    alert(d.msg);
+                    var url = $("#login").attr("ret-data");
+                    if(url === ""){
+                        url = "/index.html"
+                    }
+                    window.location.href = url
+                }
+            },"json");
+        });
+    </script>
+</body>
+</html>

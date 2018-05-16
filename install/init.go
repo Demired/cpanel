@@ -33,6 +33,7 @@ func Init() {
                 Mac CHAR(20),
                 Sys CHAR(20),
                 Autopay INT NOT NULL,
+                Cycle INT NOT NULL,
                 ACpu INT NOT NULL,
                 ABandwidth INT NOT NULL,
                 AMemory INT NOT NULL,
@@ -96,6 +97,12 @@ func Init() {
                 DESC CHAR(50) NOT NULL,
                 Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
+            CREATE TABLE IF NOT EXISTS Manager (
+                ID INITEGER PRIMARY KEY AUTOINCREMENT,
+                Email INT NOT NULL,
+                Passwd INT NOT NULL,
+                Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+            )
             `
 	db.Exec(sql)
 
