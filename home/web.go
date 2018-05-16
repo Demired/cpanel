@@ -7,7 +7,6 @@ import (
 	"cpanel/table"
 	"cpanel/tools"
 	"crypto/sha1"
-	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -20,7 +19,6 @@ import (
 
 	"github.com/Demired/rpwd"
 	_ "github.com/mattn/go-sqlite3"
-	"golang.org/x/crypto/acme/autocert"
 )
 
 var cLog = config.CLog
@@ -63,17 +61,6 @@ func Web() {
 
 	http.ListenAndServe(fmt.Sprintf(":%d", config.Yaml.HomePort), homeMux)
 
-	m := autocert.Manager{
-		Cache:      autocert.DirCache(domain),
-		Prompt:     autocert.AcceptTOS,
-		HostPolicy: autocert.HostWhitelist(domain + ".ipip.net"),
-	}
-	s := &http.Server{
-		Addr:      ":" + strconv.Itoa(socketPort),
-		Handler:   mux,
-		TLSConfig: &tls.Config{GetCertificate: m.GetCertificate},
-	}
-	s.ListenAndServeTLS("", "")
 }
 
 func registerAPI(w http.ResponseWriter, req *http.Request) {
