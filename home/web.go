@@ -7,6 +7,7 @@ import (
 	"cpanel/table"
 	"cpanel/tools"
 	"crypto/sha1"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -19,6 +20,7 @@ import (
 
 	"github.com/Demired/rpwd"
 	_ "github.com/mattn/go-sqlite3"
+	"golang.org/x/crypto/acme/autocert"
 )
 
 var cLog = config.CLog
@@ -26,36 +28,52 @@ var cLog = config.CLog
 var cSession = config.CSession
 
 func Web() {
-	http.HandleFunc("/", index)
-	http.HandleFunc("/verify", verify)
-	http.HandleFunc("/edit", editAPI)
-	http.HandleFunc("/list", list)
-	http.HandleFunc("/login.html", login)
-	http.HandleFunc("/login", loginAPI)
-	http.HandleFunc("/forget.html", forget)
-	http.HandleFunc("/forget", forgetAPI)
-	http.HandleFunc("/logout", logoutAPI)
-	http.HandleFunc("/userInfo.html", userInfo)
-	http.HandleFunc("/userInfo", userInfoAPI)
-	http.HandleFunc("/register.html", register)
-	http.HandleFunc("/register", registerAPI)
-	http.HandleFunc("/info.html", info)
-	http.HandleFunc("/setpwd", setpwd)
-	http.HandleFunc("/load.json", loadJSON)
-	http.HandleFunc("/start", start)
-	http.HandleFunc("/shutdown", shutdown)
-	http.HandleFunc("/reboot", reboot)
-	http.HandleFunc("/create", createAPI)
-	http.HandleFunc("/404.html", notFound)
-	http.HandleFunc("/favicon.ico", favicon)
-	http.HandleFunc("/repasswd.html", repasswd)
-	http.HandleFunc("/alarm.html", alarm)
-	http.HandleFunc("/alarm", alarmAPI)
-	http.HandleFunc("/repasswd", repasswdAPI)
-	http.HandleFunc("/undefine", undefine)
-	http.HandleFunc("/edit.html", edit)
-	http.HandleFunc("/create.html", create)
-	http.ListenAndServe(fmt.Sprintf(":%d", config.Yaml.HomePort), nil)
+
+	homeMux := http.NewServeMux()
+
+	homeMux.HandleFunc("/", index)
+	homeMux.HandleFunc("/verify", verify)
+	homeMux.HandleFunc("/edit", editAPI)
+	homeMux.HandleFunc("/list", list)
+	homeMux.HandleFunc("/login.html", login)
+	homeMux.HandleFunc("/login", loginAPI)
+	homeMux.HandleFunc("/forget.html", forget)
+	homeMux.HandleFunc("/forget", forgetAPI)
+	homeMux.HandleFunc("/logout", logoutAPI)
+	homeMux.HandleFunc("/userInfo.html", userInfo)
+	homeMux.HandleFunc("/userInfo", userInfoAPI)
+	homeMux.HandleFunc("/register.html", register)
+	homeMux.HandleFunc("/register", registerAPI)
+	homeMux.HandleFunc("/info.html", info)
+	homeMux.HandleFunc("/setpwd", setpwd)
+	homeMux.HandleFunc("/load.json", loadJSON)
+	homeMux.HandleFunc("/start", start)
+	homeMux.HandleFunc("/shutdown", shutdown)
+	homeMux.HandleFunc("/reboot", reboot)
+	homeMux.HandleFunc("/create", createAPI)
+	homeMux.HandleFunc("/404.html", notFound)
+	homeMux.HandleFunc("/favicon.ico", favicon)
+	homeMux.HandleFunc("/repasswd.html", repasswd)
+	homeMux.HandleFunc("/alarm.html", alarm)
+	homeMux.HandleFunc("/alarm", alarmAPI)
+	homeMux.HandleFunc("/repasswd", repasswdAPI)
+	homeMux.HandleFunc("/undefine", undefine)
+	homeMux.HandleFunc("/edit.html", edit)
+	homeMux.HandleFunc("/create.html", create)
+
+	http.ListenAndServe(fmt.Sprintf(":%d", config.Yaml.HomePort), homeMux)
+
+	m := autocert.Manager{
+		Cache:      autocert.DirCache(domain),
+		Prompt:     autocert.AcceptTOS,
+		HostPolicy: autocert.HostWhitelist(domain + ".ipip.net"),
+	}
+	s := &http.Server{
+		Addr:      ":" + strconv.Itoa(socketPort),
+		Handler:   mux,
+		TLSConfig: &tls.Config{GetCertificate: m.GetCertificate},
+	}
+	s.ListenAndServeTLS("", "")
 }
 
 func registerAPI(w http.ResponseWriter, req *http.Request) {
