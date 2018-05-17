@@ -52,11 +52,11 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	orm.RegisterModel(new(table.Manager))
+	// orm.RegisterModel(new(table.Manager))
 
 	orm.RegisterDataBase("default", "sqlite3", "./db/cpanel_manager.db", 30)
 
-	orm.RunSyncdb("default", false, true)
+	// orm.RunSyncdb("default", false, true)
 
 	o := orm.NewOrm()
 
