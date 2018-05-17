@@ -20,13 +20,6 @@ var Alarm = make(chan string)
 
 var cLog = config.CLog
 
-type Er struct {
-	Ret   string `json:"ret"`
-	Msg   string `json:"msg"`
-	Data  string `json:"data"`
-	Param string `json:"param"`
-}
-
 func Watch() {
 	var t = make(map[string]uint64)
 	w := time.NewTicker(time.Second * 20)
