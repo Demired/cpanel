@@ -4,6 +4,7 @@ import (
 	"cpanel/table"
 
 	"github.com/astaxie/beego/orm"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
