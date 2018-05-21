@@ -82,10 +82,11 @@ type Billing struct {
 }
 
 type Manager struct {
-	ID     int       `orm:"auto"`
-	Email  string    `orm:"size(320)"`
-	Passwd string    `orm:"size(50)"`
-	Ctime  time.Time `orm:"datetime"`
+	ID      int       `orm:"auto"`
+	Email   string    `orm:"size(320)"`
+	Passwd  string    `orm:"size(50)"`
+	Ctime   time.Time `orm:"auto_now_add;type(datetime)"`
+	Updated time.Time `orm:"auto_now"`
 }
 
 // CREATE TABLE IF NOT EXISTS Manager (
