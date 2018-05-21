@@ -63,6 +63,7 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
+	fmt.Println(manager)
 	h := sha1.New()
 	h.Write([]byte(passwd))
 	sha1passwd := h.Sum(nil)
