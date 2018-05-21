@@ -23,6 +23,9 @@ func Web() {
 	homeMux := http.NewServeMux()
 	homeMux.HandleFunc("/login.html", login)
 	homeMux.HandleFunc("/login", loginAPI)
+	homeMux.HandleFunc("/compose", compose)
+	homeMux.HandleFunc("/composes", composes)
+	homeMux.HandleFunc("/index.html", index)
 	http.ListenAndServe(fmt.Sprintf(":%d", config.Yaml.ManagerPort), homeMux)
 
 }
@@ -31,6 +34,25 @@ func init() {
 	orm.RegisterDataBase("default", "sqlite3", "./db/cpanel_manager.db", 30)
 }
 
+func compose(w http.ResponseWriter, req *http.Request) {
+	t, _ := template.ParseFiles("html/manager/compose.html")
+	t.Execute(w, nil)
+}
+
+//套餐列表
+func composes(w http.ResponseWriter, req *http.Request) {
+	o := orm.NewOrm()
+	o.Raw("select * from ")
+	fmt.Println("123")
+}
+
+// index web template
+func index(w http.ResponseWriter, req *http.Request) {
+	t, _ := template.ParseFiles("html/manager/index.html")
+	t.Execute(w, nil)
+}
+
+//login web template
 func login(w http.ResponseWriter, req *http.Request) {
 	sess, _ := cSession.SessionStart(w, req)
 	defer sess.SessionRelease(w)
@@ -40,6 +62,7 @@ func login(w http.ResponseWriter, req *http.Request) {
 	t.Execute(w, map[string]string{"token": token})
 }
 
+//login api
 func loginAPI(w http.ResponseWriter, req *http.Request) {
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/login.html", http.StatusFound)
@@ -67,18 +90,37 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 	h.Write([]byte(passwd))
 	bs := h.Sum(nil)
 	sha1passwd := fmt.Sprintf("%x", bs)
-	fmt.Println(sha1passwd)
-	fmt.Println("------------")
-	fmt.Println(manager.ID)
-	fmt.Println(manager.Email)
-	fmt.Println(manager.Passwd)
-	fmt.Println("------------")
 	fmt.Println(manager.Passwd == sha1passwd)
 	if manager.Passwd != sha1passwd {
 		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "密码错误"})
 		w.Write(msg)
 		return
 	}
-	msg, _ := json.Marshal(tools.Er{Ret: "v"})
+	sess.Set("uid", manager.ID)
+	msg, _ := json.Marshal(tools.Er{Ret: "v", Msg: "登录成功"})
 	w.Write(msg)
 }
+
+//vm func
+//输出所有虚拟机
+func vm() {
+	//
+}
+
+//翻页
+func vmList() {
+
+}
+
+//创建虚拟机套餐
+func createVMType() {
+
+}
+
+//管理用户列表
+
+//禁用客户
+
+//查看ret状况
+
+//查看财务状况

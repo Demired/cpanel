@@ -4,6 +4,7 @@ import (
 	"time"
 )
 
+// Virtual struct
 type Virtual struct {
 	ID         int       `json:"id"`
 	UID        int       `json:"uid"`
@@ -32,6 +33,7 @@ type Virtual struct {
 	AStatus    int       `json:"astatus"`
 }
 
+// Watch struct
 type Watch struct {
 	ID     int
 	Vname  string
@@ -44,6 +46,7 @@ type Watch struct {
 	Ctime  int
 }
 
+// User struct
 type User struct {
 	ID       int
 	Username string
@@ -62,6 +65,7 @@ type User struct {
 	Ctime    time.Time
 }
 
+// Verify struct
 type Verify struct {
 	ID     int
 	Email  string
@@ -72,6 +76,7 @@ type Verify struct {
 	Vtime  time.Time
 }
 
+// Billing strcut
 type Billing struct {
 	ID    int
 	UID   int
@@ -81,12 +86,22 @@ type Billing struct {
 	Ctime time.Time
 }
 
+// Manager strcut
 type Manager struct {
 	ID      int       `orm:"auto"`
 	Email   string    `orm:"size(320)"`
 	Passwd  string    `orm:"size(50)"`
 	Ctime   time.Time `orm:"auto_now_add;type(datetime)"`
 	Updated time.Time `orm:"auto_now"`
+}
+
+// Compose strcut
+type Compose struct {
+	ID    int       `orm:"auto"`
+	IPv4  int       `orm:"int8"`
+	IPv6  int       `orm:"int8"`
+	Vcpu  int       `orm:"int8"`
+	Ctime time.Time `orm:"auto_now"`
 }
 
 // CREATE TABLE IF NOT EXISTS Manager (
