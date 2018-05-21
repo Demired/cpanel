@@ -54,14 +54,12 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 
 	// orm.RegisterModel(new(table.Manager))
 
-	orm.RegisterDataBase("cpanel_manager", "sqlite3", "./db/cpanel_manager.db", 30)
+	orm.RegisterDataBase("default", "sqlite3", "./db/cpanel_manager.db", 30)
 
 	// orm.RunSyncdb("default", false, true)
 
 	o := orm.NewOrm()
-	o.Using("cpanel_manager")
 	var manager table.Manager
-
 	err := o.Raw("select * from Manager where Email = ?", email).QueryRow(&manager)
 
 	if err != nil {
