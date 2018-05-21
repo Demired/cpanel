@@ -62,7 +62,7 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 
 	var manager table.Manager
 
-	err := o.Raw("select * form Manager where Email = ?", email).QueryRow(&manager)
+	err := o.Raw("select * from Manager where Email = ?", email).QueryRow(&manager)
 
 	if err != nil {
 		fmt.Println(err.Error())
