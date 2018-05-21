@@ -88,7 +88,7 @@ type Billing struct {
 
 // Manager strcut
 type Manager struct {
-	ID      int       `orm:"auto"`
+	ID      int       `orm:"column(id);auto"`
 	Email   string    `orm:"size(320)"`
 	Passwd  string    `orm:"size(50)"`
 	Ctime   time.Time `orm:"auto_now_add;type(datetime)"`
@@ -97,11 +97,12 @@ type Manager struct {
 
 // Compose strcut
 type Compose struct {
-	ID    int       `orm:"auto"`
-	IPv4  int       `orm:"int8"`
-	IPv6  int       `orm:"int8"`
-	Vcpu  int       `orm:"int8"`
-	Ctime time.Time `orm:"auto_now"`
+	ID     int `orm:"column(id);auto"`
+	IPv4   int
+	IPv6   int
+	Vcpu   int
+	Status int
+	Ctime  time.Time `orm:"auto_now;type(datetime)"`
 }
 
 // CREATE TABLE IF NOT EXISTS Manager (

@@ -41,7 +41,7 @@ func compose(w http.ResponseWriter, req *http.Request) {
 //套餐列表
 func composes(w http.ResponseWriter, req *http.Request) {
 	o := orm.NewOrm()
-	o.Raw("select * from ")
+	o.Raw("select * from Composes where status = 1")
 	fmt.Println("123")
 }
 
