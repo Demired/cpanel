@@ -30,9 +30,7 @@ func Web() {
 }
 
 func init() {
-	orm.RegisterModel(new(table.Manager))
 	orm.RegisterDataBase("default", "sqlite3", "./db/cpanel_manager.db", 30)
-	orm.RunSyncdb("default", false, true)
 }
 
 func compose(w http.ResponseWriter, req *http.Request) {
