@@ -60,9 +60,9 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 
 	o := orm.NewOrm()
 
-	manager := table.Manager{Email: email, Passwd: passwd}
+	var manager table.Manager
 
-	err := o.Read(manager)
+	err := o.Raw("select * form Manager where Email = ?", email).QueryRow(&manager)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -70,6 +70,10 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 	}
 
 	fmt.Println(manager)
+
+	if manager.Passwd == passwd {
+		fmt.Println("login ok")
+	}
 	// fmt.Println(email)
 	// fmt.Println(passwd)
 }
