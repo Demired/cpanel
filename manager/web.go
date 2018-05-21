@@ -63,8 +63,6 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	fmt.Println(manager)
-
 	//产生一个散列值得方式是 sha1.New()，sha1.Write(bytes)，然后 sha1.Sum([]byte{})。这里我们从一个新的散列开始。
 	h := sha1.New()
 	//写入要处理的字节。如果是一个字符串，需要使用[]byte(s) 来强制转换成字节数组。
@@ -74,6 +72,8 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 	//SHA1 值经常以 16 进制输出，例如在 git commit 中。使用%x 来将散列结果格式化为 16 进制字符串。
 	sha1passwd := fmt.Sprintf("%x\n", bs)
 	fmt.Println(sha1passwd)
+	fmt.Println(manager.Passwd)
+	fmt.Println(manager.Passwd == sha1passwd)
 	if manager.Passwd != sha1passwd {
 		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "密码错误"})
 		w.Write(msg)
