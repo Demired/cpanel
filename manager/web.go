@@ -4,6 +4,7 @@ import (
 	"cpanel/config"
 	"cpanel/table"
 	"cpanel/tools"
+	"crypto/sha1"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -17,14 +18,17 @@ var cLog = config.CLog
 
 var cSession = config.CSession
 
+// Web func is manager entry
 func Web() {
-
 	homeMux := http.NewServeMux()
-
 	homeMux.HandleFunc("/login.html", login)
 	homeMux.HandleFunc("/login", loginAPI)
 	http.ListenAndServe(fmt.Sprintf(":%d", config.Yaml.ManagerPort), homeMux)
 
+}
+
+func init() {
+	orm.RegisterDataBase("default", "sqlite3", "./db/cpanel_manager.db", 30)
 }
 
 func login(w http.ResponseWriter, req *http.Request) {
@@ -51,27 +55,22 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-
-	// orm.RegisterModel(new(table.Manager))
-
-	orm.RegisterDataBase("default", "sqlite3", "./db/cpanel_manager.db", 30)
-
-	// orm.RunSyncdb("default", false, true)
-
 	o := orm.NewOrm()
 	var manager table.Manager
 	err := o.Raw("select * from Manager where Email = ?", email).QueryRow(&manager)
-
 	if err != nil {
-		fmt.Println(err.Error())
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "用户不存在"})
+		w.Write(msg)
 		return
 	}
-
-	fmt.Println(manager)
-
-	if manager.Passwd == passwd {
-		fmt.Println("login ok")
+	h := sha1.New()
+	h.Write([]byte(passwd))
+	sha1passwd := h.Sum(nil)
+	if manager.Passwd != string(sha1passwd) {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "密码错误"})
+		w.Write(msg)
+		return
 	}
-	// fmt.Println(email)
-	// fmt.Println(passwd)
+	msg, _ := json.Marshal(tools.Er{Ret: "v"})
+	w.Write(msg)
 }
