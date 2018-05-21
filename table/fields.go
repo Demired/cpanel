@@ -97,11 +97,11 @@ type Manager struct {
 
 // Compose strcut
 type Compose struct {
-	ID     int `orm:"column(id);auto"`
-	IPv4   int
-	IPv6   int
-	Vcpu   int
-	Status int
+	ID     int       `orm:"column(id);auto"`
+	IPv4   int       `orm:"column(ipv4)"`
+	IPv6   int       `orm:"column(ipv6)"`
+	Vcpu   int       `orm:"column(vcpu)"`
+	Status int       `orm:"column(status)"`
 	Ctime  time.Time `orm:"auto_now;type(datetime)"`
 }
 
@@ -122,7 +122,7 @@ type Compose struct {
 // 	Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 // );
 
-//提示盒子
+//Prompt strcut
 type Prompt struct {
 	ID      int
 	UID     int
