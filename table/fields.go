@@ -85,7 +85,7 @@ type Manager struct {
 	ID     int       `orm:"auto"`
 	Email  string    `orm:"size(320)"`
 	Passwd string    `orm:"size(50)"`
-	Ctime  time.Time `orm:"time.Time"`
+	Ctime  time.Time `orm:"datetime"`
 }
 
 // CREATE TABLE IF NOT EXISTS Manager (
