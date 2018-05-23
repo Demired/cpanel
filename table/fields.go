@@ -101,9 +101,11 @@ type Manager struct {
 type Compose struct {
 	ID        int       `orm:"column(id);auto"`
 	UID       int       `orm:"column(uid)"`
+	Name      string    `orm:"column(name)"`
 	IPv4      int       `orm:"column(ipv4)"`
 	IPv6      int       `orm:"column(ipv6)"`
 	Vcpu      int       `orm:"column(vcpu)"`
+	Price     int       `orm:"column(price)"`
 	Status    int       `orm:"column(status)"`
 	BandWidth int       `orm:"column(bandwidth)"`
 	Ctime     time.Time `orm:"auto_now;type(datetime)"`
