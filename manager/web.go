@@ -36,7 +36,10 @@ func init() {
 // index web template
 func index(w http.ResponseWriter, req *http.Request) {
 	t, _ := template.ParseFiles("html/manager/index.html")
-	t.Execute(w, nil)
+	sess, _ := cSession.SessionStart(w, req)
+	defer sess.SessionRelease(w)
+	uid, _ := sess.Get("uid").(int)
+	t.Execute(w, map[string]int{"uid": uid})
 }
 
 //vm func
