@@ -88,11 +88,12 @@ type Billing struct {
 
 // Manager strcut
 type Manager struct {
-	ID      int       `orm:"column(id);auto"`
-	Email   string    `orm:"size(320)"`
-	Passwd  string    `orm:"size(50)"`
-	Ctime   time.Time `orm:"auto_now_add;type(datetime)"`
-	Updated time.Time `orm:"auto_now"`
+	ID     int       `orm:"column(id);auto"`
+	Email  string    `orm:"size(320)"`
+	Passwd string    `orm:"size(50)"`
+	Status int       `orm:"column(status)"`
+	Ctime  time.Time `orm:"auto_now_add;type(datetime)"`
+	Utime  time.Time `orm:"auto_now"`
 }
 
 // Compose strcut
