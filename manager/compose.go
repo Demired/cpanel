@@ -13,14 +13,14 @@ import (
 func compose(w http.ResponseWriter, req *http.Request) {
 	var composes []table.Compose
 	o := orm.NewOrm()
-	res, err := o.Raw("Select * from compose where status = ?", "1").QueryRows(&composes)
+	_, err := o.Raw("Select * from compose where status = ?", "1").QueryRows(&composes)
 	// err := o.Read(&compose)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 	t, _ := template.ParseFiles("html/manager/compose.html")
-	t.Execute(w, nil)
+	t.Execute(w, composes)
 }
 
 //套餐列表
