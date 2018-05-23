@@ -27,6 +27,8 @@ type Config struct {
 	ReplyAddress    string `yaml:"ReplyAddress"`
 	ManagerPort     int    `yaml:"ManagerPort"`
 	HomePort        int    `yaml:"HomePort"`
+	ManagerEmail    string `yaml:"ManagerEmail"`
+	ManagerPasswd   string `yaml:"ManagerPasswd"`
 }
 
 // CLog source

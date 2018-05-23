@@ -26,3 +26,6 @@ ReplyAddress: zhangyuan8087@gmail.com
 # db
 DBPath: /root/go/src/cpanel/db/cpanel.db
 
+# Administrator
+ManagerEmail: zhangyuan8087@gmail.com
+ManagerPasswd: qwe123
