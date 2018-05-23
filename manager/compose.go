@@ -3,7 +3,6 @@ package manager
 import (
 	"cpanel/table"
 	"fmt"
-	"html/template"
 	"net/http"
 
 	"github.com/astaxie/beego/orm"
@@ -21,8 +20,8 @@ func compose(w http.ResponseWriter, req *http.Request) {
 	}
 	fmt.Println(res)
 	fmt.Println(composes)
-	t, _ := template.ParseFiles("html/manager/compose.html")
-	t.Execute(w, nil)
+	// t, _ := template.ParseFiles("html/manager/compose.html")
+	// t.Execute(w, nil)
 }
 
 //套餐列表
