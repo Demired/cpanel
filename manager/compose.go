@@ -45,7 +45,13 @@ func addCompose(w http.ResponseWriter, req *http.Request) {
 		//TODO跳转登录页面
 		return
 	}
-	vcpu := req.PostFormValue("Vcpu")
+
+	if req.Method != "POST" {
+		//TODO提交方式有误
+		return
+	}
+
+	vcpu := req.PostFormValue("vcpu")
 	ipv4 := req.PostFormValue("ipv4")
 	ipv6 := req.PostFormValue("ipv6")
 	bandwidth := req.PostFormValue("bandwidth")
