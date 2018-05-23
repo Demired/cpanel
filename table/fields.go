@@ -6,12 +6,12 @@ import (
 
 // Virtual struct
 type Virtual struct {
-	ID         int       `json:"id"`
-	UID        int       `json:"uid"`
-	IPv4       string    `json:"ipv4"`
-	IPv6       string    `json:"ipv6"`
-	LocalIP    string    `json:"local"`
-	Vcpu       int       `json:"vcpu"`
+	ID         int       `orm:"column(id);auto" json:"id"`
+	UID        int       `orm:"column(uid)" json:"uid"`
+	IPv4       string    `orm:"size(30);column(ipv4)" json:"ipv4"`
+	IPv6       string    `orm:"size(50);column(ipv6)" json:"ipv6"`
+	LocalIP    string    `orm:"size(30);column(localIP)" json:"local"`
+	Vcpu       int       `orm:"column(vcpu)" json:"vcpu"`
 	Status     int       `json:"status"`
 	Vmemory    int       `json:"vmemory"` //GiB
 	Passwd     string    `json:"vpasswd"`
@@ -20,10 +20,10 @@ type Virtual struct {
 	Br         string    `json:"br"`
 	Mac        string    `json:"mac"`
 	Sys        string    `json:"sys"`
-	Bandwidth  int       `json:"bandwidth"` //Mbps
-	Etime      time.Time `json:"etime"`     //Expire time
-	Ctime      time.Time `json:"ctime"`
-	Utime      time.Time `json:"utime"`
+	Bandwidth  int       `json:"bandwidth"`                //Mbps
+	Etime      time.Time `orm:"auto_now_add" json:"etime"` //Expire time
+	Ctime      time.Time `orm:"auto_now_add" json:"ctime"`
+	Utime      time.Time `orm:"auto_now_add" json:"utime"`
 	AutoPay    int       `json:"autopay"`
 	Cycle      int       `json:"cycle"`
 	ACpu       int       `json:"acpu"`
@@ -35,55 +35,55 @@ type Virtual struct {
 
 // Watch struct
 type Watch struct {
-	ID     int
-	Vname  string
-	Up     int
-	Down   int
-	Read   int
-	Write  int
-	CPU    int
-	Memory int
-	Ctime  int
+	ID     int    `orm:"column(id);auto"`
+	Vname  string `orm:"size(50)"`
+	Up     int    //上行流量
+	Down   int    //下行流量
+	Read   int    //硬盘读取
+	Write  int    //硬盘写入
+	CPU    int    //cpu时间片
+	Memory int    //内存占用
+	Ctime  int    //时间戳
 }
 
 // User struct
 type User struct {
-	ID       int
-	Username string
-	Passwd   string
-	Tel      string
-	Email    string
-	Realname string
-	Idnumber string
-	Idtype   int
+	ID       int    `orm:"column(id);auto"`
+	Username string `orm:"size(50)"`
+	Passwd   string `orm:"size(50)"`
+	Tel      string `orm:"size(20)"`
+	Email    string `orm:"size(320)"`
+	Realname string `orm:"size(50)"`
+	Idnumber string `orm:"size(50)"`
+	Idtype   int    //证件类型 0 身份证 1 军官证
 	Sex      int
-	Address  string
-	Company  string
-	City     string
+	Address  string `orm:"size(50)"` //地址
+	Company  string `orm:"size(30)"` //公司
+	City     string `orm:"size(20)"` //城市
 	Status   int
-	Utime    time.Time
-	Ctime    time.Time
+	Utime    time.Time `orm:"auto_now_add"`
+	Ctime    time.Time `orm:"auto_now_add;type(datetime)"`
 }
 
 // Verify struct
 type Verify struct {
-	ID     int
-	Email  string
-	Code   string
-	Type   string
+	ID     int    `orm:"column(id);auto"`
+	Email  string `orm:"size(320)"`
+	Code   string `orm:"size(50)"`
+	Type   string `orm:"size(10)"`
 	Status int
-	Ctime  time.Time
-	Vtime  time.Time
+	Ctime  time.Time `orm:"auto_now_add;type(datetime)"`
+	Vtime  time.Time `orm:"auto_now_add"`
 }
 
 // Billing strcut
 type Billing struct {
-	ID    int
-	UID   int
-	Value int //金额 单位：分
-	// Model string
-	Desc  string //描述
-	Ctime time.Time
+	ID    int       `orm:"column(id);auto"`
+	UID   int       `orm:"column(uid)"`
+	Value int       `orm:"column(value)"`
+	Model string    `orm:"size(50)"`
+	Desc  string    `orm:"size(50)"`
+	Ctime time.Time `orm:"auto_now_add;type(datetime)"`
 }
 
 // Manager strcut
@@ -96,8 +96,10 @@ type Manager struct {
 }
 
 // Compose strcut
+// 配置组合表
 type Compose struct {
 	ID     int       `orm:"column(id);auto"`
+	UID    int       `orm:"column(uid)"`
 	IPv4   int       `orm:"column(ipv4)"`
 	IPv6   int       `orm:"column(ipv6)"`
 	Vcpu   int       `orm:"column(vcpu)"`

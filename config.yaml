@@ -22,3 +22,7 @@ AccessKeySecret: jmEqG2mrGxXNpGSkTB6lWYY9xdUnfN
 AccountName: send@mail.0x8c.com
 ReplyAddress: zhangyuan8087@gmail.com
 
+
+# db
+DBPath: /root/go/src/cpanel/db/cpanel.db
+

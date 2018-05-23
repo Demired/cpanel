@@ -10,6 +10,7 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
+// Config struct for cpanl
 type Config struct {
 	LogFile         string `yaml:"LogFile"`
 	CookieName      string `yaml:"CookieName"`
@@ -20,6 +21,7 @@ type Config struct {
 	Alias           string `yaml:"Alias"`
 	Domain          string `yaml:"Domain"`
 	AccessKeyID     string `yaml:"AccessKeyId"`
+	DBPath          string `yaml:"DBPath"`
 	AccessKeySecret string `yaml:"AccessKeySecret"`
 	AccountName     string `yaml:"AccountName"`
 	ReplyAddress    string `yaml:"ReplyAddress"`
@@ -27,9 +29,13 @@ type Config struct {
 	HomePort        int    `yaml:"HomePort"`
 }
 
+// CLog source
 var CLog = logs.NewLogger(1)
+
+// CSession source
 var CSession *session.Manager
 
+// Yaml source
 var Yaml Config
 
 func init() {
