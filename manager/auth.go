@@ -8,7 +8,8 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"rpwd"
+
+	"github.com/Demired/rpwd"
 
 	"github.com/astaxie/beego/orm"
 )
