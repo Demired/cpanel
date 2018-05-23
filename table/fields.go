@@ -99,13 +99,14 @@ type Manager struct {
 // Compose strcut
 // 配置组合表
 type Compose struct {
-	ID     int       `orm:"column(id);auto"`
-	UID    int       `orm:"column(uid)"`
-	IPv4   int       `orm:"column(ipv4)"`
-	IPv6   int       `orm:"column(ipv6)"`
-	Vcpu   int       `orm:"column(vcpu)"`
-	Status int       `orm:"column(status)"`
-	Ctime  time.Time `orm:"auto_now;type(datetime)"`
+	ID        int       `orm:"column(id);auto"`
+	UID       int       `orm:"column(uid)"`
+	IPv4      int       `orm:"column(ipv4)"`
+	IPv6      int       `orm:"column(ipv6)"`
+	Vcpu      int       `orm:"column(vcpu)"`
+	Status    int       `orm:"column(status)"`
+	BandWidth int       `orm:"column(bandwidth)"`
+	Ctime     time.Time `orm:"auto_now;type(datetime)"`
 }
 
 // CREATE TABLE IF NOT EXISTS Manager (

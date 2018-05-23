@@ -23,6 +23,7 @@ func Web() {
 	homeMux.HandleFunc("/compose", compose)
 	homeMux.HandleFunc("/composes", composes)
 	homeMux.HandleFunc("/userList", userList)
+	homeMux.HandleFunc("/addCompose", addCompose)
 	homeMux.HandleFunc("/index.html", index)
 	http.ListenAndServe(fmt.Sprintf(":%d", config.Yaml.ManagerPort), homeMux)
 }
