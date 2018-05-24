@@ -36,7 +36,6 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 	sess, _ := cSession.SessionStart(w, req)
 	defer sess.SessionRelease(w)
 	loginToken := sess.Get("loginToken")
-	fmt.Println(loginToken)
 	if token != loginToken {
 		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "密码错误"})
 		w.Write(msg)
@@ -54,7 +53,6 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 	h.Write([]byte(passwd))
 	bs := h.Sum(nil)
 	sha1passwd := fmt.Sprintf("%x", bs)
-	fmt.Println(manager.Passwd == sha1passwd)
 	if manager.Passwd != sha1passwd {
 		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "密码错误"})
 		w.Write(msg)
