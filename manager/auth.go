@@ -17,11 +17,12 @@ import (
 //login web template
 func login(w http.ResponseWriter, req *http.Request) {
 	sess, _ := cSession.SessionStart(w, req)
+	url := req.URL.Query().Get("url")
 	defer sess.SessionRelease(w)
 	token := string(rpwd.Init(16, true, true, true, false))
 	sess.Set("loginToken", token)
 	t, _ := template.ParseFiles("html/manager/login.html")
-	t.Execute(w, map[string]string{"token": token})
+	t.Execute(w, map[string]string{"token": token, "url": url})
 }
 
 //login api
