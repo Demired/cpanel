@@ -53,15 +53,15 @@
             {{range $index,$v := .}}
             <tr>
                 <td>{{$index}}</td>
-                <td><a href="/info.html?Vname={{$v.Vname}}">{{$v.Vname}}</a></td>
+                <td>{{$v.Name}}</td>
                 <td>{{$v.Vcpu}}</td>
                 <td>{{$v.IPv4}}</td>
                 <td>{{$v.IPv6}}</td>
                 <td>{{$v.Vmemory}}</td>
                 <td>{{$v.Bandwidth}}</td>
                 <td>
-                    <a class="ajax" href="/deleteCompose/?Vname={{$v.Vname}}">删除</a>
-                    <a href="/edit.html?Vname={{$v.Vname}}">修改配置</a>
+                    <a class="ajax" href="/deleteCompose/?ID={{$v.ID}}">删除</a>
+                    <a href="/edit.html?ID={{$v.ID}}">修改配置</a>
                 </td>
             </tr>
             {{end}}
