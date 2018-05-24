@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>控制面板|创建</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.bootcss.com/jquery/3.2.0/jquery.min.js"  charset="UTF-8"></script>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+       
+    </div>
+</nav>
+<div class="container" style="padding: 80px 0;">
+    <form class="col-md-8 col-md-offset-2" action="#">
+        <div class="form-group">
+            <label for="vcpu"><h3>核心数</h3></label>
+            <input type="text" class="form-control" id="vcpu" name="vcpu" value="{{with .Vcpu}}{{.}}{{end}}" placeholder="单位：个">
+        </div>
+        <div class="form-group">
+            <label for="ipv4"><h3>IPv4</h3></label>
+            <input type="text" class="form-control" id="ipv4" name="ipv4" value="{{with .IPv4}}{{.}}{{end}}" placeholder="单位：个">
+        </div>
+        <div class="form-group">
+            <label for="ipv6"><h3>IPv6</h3></label>
+            <input type="text" class="form-control" id="ipv6" name="ipv6" value="{{with .IPv6}}{{.}}{{end}}" placeholder="单位：个">
+        </div>
+        <div class="form-group">
+            <label for="vmemory"><h3>内存大小</h3></label>
+            <input type="text" class="form-control" id="vmemory" name="vmemory" value="{{with .Vmemory}}{{.}}{{end}}" placeholder="单位：GiB">
+        </div>
+        <div class="form-group">
+            <label for="bandwidth"><h3>带宽大小</h3></label>
+            <input type="text" class="form-control" id="bandwidth" name="bandwidth" value="{{with .Bandwidth}}{{.}}{{end}}" placeholder="单位：Mbps">
+        </div>
+        <div class="form-group">
+            <label for="totalflow"><h3>单月流量</h3></label>
+            <input type="text" class="form-control" id="totalflow" name="totalflow" value="{{with .totalflow}}{{.}}{{end}}" placeholder="单位：GB">
+        </div>
+        <div class="form-group">
+            <label for="price"><h3>单价</h3></label>
+            <input type="text" class="form-control" id="price" name="price" value="{{with .price}}{{.}}{{end}}" placeholder="每月单价，单位：元">
+        </div>
+        <button type="button" class="btn btn-default" id="submit">创建组合</button>
+    </form>
+</div>
+<script>
+    //页面加载完毕
+    $("#submit").click(function(){
+        var p = {}
+        p.vcpu = $("#vcpu").val()
+        p.ipv4 = $("#ipv4").val()
+        p.ipv6 = $("#ipv6").val()
+        p.vmemory = $("#vmemory").val()
+        p.bandwidth = $("#bandwidth").val()
+        p.totalflow = $("#totalflow").val()
+        p.price = $("#price").val()
+        $.post("/addComposeInfo",p,function(d){
+            alert(d.msg);
+            if(d.ret=="v"){
+                location.href = "/list"
+            }
+        },"json")
+    });
+    //计算花费
+</script>
+</body>
+</html>
+<script type="text/javascript" src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
