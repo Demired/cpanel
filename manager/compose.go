@@ -16,7 +16,7 @@ import (
 func compose(w http.ResponseWriter, req *http.Request) {
 	sess, _ := cSession.SessionStart(w, req)
 	defer sess.SessionRelease(w)
-	_, e := sess.Get("uid").(int)
+	uid, e := sess.Get("uid").(int)
 	if !e {
 		//TODO跳转登录页面
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "你还没有登录", fmt.Sprintf("/login.html?url=%s", req.URL.String())), http.StatusFound)
@@ -30,7 +30,7 @@ func compose(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	t, _ := template.ParseFiles("html/manager/compose.html")
-	t.Execute(w, composes)
+	t.Execute(w, map[string]interface{}{"composes": composes, "uid": uid})
 }
 
 //套餐列表
@@ -128,4 +128,9 @@ func addComposeInfo(w http.ResponseWriter, req *http.Request) {
 	}
 	msg, _ := json.Marshal(tools.Er{Ret: "v", Msg: "添加套餐成功"})
 	w.Write(msg)
+}
+
+//编辑套餐
+func editCompose(w http.ResponseWriter, req *http.Request) {
+
 }
