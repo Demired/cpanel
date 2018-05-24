@@ -15,6 +15,10 @@
 <div class="container" style="padding: 80px 0;">
     <form class="col-md-8 col-md-offset-2" action="#">
         <div class="form-group">
+            <label for="name"><h3>套餐名</h3></label>
+            <input type="text" class="form-control" id="name" name="name" value="{{with .Name}}{{.}}{{end}}" placeholder="单位：个">
+        </div>
+        <div class="form-group">
             <label for="vcpu"><h3>核心数</h3></label>
             <input type="text" class="form-control" id="vcpu" name="vcpu" value="{{with .Vcpu}}{{.}}{{end}}" placeholder="单位：个">
         </div>
@@ -49,6 +53,7 @@
     //页面加载完毕
     $("#submit").click(function(){
         var p = {}
+        p.name = $("#name").val()
         p.vcpu = $("#vcpu").val()
         p.ipv4 = $("#ipv4").val()
         p.ipv6 = $("#ipv6").val()
