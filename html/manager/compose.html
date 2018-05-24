@@ -43,7 +43,7 @@
         <thead>
             <tr>
                 <td>#</td>
-                <td></td>
+                <td>套餐名</td>
                 <td>核心数</td>
                 <td>IPv4</td>
                 <td>IPv6</td>
@@ -63,7 +63,7 @@
                 <td>{{$v.IPv6}}</td>
                 <td>{{$v.Vmemory}}</td>
                 <td>{{$v.Bandwidth}}</td>
-                <td>{{$v.Ctime}}</td>
+                <td>{{$v.Ctime.Format "2006-01-02 15:04:05"}}</td>
                 <td>
                     <a class="ajax" href="/deleteCompose/?ID={{$v.ID}}">删除</a>
                     <a href="/edit.html?ID={{$v.ID}}">修改配置</a>
