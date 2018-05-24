@@ -52,24 +52,24 @@ func addComposeInfo(w http.ResponseWriter, req *http.Request) {
 	_, e := sess.Get("uid").(int)
 	if !e {
 		//TODO跳转登录页面
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "你还没有登录", fmt.Sprintf("/login.html?url=%s", req.URL.String())), http.StatusFound)
 		return
 	}
-
 	if req.Method != "POST" {
 		//TODO提交方式有误
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "提交失败"), http.StatusFound)
 		return
 	}
-
 	var compose table.Compose
-	bandwidth, err := strconv.Atoi(req.PostFormValue("bandwidth"))
-	if err != nil {
-		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "带宽必须填写"})
-		w.Write(msg)
-		return
-	}
 	vcpu, err := strconv.Atoi(req.PostFormValue("vcpu"))
 	if err != nil {
 		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "cpu数量必须填写"})
+		w.Write(msg)
+		return
+	}
+	name := req.PostFormValue("name")
+	if name == "" {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "套餐名"})
 		w.Write(msg)
 		return
 	}
@@ -85,9 +85,9 @@ func addComposeInfo(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	price, err := strconv.Atoi(req.PostFormValue("price"))
+	bandwidth, err := strconv.Atoi(req.PostFormValue("bandwidth"))
 	if err != nil {
-		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "单价必须填写"})
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "带宽必须填写"})
 		w.Write(msg)
 		return
 	}
@@ -103,29 +103,28 @@ func addComposeInfo(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-
+	price, err := strconv.Atoi(req.PostFormValue("price"))
+	if err != nil {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "单价必须填写"})
+		w.Write(msg)
+		return
+	}
 	compose.BandWidth = bandwidth
 	compose.Vcpu = vcpu
 	compose.IPv4 = ipv4
 	compose.IPv6 = ipv6
 	compose.Price = price
 	compose.Vmemory = vmemory
+	compose.Status = 1
 	compose.TotalFlow = totalflow
-
 	o := orm.NewOrm()
-
-	res, err := o.Insert(&compose)
-
+	_, err = o.Insert(&compose)
 	if err != nil {
-		fmt.Println(err.Error())
+		cLog.Error(err.Error())
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "添加失败"})
+		w.Write(msg)
+		return
 	}
-	fmt.Println(res)
-
-	// compose.Vcpu = req.PostFormValue("vcpu")
-	// compose.IPv4 = req.PostFormValue("ipv4")
-	// compose.IPv6 = req.PostFormValue("ipv6")
-	// compose.Price = req.PostFormValue("price")
-	// compose.Vmemory = req.PostFormValue("vmemory")
-	// compose.TotalFlow = req.PostFormValue("totalflow")
-	fmt.Println(compose)
+	msg, _ := json.Marshal(tools.Er{Ret: "v", Msg: "添加套餐成功"})
+	w.Write(msg)
 }
