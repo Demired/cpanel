@@ -25,6 +25,15 @@ func login(w http.ResponseWriter, req *http.Request) {
 	t.Execute(w, map[string]string{"token": token, "url": url})
 }
 
+//注销
+func logout(w http.ResponseWriter, req *http.Request) {
+	sess, _ := cSession.SessionStart(w, req)
+	defer sess.SessionRelease(w)
+	sess.Delete("uid")
+	msg, _ := json.Marshal(tools.Er{Ret: "v", Msg: "注销完毕"})
+	w.Write(msg)
+}
+
 //login api
 func loginAPI(w http.ResponseWriter, req *http.Request) {
 	if req.Method != "POST" {

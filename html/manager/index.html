@@ -30,7 +30,7 @@
             <ul class="nav navbar-nav" style="line-height: 50px;float: right;">
                 {{with .uid}}
                 <li><a href="/userInfo.html">个人中心</a></li>
-                <li><a href="/logout" class="ajax">注销</a></li>
+                <li><a href="/logout" class="ajax" id="logout">注销</a></li>
                 {{else}}
                 <li><a href="/login.html">登录</a></li>
                 {{end}}
@@ -46,16 +46,15 @@
     </div>
 </div>
 <script>
-$(".ajax").click(function(){
-    var url = $(".ajax").attr("href");
-    $.post(url,"",function(d){
-        if(d.ret == "v"){
-            alert("注销完毕")
-            window.location.reload()
-        }
-    },"json")
-    return false
-})
+    $("#logout").click(function(){
+        $.post("/logout","",function(d){
+            if(d.ret=="v"){
+                alert(d.msg)
+                window.location.reload()
+            }
+        },"json")
+        return false
+    })
 </script>
 </body>
 </html>
