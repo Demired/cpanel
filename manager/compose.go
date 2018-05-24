@@ -109,6 +109,7 @@ func addComposeInfo(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
+	compose.Name = name
 	compose.Bandwidth = bandwidth
 	compose.Vcpu = vcpu
 	compose.IPv4 = ipv4
