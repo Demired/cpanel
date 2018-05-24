@@ -43,7 +43,7 @@
         <thead>
             <tr>
                 <td>#</td>
-                <td>套餐名</td>
+                <td>主机名</td>
                 <td>核心数</td>
                 <td>IPv4</td>
                 <td>IPv6</td>
@@ -54,10 +54,11 @@
             </tr>
         </thead>
         <tbody>
-            {{range $index,$v := .composes}}
+            {{range $index,$v := .virtuals}}
             <tr>
+ 
                 <td>{{$v.ID}}</td>
-                <td>{{$v.Name}}</td>
+                <td>{{$v.}}</td>
                 <td>{{$v.Vcpu}}</td>
                 <td>{{$v.IPv4}}</td>
                 <td>{{$v.IPv6}}</td>

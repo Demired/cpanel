@@ -50,6 +50,7 @@
                 <td>内存</td>
                 <td>带宽</td>
                 <td>创建时间</td>
+                <td>使用数量</td>
                 <td>操作</td>
             </tr>
         </thead>
@@ -64,8 +65,13 @@
                 <td>{{$v.Vmemory}}</td>
                 <td>{{$v.Bandwidth}}</td>
                 <td>{{$v.Ctime.Format "2006-01-02 15:04:05"}}</td>
+                <td>0</td>
                 <td>
+                    {{with eq $v.Status 1}}
                     <a href="/downCompose" id="down" class="ajax">下架</a>
+                    {{else}}
+                    <a href="/upCompose" id="up" class="ajax">上架</a>
+                    {{end}}
                     <a href="/deleteCompose/?ID={{$v.ID}}" class="ajax">删除</a>
                     <a href="/editCompose.html?ID={{$v.ID}}">修改配置</a>
                 </td>
