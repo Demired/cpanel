@@ -102,6 +102,7 @@
                         $("#passwd-notice").html(d.msg);
                         break;
                     }
+                    window.location.reload()
                 }else if(d.ret == "v"){
                     alert(d.msg);
                     var url = $("#login").attr("ret-data");
