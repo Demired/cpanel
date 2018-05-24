@@ -17,15 +17,16 @@ var cSession = config.CSession
 // Web func is manager entry
 func Web() {
 	homeMux := http.NewServeMux()
+	homeMux.HandleFunc("/", index)
 	homeMux.HandleFunc("/init", initDB)
-	homeMux.HandleFunc("/login.html", login)
 	homeMux.HandleFunc("/login", loginAPI)
 	homeMux.HandleFunc("/compose", compose)
 	homeMux.HandleFunc("/composes", composes)
 	homeMux.HandleFunc("/userList", userList)
+	homeMux.HandleFunc("/login.html", login)
+	homeMux.HandleFunc("/index.html", index)
 	homeMux.HandleFunc("/addCompose", addCompose)
 	homeMux.HandleFunc("/addComposeInfo", addComposeInfo)
-	homeMux.HandleFunc("/index.html", index)
 	http.ListenAndServe(fmt.Sprintf(":%d", config.Yaml.ManagerPort), homeMux)
 }
 
