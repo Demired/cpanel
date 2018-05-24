@@ -105,7 +105,7 @@ type Compose struct {
 	IPv4      int
 	IPv6      int
 	Vcpu      int
-	BandWidth int
+	Bandwidth int
 	Vmemory   int
 	TotalFlow int
 	Price     int

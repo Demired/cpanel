@@ -29,7 +29,6 @@ func compose(w http.ResponseWriter, req *http.Request) {
 		fmt.Println(err.Error())
 		return
 	}
-	fmt.Println(composes)
 	t, _ := template.ParseFiles("html/manager/compose.html")
 	t.Execute(w, composes)
 }
