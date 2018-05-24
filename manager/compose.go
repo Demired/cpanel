@@ -24,7 +24,7 @@ func compose(w http.ResponseWriter, req *http.Request) {
 	}
 	var composes []table.Compose
 	o := orm.NewOrm()
-	_, err := o.Raw("Select * from compose where status = ?", "1").QueryRows(&composes)
+	_, err := o.Raw("Select * from compose").QueryRows(&composes)
 	if err != nil {
 		fmt.Println(err.Error())
 		return

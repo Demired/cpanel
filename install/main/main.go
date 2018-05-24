@@ -10,6 +10,7 @@ import (
 
 func main() {
 	orm.RegisterModel(new(table.Compose))
+	orm.RegisterModel()
 	orm.RegisterDataBase("default", "sqlite3", config.Yaml.DBPath, 30)
 	orm.RunSyncdb("default", false, true)
 }

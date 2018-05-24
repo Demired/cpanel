@@ -18,13 +18,14 @@ func vpsList(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "你还没有登录", fmt.Sprintf("/login.html?url=%s", req.URL.String())), http.StatusFound)
 		return
 	}
-	var composes []table.Virtual
+	var virtuals []table.Virtual
 	o := orm.NewOrm()
-	_, err := o.Raw("Select * from Virtual where status = ?", "1").QueryRows(&composes)
+	_, err := o.Raw("Select * from Virtual where status = ?", "1").QueryRows(&virtuals)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-	t, _ := template.ParseFiles("html/manager/compose.html")
-	t.Execute(w, map[string]interface{}{"composes": composes, "uid": uid})
+	fmt.Println(virtuals)
+	t, _ := template.ParseFiles("html/manager/vps.html")
+	t.Execute(w, map[string]interface{}{"virtuals": virtuals, "uid": uid})
 }
