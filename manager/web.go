@@ -25,6 +25,7 @@ func Web() {
 	homeMux.HandleFunc("/userList", userList)
 	homeMux.HandleFunc("/login.html", login)
 	homeMux.HandleFunc("/index.html", index)
+	homeMux.HandleFunc("/404.html", notFound)
 	homeMux.HandleFunc("/addCompose", addCompose)
 	homeMux.HandleFunc("/addComposeInfo", addComposeInfo)
 	http.ListenAndServe(fmt.Sprintf(":%d", config.Yaml.ManagerPort), homeMux)
