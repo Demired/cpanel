@@ -63,3 +63,16 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 	msg, _ := json.Marshal(tools.Er{Ret: "v", Msg: "登录成功"})
 	w.Write(msg)
 }
+
+func notFound(w http.ResponseWriter, req *http.Request) {
+	msg := req.URL.Query().Get("msg")
+	url := req.URL.Query().Get("url")
+	if msg == "" {
+		msg = "页面找不到"
+	}
+	if url == "" {
+		url = "/"
+	}
+	t, _ := template.ParseFiles("html/manager/notFound.html")
+	t.Execute(w, map[string]string{"msg": msg, "url": url})
+}

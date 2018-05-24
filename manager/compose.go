@@ -19,6 +19,7 @@ func compose(w http.ResponseWriter, req *http.Request) {
 	_, e := sess.Get("uid").(int)
 	if !e {
 		//TODO跳转登录页面
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "你还没有登录", fmt.Sprintf("/login.html?url=%s", req.URL.String())), http.StatusFound)
 		return
 	}
 	var composes []table.Compose
