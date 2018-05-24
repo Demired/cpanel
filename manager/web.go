@@ -18,11 +18,11 @@ var cSession = config.CSession
 func Web() {
 	homeMux := http.NewServeMux()
 	homeMux.HandleFunc("/", index)
+	homeMux.HandleFunc("/vps", vpsList)
 	homeMux.HandleFunc("/init", initDB)
 	homeMux.HandleFunc("/login", loginAPI)
 	homeMux.HandleFunc("/logout", logout)
 	homeMux.HandleFunc("/compose", compose)
-	homeMux.HandleFunc("/composes", composes)
 	homeMux.HandleFunc("/userList", userList)
 	homeMux.HandleFunc("/login.html", login)
 	homeMux.HandleFunc("/index.html", index)
@@ -36,7 +36,7 @@ func Web() {
 func init() {
 	orm.RegisterModel(new(table.Compose))
 	orm.RegisterModel(new(table.Manager))
-	orm.RegisterDataBase("default", "sqlite3", "./db/cpanel_manager.db", 30)
+	orm.RegisterDataBase("default", "sqlite3", config.Yaml.DBPath, 30)
 }
 
 // index web template

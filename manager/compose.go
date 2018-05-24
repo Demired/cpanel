@@ -33,13 +33,6 @@ func compose(w http.ResponseWriter, req *http.Request) {
 	t.Execute(w, map[string]interface{}{"composes": composes, "uid": uid})
 }
 
-//套餐列表
-func composes(w http.ResponseWriter, req *http.Request) {
-	o := orm.NewOrm()
-	o.Raw("select * from Composes where status = 1")
-	fmt.Println("123")
-}
-
 func addCompose(w http.ResponseWriter, req *http.Request) {
 	t, _ := template.ParseFiles("html/manager/addCompose.html")
 	t.Execute(w, nil)
