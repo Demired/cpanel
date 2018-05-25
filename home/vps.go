@@ -113,7 +113,7 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	}
 
 	o := orm.NewOrm()
-	_, err := o.Insert(&vInfo)
+	_, err = o.Insert(&vInfo)
 	if err != nil {
 		cLog.Error(err.Error())
 		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "写入失败", Data: err.Error()})
