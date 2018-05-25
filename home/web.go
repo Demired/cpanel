@@ -18,7 +18,6 @@ import (
 	"time"
 
 	"github.com/Demired/rpwd"
-	"github.com/astaxie/beego/orm"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -65,17 +64,17 @@ func Web() {
 
 }
 
-func init() {
-	orm.RegisterModel(new(table.Virtual))
-	orm.RegisterModel(new(table.Billing))
-	orm.RegisterModel(new(table.Prompt))
-	orm.RegisterModel(new(table.User))
-	orm.RegisterModel(new(table.Verify))
-	orm.RegisterModel(new(table.Watch))
-	orm.RegisterModel(new(table.Compose))
-	orm.RegisterModel(new(table.Manager))
-	orm.RegisterDataBase("default", "sqlite3", config.Yaml.DBPath, 30)
-}
+// func init() {
+// 	// orm.RegisterModel(new(table.Virtual))
+// 	// orm.RegisterModel(new(table.Billing))
+// 	// orm.RegisterModel(new(table.Prompt))
+// 	// orm.RegisterModel(new(table.User))
+// 	// orm.RegisterModel(new(table.Verify))
+// 	// orm.RegisterModel(new(table.Watch))
+// 	// orm.RegisterModel(new(table.Compose))
+// 	// orm.RegisterModel(new(table.Manager))
+// 	// orm.RegisterDataBase("default", "sqlite3", config.Yaml.DBPath, 30)
+// }
 
 func registerAPI(w http.ResponseWriter, req *http.Request) {
 	if req.Method != "POST" {
