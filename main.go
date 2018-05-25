@@ -4,14 +4,14 @@ import (
 	"cpanel/home"
 	"cpanel/loop"
 	"cpanel/manager"
+	"time"
 )
 
 func main() {
-
 	//检查是否经过配置
-
-	go loop.Watch()
-	go loop.WorkQueue()
 	go home.Web()
-	manager.Web()
+	go manager.Web()
+	go loop.WorkQueue()
+	go loop.Watch()
+	time.Sleep(1 * time.Hour)
 }
