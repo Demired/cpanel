@@ -12,6 +12,8 @@ import (
 )
 
 // var InitPass = make(chan string) //设置初始密码的chan
+
+// VmInit chan
 var VmInit = make(chan string, 100)
 
 var Bill = make(chan string)
@@ -20,6 +22,8 @@ var Alarm = make(chan string)
 
 var cLog = config.CLog
 
+// Watch virtual func
+// loop every 30 second
 func Watch() {
 	var t = make(map[string]uint64)
 	w := time.NewTicker(time.Second * 20)
@@ -32,7 +36,8 @@ func Watch() {
 				cLog.Warn(err.Error())
 				continue
 			}
-			orm, err := control.Bdb()
+			o := orm.NewOrm()
+			// orm, err := control.Bdb()
 			if err != nil {
 				cLog.Warn(err.Error())
 				continue
@@ -50,8 +55,9 @@ func Watch() {
 				}
 
 				var virtual table.Virtual
-				if err := orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", name).Find(&virtual); err != nil {
-					cLog.Warn("读取虚拟机信息失败", err.Error())
+				num, err := o.Raw("select * from virtual where Vname = ?", name).Value(&virtual)
+				if err != nil || num < 1 {
+					cLog.Warn("表中不存在该虚机", err.Error())
 					continue
 				}
 				var cpurate int
@@ -136,7 +142,8 @@ func WorkQueue() {
 					cLog.Warn(err.Error())
 				}
 				var vm table.Virtual
-				orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Find(&vm)
+
+				// orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Find(&vm)
 				for {
 					connect := control.Connect()
 					defer connect.Close()
@@ -159,7 +166,6 @@ func WorkQueue() {
 							//this ok
 						}
 					}
-					fmt.Println("sleep", vname)
 					time.Sleep(3 * time.Second)
 				}
 			HERE:
