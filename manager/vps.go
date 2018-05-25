@@ -12,7 +12,7 @@ import (
 func vpsList(w http.ResponseWriter, req *http.Request) {
 	sess, _ := cSession.SessionStart(w, req)
 	defer sess.SessionRelease(w)
-	uid, e := sess.Get("uid").(int)
+	mid, e := sess.Get("mid").(int)
 	if !e {
 		//TODO跳转登录页面
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "你还没有登录", fmt.Sprintf("/login.html?url=%s", req.URL.String())), http.StatusFound)
@@ -27,5 +27,5 @@ func vpsList(w http.ResponseWriter, req *http.Request) {
 	}
 	fmt.Println(virtuals)
 	t, _ := template.ParseFiles("html/manager/vps.html")
-	t.Execute(w, map[string]interface{}{"virtuals": virtuals, "uid": uid})
+	t.Execute(w, map[string]interface{}{"virtuals": virtuals, "mid": mid})
 }
