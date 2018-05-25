@@ -1,0 +1,1 @@
+rsync -avz --exclude "db" --exclude ".git" ./ root@172.16.1.181:/root/go/src/cpanel

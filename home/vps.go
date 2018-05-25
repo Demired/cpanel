@@ -7,6 +7,7 @@ import (
 	"cpanel/tools"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"net/http"
 	"strconv"
 	"time"
@@ -124,4 +125,122 @@ func createAPI(w http.ResponseWriter, req *http.Request) {
 	loop.VmInit <- vInfo.Vname
 	msg, _ := json.Marshal(tools.Er{Ret: "v", Msg: fmt.Sprintf("你的虚拟机密码是：%s", vInfo.Passwd)})
 	w.Write(msg)
+}
+
+func list(w http.ResponseWriter, req *http.Request) {
+	sess, _ := cSession.SessionStart(w, req)
+	defer sess.SessionRelease(w)
+	uid, e := sess.Get("uid").(int)
+	if !e {
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "你没有登录", fmt.Sprintf("/login.html?url=%s", req.URL.String())), http.StatusFound)
+		return
+	}
+	var virtuals []table.Virtual
+	o := orm.NewOrm()
+	o.Raw("select * from virtual where status = ? and uid = ?", "1", uid).QueryRows(&virtuals)
+	for k, v := range virtuals {
+		connect := control.Connect()
+		defer connect.Close()
+		dom, err := connect.LookupDomainByName(v.Vname)
+		if err != nil {
+			cLog.Warn(err.Error())
+			continue
+		}
+		s, _, err := dom.GetState()
+		if err != nil {
+			cLog.Warn(err.Error())
+			continue
+		}
+		virtuals[k].Status = int(s)
+	}
+	t, _ := template.ParseFiles("html/home/list.html")
+	t.Execute(w, virtuals)
+}
+
+func info(w http.ResponseWriter, req *http.Request) {
+	sess, _ := cSession.SessionStart(w, req)
+	defer sess.SessionRelease(w)
+	uid, e := sess.Get("uid").(int)
+	if !e {
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "你没有登录", fmt.Sprintf("/login.html?url=%s", req.URL.String())), http.StatusFound)
+		return
+	}
+	// orm, err := control.Bdb()
+	Vname := req.URL.Query().Get("Vname")
+	var virtual table.Virtual
+	// err = orm.SetTable("Virtual").Where("Vname = ? and Uid = ?", Vname, uid).Find(&vvm)
+	o := orm.NewOrm()
+	err := o.Raw("select * from virtual where Vname = ? and Uid = ?", Vname, uid).QueryRow(&virtual)
+	if err != nil {
+		cLog.Info(err.Error())
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "服务器不存在", "/list"), http.StatusFound)
+		return
+	}
+	err = control.CheckEtime(Vname)
+	if err != nil {
+		cLog.Info(err.Error())
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "服务器已到期", "/list"), http.StatusFound)
+		return
+	}
+	connect := control.Connect()
+	defer connect.Close()
+	dom, err := connect.LookupDomainByName(Vname)
+	if err != nil {
+		cLog.Warn(err.Error())
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "系统错误，请联系管理员"), http.StatusFound)
+		return
+	}
+	s, _, err := dom.GetState()
+	if err != nil {
+		cLog.Warn(err.Error())
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "系统错误，请联系管理员"), http.StatusFound)
+		return
+	}
+	virtual.Status = int(s)
+	t, _ := template.ParseFiles("html/home/info.html")
+	t.Execute(w, virtual)
+}
+
+func loadJSON(w http.ResponseWriter, req *http.Request) {
+	Vname := req.URL.Query().Get("Vname")
+	o := orm.NewOrm()
+	startTime, err := strconv.Atoi(req.URL.Query().Get("start"))
+	if err != nil {
+		startTime = int(time.Now().Unix()) - 3600
+	}
+	endTime, err := strconv.Atoi(req.URL.Query().Get("end"))
+	if err != nil {
+		endTime = int(time.Now().Unix())
+	}
+	var watchs []table.Watch
+	_, err = o.Raw("select * from watch where vname = ? and ctime > ? and ctime < ?", Vname, startTime, endTime).QueryRows(&watchs)
+	if err != nil {
+		cLog.Warn(err.Error())
+		return
+	}
+	var virtual table.Virtual
+	err = o.Raw("select * from virtual where vname = ?", Vname).QueryRow(&virtual)
+	if err != nil {
+		cLog.Warn(err.Error())
+		return
+	}
+	var cpus [][]int
+	var memorys [][]int
+	var up [][]int
+	var down [][]int
+
+	for _, v := range watchs {
+		up = append(up, []int{v.Ctime, v.Up})
+		down = append(down, []int{v.Ctime, v.Down})
+		memorys = append(memorys, []int{v.Ctime, v.Memory})
+		cpus = append(cpus, []int{v.Ctime, v.CPU})
+	}
+	var date = make(map[string]interface{})
+	date["maxMemory"] = virtual.Vmemory * 1024
+	date["cpus"] = cpus
+	date["memorys"] = memorys
+	date["up"] = up
+	date["down"] = down
+	dj, _ := json.Marshal(date)
+	w.Write(dj)
 }

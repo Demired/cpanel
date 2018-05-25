@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/astaxie/beego/orm"
 	libvirt "github.com/libvirt/libvirt-go"
 )
 
@@ -16,8 +17,10 @@ import (
 // VmInit chan
 var VmInit = make(chan string, 100)
 
+// Bill chan
 var Bill = make(chan string)
 
+// Alarm chan
 var Alarm = make(chan string)
 
 var cLog = config.CLog
@@ -37,11 +40,6 @@ func Watch() {
 				continue
 			}
 			o := orm.NewOrm()
-			// orm, err := control.Bdb()
-			if err != nil {
-				cLog.Warn(err.Error())
-				continue
-			}
 			for _, dom := range doms {
 				name, err := dom.GetName()
 				if err != nil {
@@ -53,10 +51,10 @@ func Watch() {
 					cLog.Warn(err.Error())
 					continue
 				}
-
+				// var virtuals []table.Virtual
 				var virtual table.Virtual
-				num, err := o.Raw("select * from virtual where Vname = ?", name).Value(&virtual)
-				if err != nil || num < 1 {
+				err = o.Raw("select * from virtual where Vname = ?", name).QueryRow(&virtual)
+				if err != nil {
 					cLog.Warn("表中不存在该虚机", err.Error())
 					continue
 				}
@@ -79,10 +77,15 @@ func Watch() {
 					watch.Up = int(intface.TxBytes)
 					watch.Down = int(intface.RxBytes)
 				}
-				if err = orm.SetTable("Watch").SetPK("ID").Save(&watch); err != nil {
-					cLog.Warn("写入数据失败", err.Error())
-					continue
+				_, err = o.Insert(&watch)
+				if err != nil {
+					cLog.Warn(err.Error())
+					return
 				}
+				// if err = orm.SetTable("Watch").SetPK("ID").Save(&watch); err != nil {
+				// 	cLog.Warn("写入数据失败", err.Error())
+				// 	continue
+				// }
 				var nowTime = time.Now()
 
 				//检查是否到期
@@ -130,20 +133,20 @@ func Watch() {
 	}
 }
 
+// WorkQueue func
 func WorkQueue() {
 	for {
 		select {
 		case vname := <-VmInit:
 			go func(vname string) {
-				fmt.Printf("正在初始化的虚拟机，%s\n", vname)
+				cLog.Info("正在初始化的虚拟机，%s", vname)
 				control.Start(vname)
-				orm, err := control.Bdb()
+				o := orm.NewOrm()
+				var virtual table.Virtual
+				err := o.Raw("select * from virtual where vname = ?", vname).QueryRow(&virtual)
 				if err != nil {
-					cLog.Warn(err.Error())
+					cLog.Info(err.Error())
 				}
-				var vm table.Virtual
-
-				// orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Find(&vm)
 				for {
 					connect := control.Connect()
 					defer connect.Close()
@@ -154,16 +157,14 @@ func WorkQueue() {
 						continue
 					}
 					for _, dhcp := range dhcps {
-						if dhcp.Mac == vm.Mac {
+						if dhcp.Mac == virtual.Mac {
 							//ip地址入库
-							var date = make(map[string]interface{})
-							date["LocalIP"] = dhcp.IPaddr
-							orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Update(date)
+							virtual.LocalIP = dhcp.IPaddr
+							o.Update(&virtual)
+							// orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Update(date)
 							//设置外网ip
-							//设置密码
-							control.SetPasswd(vm.Vname, "root", vm.Passwd)
+							control.SetPasswd(virtual.Vname, "root", virtual.Passwd)
 							goto HERE
-							//this ok
 						}
 					}
 					time.Sleep(3 * time.Second)

@@ -2,12 +2,11 @@ package manager
 
 import (
 	"cpanel/config"
-	"cpanel/table"
 	"fmt"
 	"html/template"
 	"net/http"
 
-	"github.com/astaxie/beego/orm"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 var cLog = config.CLog
@@ -19,7 +18,7 @@ func Web() {
 	homeMux := http.NewServeMux()
 	homeMux.HandleFunc("/", index)
 	homeMux.HandleFunc("/vps", vpsList)
-	homeMux.HandleFunc("/init", initDB)
+	// homeMux.HandleFunc("/init", initDB)
 	homeMux.HandleFunc("/login", loginAPI)
 	homeMux.HandleFunc("/logout", logout)
 	homeMux.HandleFunc("/compose", compose)
@@ -31,18 +30,6 @@ func Web() {
 	homeMux.HandleFunc("/editCompose", editCompose)
 	homeMux.HandleFunc("/addComposeInfo", addComposeInfo)
 	http.ListenAndServe(fmt.Sprintf(":%d", config.Yaml.ManagerPort), homeMux)
-}
-
-func init() {
-	orm.RegisterModel(new(table.Virtual))
-	orm.RegisterModel(new(table.Billing))
-	orm.RegisterModel(new(table.Prompt))
-	orm.RegisterModel(new(table.User))
-	orm.RegisterModel(new(table.Verify))
-	orm.RegisterModel(new(table.Watch))
-	orm.RegisterModel(new(table.Compose))
-	orm.RegisterModel(new(table.Manager))
-	orm.RegisterDataBase("default", "sqlite3", config.Yaml.DBPath, 30)
 }
 
 // index web template

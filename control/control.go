@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/astaxie/beego/orm"
+
 	"github.com/Demired/rpwd"
 	"github.com/amoghe/go-crypt"
 	"github.com/astaxie/beedb"
@@ -29,17 +31,15 @@ func Bdb() (beedb.Model, error) {
 	return beedb.New(db), nil
 }
 
+// CheckEtime func
 func CheckEtime(Vname string) error {
-	var dInfo table.Virtual
-	orm, err := Bdb()
+	var virtual table.Virtual
+	o := orm.NewOrm()
+	err := o.Raw("select * from virtual where Vname = ?", Vname).QueryRow(&virtual)
 	if err != nil {
 		return err
 	}
-	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Find(&dInfo)
-	if err != nil {
-		return err
-	}
-	if time.Now().After(dInfo.Etime) {
+	if time.Now().After(virtual.Etime) {
 		return errors.New("虚拟机到期")
 	}
 	return nil
