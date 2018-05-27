@@ -2,7 +2,7 @@ package manager
 
 import (
 	"cpanel/table"
-	"fmt"
+	"html/template"
 	"net/http"
 
 	"github.com/astaxie/beego/orm"
@@ -10,12 +10,16 @@ import (
 
 //用户列表模板
 func userList(w http.ResponseWriter, req *http.Request) {
-	var managers []table.Manager
+	var users []table.User
 	o := orm.NewOrm()
-	_, err := o.Raw("Select * form manager where status = ?", "1").QueryRows(&managers)
+	_, err := o.Raw("Select * from user").QueryRows(&users)
 	if err != nil {
-		fmt.Println(err.Error())
+		cLog.Warn(err.Error())
 		return
 	}
-	fmt.Println(managers)
+	sess, _ := cSession.SessionStart(w, req)
+	defer sess.SessionRelease(w)
+	mid := sess.Get("min").(int)
+	t, _ := template.ParseFiles("html/manager/userList.html")
+	t.Execute(w, map[string]interface{}{"users": users, "mid": mid})
 }

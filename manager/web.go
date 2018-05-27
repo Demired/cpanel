@@ -18,7 +18,6 @@ func Web() {
 	homeMux := http.NewServeMux()
 	homeMux.HandleFunc("/", index)
 	homeMux.HandleFunc("/vps", vpsList)
-	// homeMux.HandleFunc("/init", initDB)
 	homeMux.HandleFunc("/login", loginAPI)
 	homeMux.HandleFunc("/logout", logout)
 	homeMux.HandleFunc("/compose", compose)

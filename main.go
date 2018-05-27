@@ -17,28 +17,12 @@ import (
 
 func main() {
 	if len(os.Args) > 1 && os.Args[1] == "--init" {
-		//检查是否已经初始化过
-		_, err := os.Stat("./init")
+		err := InstallDB()
 		if err != nil {
-			fmt.Println("init start")
-			// os.Remove(config.Yaml.DBPath)
-			err = orm.RunSyncdb("default", false, true)
-			if err != nil {
-				fmt.Println(err.Error())
-			}
-			o := orm.NewOrm()
-			var manager table.Manager
-			manager.Email = config.Yaml.ManagerEmail
-			manager.Passwd = tools.SumSha1(config.Yaml.ManagerPasswd)
-			_, err := o.Insert(&manager)
-			if err != nil {
-				fmt.Println(err.Error())
-				return
-			}
-			os.Create("./init")
+			fmt.Println(err.Error())
+		} else {
 			fmt.Println("init complete")
 		}
-		fmt.Println("already init")
 		return
 	}
 	//检查是否经过配置
@@ -48,6 +32,24 @@ func main() {
 	go loop.Watch()
 
 	time.Sleep(1 * time.Hour)
+}
+
+// InstallDB 安装数据库
+func InstallDB() error {
+	err := orm.RunSyncdb("default", false, false)
+	if err != nil {
+		return err
+	}
+	o := orm.NewOrm()
+	var manager table.Manager
+	manager.Email = config.Yaml.ManagerEmail
+	manager.Passwd = tools.SumSha1(config.Yaml.ManagerPasswd)
+	_, err = o.Insert(&manager)
+	if err != nil {
+		fmt.Println("insert ok")
+		return err
+	}
+	return nil
 }
 
 func init() {

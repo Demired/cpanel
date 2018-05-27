@@ -25,7 +25,6 @@ func vpsList(w http.ResponseWriter, req *http.Request) {
 		fmt.Println(err.Error())
 		return
 	}
-	fmt.Println(virtuals)
 	t, _ := template.ParseFiles("html/manager/vps.html")
 	t.Execute(w, map[string]interface{}{"virtuals": virtuals, "mid": mid})
 }

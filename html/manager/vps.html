@@ -24,7 +24,7 @@
                 <li><a href="/index"> 首页 </a></li>
                 <li><a href="/compose" class="action">配置列表</a></li>
                 <li class="active"><a href="/vps">虚拟机列表</a></li>
-                <li><a href="/user">用户列表</a></li>
+                <li><a href="/userList">用户列表</a></li>
                 <li><a href="/">分享</a></li>
             </ul>
             <ul class="nav navbar-nav" style="line-height: 50px;float: right;">
@@ -45,11 +45,13 @@
                 <td>#</td>
                 <td>主机名</td>
                 <td>核心数</td>
+                <td>内网ip</td>
                 <td>IPv4</td>
                 <td>IPv6</td>
                 <td>内存</td>
                 <td>带宽</td>
                 <td>创建时间</td>
+                <td>到期时间</td>
                 <td>操作</td>
             </tr>
         </thead>
@@ -59,11 +61,13 @@
                 <td>{{$v.ID}}</td>
                 <td>{{$v.Vname}}</td>
                 <td>{{$v.Vcpu}}</td>
+                <td>{{$v.LocalIP}}</td>
                 <td>{{$v.IPv4}}</td>
                 <td>{{$v.IPv6}}</td>
                 <td>{{$v.Vmemory}}</td>
                 <td>{{$v.Bandwidth}}</td>
                 <td>{{$v.Ctime.Format "2006-01-02 15:04:05"}}</td>
+                <td>{{$v.Etime.Format "2006-01-02 15:04:05"}}</td>
                 <td>
                     <a href="/downCompose" id="down" class="ajax">下架</a>
                     <a href="/deleteCompose/?ID={{$v.ID}}" class="ajax">删除</a>
