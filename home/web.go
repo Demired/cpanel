@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"github.com/Demired/rpwd"
+	"github.com/astaxie/beego/orm"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -403,14 +404,10 @@ func start(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	orm, err := control.Bdb()
-	if err != nil {
-		cLog.Warn(err.Error())
-		return
-	}
 	Vname := req.PostFormValue("Vname")
 	var tmpVirtual table.Virtual
-	err = orm.SetTable("Virtual").SetPK("ID").Where("Uid = ? and Vname = ?", uid, Vname).Find(&tmpVirtual)
+	o := orm.NewOrm()
+	err := o.Raw("select * from virtual where uid = ? and vname = ?", uid, Vname).QueryRow(&tmpVirtual)
 	if err != nil {
 		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "权限不足"})
 		w.Write(msg)
