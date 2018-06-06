@@ -25,6 +25,8 @@ func Web() {
 	homeMux.HandleFunc("/login.html", login)
 	homeMux.HandleFunc("/index.html", index)
 	homeMux.HandleFunc("/404.html", notFound)
+	homeMux.HandleFunc("/upVps", upVps)
+	homeMux.HandleFunc("/downVps", downVps)
 	homeMux.HandleFunc("/addCompose", addCompose)
 	homeMux.HandleFunc("/editCompose", editCompose)
 	homeMux.HandleFunc("/addComposeInfo", addComposeInfo)
@@ -36,8 +38,8 @@ func index(w http.ResponseWriter, req *http.Request) {
 	t, _ := template.ParseFiles("html/manager/index.html")
 	sess, _ := cSession.SessionStart(w, req)
 	defer sess.SessionRelease(w)
-	uid, _ := sess.Get("uid").(int)
-	t.Execute(w, map[string]int{"uid": uid})
+	mid, _ := sess.Get("mid").(int)
+	t.Execute(w, map[string]int{"mid": mid})
 }
 
 //vm func

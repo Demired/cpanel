@@ -64,7 +64,7 @@
         $.post("/addComposeInfo",p,function(d){
             alert(d.msg);
             if(d.ret=="v"){
-                location.href = "/list"
+                location.href = "/compose"
             }
         },"json")
     });

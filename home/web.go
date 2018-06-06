@@ -225,11 +225,12 @@ func userInfo(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "你没有登录", fmt.Sprintf("login.html?url=%s", req.URL.String())), http.StatusFound)
 		return
 	}
-
 	var userInfo table.User
-	orm, _ := control.Bdb()
-	fb := orm.SetTable("User").SetPK("ID").Where("ID = ?", uid).Find(&userInfo)
-	if fb != nil {
+	o := orm.NewOrm()
+	userInfo.ID = uid
+	err = o.Read(&userInfo)
+	if err != nil {
+		cLog.Warn(err.Error())
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "用户不存在"), http.StatusFound)
 		return
 	}
@@ -450,7 +451,6 @@ func repasswdAPI(w http.ResponseWriter, req *http.Request) {
 }
 
 func shutdown(w http.ResponseWriter, req *http.Request) {
-
 	if req.Method != "POST" {
 		http.Redirect(w, req, "/", http.StatusFound)
 		return
@@ -463,14 +463,10 @@ func shutdown(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	orm, err := control.Bdb()
-	if err != nil {
-		cLog.Warn(err.Error())
-		return
-	}
 	Vname := req.PostFormValue("Vname")
 	var tmpVirtual table.Virtual
-	err = orm.SetTable("Virtual").SetPK("ID").Where("Uid = ? and Vname = ?", uid, Vname).Find(&tmpVirtual)
+	o := orm.NewOrm()
+	err := o.Raw("select * from virtual where uid = ? and vname = ?", uid, Vname).QueryRow(&tmpVirtual)
 	if err != nil {
 		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "权限不足"})
 		w.Write(msg)
@@ -501,14 +497,10 @@ func reboot(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	orm, err := control.Bdb()
-	if err != nil {
-		cLog.Warn(err.Error())
-		return
-	}
-	Vname := req.PostFormValue("Vname")
+	o := orm.NewOrm()
 	var tmpVirtual table.Virtual
-	err = orm.SetTable("Virtual").SetPK("ID").Where("Uid = ? and Vname = ?", uid, Vname).Find(&tmpVirtual)
+	Vname := req.PostFormValue("Vname")
+	err := o.Raw("select * from virtual where uid = ? and vname = ?", uid, Vname).QueryRow(&tmpVirtual)
 	if err != nil {
 		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "权限不足"})
 		w.Write(msg)
@@ -530,14 +522,10 @@ func editAPI(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, "/create.html", http.StatusFound)
 		return
 	}
-	orm, err := control.Bdb()
-	if err != nil {
-		cLog.Warn(err.Error())
-		return
-	}
 	var sourceVirtual table.Virtual
 	vname := req.PostFormValue("vname")
-	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", vname).Find(&sourceVirtual)
+	o := orm.NewOrm()
+	_, err := o.Raw("Select * from Virtual where vname = ?", vname).QueryRows(&sourceVirtual)
 	if err != nil {
 		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "机器不存在"})
 		w.Write(msg)
@@ -548,7 +536,6 @@ func editAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-
 	vmemory, err := strconv.Atoi(req.PostFormValue("vmemory"))
 	if err != nil {
 		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "内存大小必须为整数"})
@@ -609,9 +596,7 @@ func editAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	//
-
-	err = orm.SetTable("Virtual").SetPK("ID").Save(&vInfo)
+	_, err = o.Insert(&vInfo)
 	if err != nil {
 		cLog.Info(err.Error())
 		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "写入失败", Data: err.Error()})
@@ -756,6 +741,7 @@ func undefine(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, "/", http.StatusFound)
 		return
 	}
+	Vname := req.PostFormValue("Vname")
 	sess, _ := cSession.SessionStart(w, req)
 	defer sess.SessionRelease(w)
 	uid, e := sess.Get("uid").(int)
@@ -764,26 +750,18 @@ func undefine(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	orm, err := control.Bdb()
-	if err != nil {
-		cLog.Warn(err.Error())
-		return
-	}
-	Vname := req.PostFormValue("Vname")
+	o := orm.NewOrm()
 	var tmpVirtual table.Virtual
-	err = orm.SetTable("Virtual").SetPK("ID").Where("Uid = ? and Vname = ?", uid, Vname).Find(&tmpVirtual)
+	err := o.Raw("select * from virtual where uid = ? and vname = ?", uid, Vname).QueryRow(&tmpVirtual)
 	if err != nil {
-		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "权限不足"})
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "权限不足", Data: err.Error()})
 		w.Write(msg)
 		return
 	}
-
-	defer req.Body.Close()
 	disk := fmt.Sprintf("/virt/disk/%s.qcow2", Vname)
 	os.Remove(disk)
-	t := make(map[string]interface{})
-	t["Status"] = 0
-	_, err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Update(t)
+	tmpVirtual.Status = 0
+	_, err = o.Update(&tmpVirtual)
 	if err != nil {
 		cLog.Warn(err.Error())
 		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "删除失败", Data: err.Error()})

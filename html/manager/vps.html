@@ -38,12 +38,13 @@
         </div>
     </div>
 </nav>
-<div class="container" style="padding: 80px 0;">
+<div class="container" style="padding: 60px 0;">
     <table class="table table-striped">		
         <thead>
             <tr>
                 <td>#</td>
                 <td>主机名</td>
+                <td>所有者</td>
                 <td>核心数</td>
                 <td>内网ip</td>
                 <td>IPv4</td>
@@ -60,6 +61,7 @@
             <tr>
                 <td>{{$v.ID}}</td>
                 <td>{{$v.Vname}}</td>
+                <td>{{$v.UID}}</td>
                 <td>{{$v.Vcpu}}</td>
                 <td>{{$v.LocalIP}}</td>
                 <td>{{$v.IPv4}}</td>
@@ -68,10 +70,14 @@
                 <td>{{$v.Bandwidth}}</td>
                 <td>{{$v.Ctime.Format "2006-01-02 15:04:05"}}</td>
                 <td>{{$v.Etime.Format "2006-01-02 15:04:05"}}</td>
-                <td>
-                    <a href="/downCompose" id="down" class="ajax">下架</a>
-                    <a href="/deleteCompose/?ID={{$v.ID}}" class="ajax">删除</a>
-                    <a href="/editCompose.html?ID={{$v.ID}}">修改配置</a>
+                <td ret="{{$v.Vname}}" ret-id="{{$v.ID}}">
+                    {{if eq $v.Status 1}}
+                    <a href="/downVps" id="down" class="ajax">关机</a>
+                    {{else}}
+                    <a href="/upVps" id="up" class="ajax">开机</a>
+                    {{end}}
+                    <a href="/deleteVps/?ID={{$v.ID}}" class="ajax">删除</a>
+                    <a href="/editVps.html?ID={{$v.ID}}">修改配置</a>
                 </td>
             </tr>
             {{end}}
@@ -81,17 +87,24 @@
 <script>
     $("#logout").click(function(){
         $.post("/logout","",function(d){
+            alert(d.msg)
             if(d.ret=="v"){
-                alert(d.msg)
                 window.location.reload()
             }
         },"json")
         return false
-    });
-    $("#down").click(function(){
-        $.post("/downCompose","",function(){
-
+    })
+    $(".ajax").click(function(){
+        var Vname = $(this).parent("td").attr("ret")
+        var url = $(this).attr("href")
+        var id = $(this).parent("td").attr("ret-id")
+        $.post(url,{id:id},function(d){
+            alert(d.msg)
+            if(d.ret == "v"){
+                window.location.reload()   
+            }
         },"json")
+        return false
     })
 </script>
 </body>
