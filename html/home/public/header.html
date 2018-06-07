@@ -1,0 +1,31 @@
+{{define "header"}}
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">控制面板</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/index">控制面板</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/index"> 首页 </a></li>
+                <li><a href="/list">虚拟机列表</a></li>
+                <!-- <li><a href="/create.html">创建虚拟机</a></li> -->
+                <li><a href="/composes">套餐</a></li>
+            </ul>
+            <ul class="nav navbar-nav" style="line-height: 50px;float: right;">
+                {{with .uid}}
+                <li><a href="/userInfo.html">个人中心</a></li>
+                <li><a href="/logout" class="ajax">注销</a></li>
+                {{else}}
+                <li><a href="/login.html">登录</a></li>
+                {{end}}
+            </ul>
+        </div>
+    </div>
+</nav>
+{{end}}

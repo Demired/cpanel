@@ -17,6 +17,6 @@ func composes(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "查询失败"), http.StatusFound)
 		return
 	}
-	t, _ := template.ParseFiles("html/home/compose.html")
+	t, _ := template.ParseFiles("html/home/compose.html", "html/home/public/header.html", "html/home/public/footer.html")
 	t.Execute(w, map[string]interface{}{"composes": composes})
 }

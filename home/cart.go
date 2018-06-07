@@ -27,6 +27,7 @@ func addCart(w http.ResponseWriter, req *http.Request) {
 	//检查是否存在套餐
 	o := orm.NewOrm()
 	var compose table.Compose
+	compose.ID = id
 	err = o.Read(&compose)
 	if err != nil {
 		cLog.Info("套餐不存在，%d", id)

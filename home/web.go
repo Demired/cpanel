@@ -61,7 +61,7 @@ func Web() {
 	homeMux.HandleFunc("/undefine", undefine)
 	homeMux.HandleFunc("/edit.html", edit)
 	homeMux.HandleFunc("/create.html", create)
-
+	homeMux.HandleFunc("/addCart", addCart)
 	http.ListenAndServe(fmt.Sprintf(":%d", config.Yaml.HomePort), homeMux)
 
 }
@@ -243,8 +243,8 @@ func index(w http.ResponseWriter, req *http.Request) {
 	sess, _ := cSession.SessionStart(w, req)
 	defer sess.SessionRelease(w)
 	uid, _ := sess.Get("uid").(int)
-	t, _ := template.ParseFiles("html/home/index.html")
-	t.Execute(w, map[string]int{"uid": uid})
+	t, _ := template.ParseFiles("html/home/index.html", "html/home/public/header.html", "html/home/public/footer.html")
+	t.Execute(w, map[string]int{"uid": uid, "iii": 123})
 }
 
 func register(w http.ResponseWriter, req *http.Request) {
@@ -619,14 +619,16 @@ func alarm(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	Vname := req.URL.Query().Get("Vname")
-	orm, err := control.Bdb()
-	if err != nil {
-		cLog.Warn(err.Error())
-		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "系统错误，请联系管理员"), http.StatusFound)
-		return
-	}
+	// orm, err := control.Bdb()
+	// if err != nil {
+	// 	cLog.Warn(err.Error())
+	// 	http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "系统错误，请联系管理员"), http.StatusFound)
+	// 	return
+	// }
+	o := orm.NewOrm()
 	var dInfo table.Virtual
-	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ? and Uid = ?", Vname, uid).Find(&dInfo)
+	// err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ? and Uid = ?", Vname, uid).Find(&dInfo)
+	err := o.Raw("select * from virtual where Vname = ? and Uid = ?", Vname, uid).QueryRow(&dInfo)
 	if err != nil {
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "没有权限"), http.StatusFound)
 		return
@@ -659,14 +661,12 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	orm, err := control.Bdb()
-	if err != nil {
-		cLog.Warn(err.Error())
-		return
-	}
+
 	var dInfo table.Virtual
 	Vname := req.PostFormValue("Vname")
-	err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ? and Uid = ?", Vname, uid).Find(&dInfo)
+	// err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ? and Uid = ?", Vname, uid).Find(&dInfo)
+	o := orm.NewOrm()
+	err := o.Raw("select * from virtual where Vname = ? and Uid = ?", Vname, uid).QueryRow(&dInfo)
 	if err != nil {
 		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "没有权限", Data: err.Error()})
 		w.Write(msg)
@@ -685,9 +685,16 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 			w.Write(msg)
 			return
 		}
-		t := make(map[string]interface{})
-		t["AStatus"] = 0
-		orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Update(t)
+		// t := make(map[string]interface{})
+		// t["AStatus"] = 0
+		dInfo.AStatus = 0
+		// orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Update(t)
+		_, err := o.Update(&dInfo)
+		if err != nil {
+			msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "关闭失败"})
+			w.Write(msg)
+			return
+		}
 		msg, _ := json.Marshal(tools.Er{Ret: "v", Msg: "报警已关闭"})
 		w.Write(msg)
 		return
@@ -720,13 +727,13 @@ func alarmAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	t := make(map[string]interface{})
-	t["ACpu"] = ACpu
-	t["ABandwidth"] = ABandwidth
-	t["AMemory"] = AMemory
-	t["ADisk"] = ADisk
-	t["AStatus"] = 1
-	_, err = orm.SetTable("Virtual").SetPK("ID").Where("Vname = ?", Vname).Update(t)
+
+	dInfo.ACpu = ACpu
+	dInfo.ABandwidth = ABandwidth
+	dInfo.AMemory = AMemory
+	dInfo.ADisk = ADisk
+	dInfo.AStatus = 1
+	_, err = o.Update(&dInfo)
 	if err != nil {
 		cLog.Warn(err.Error())
 		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "设置失败", Data: err.Error()})

@@ -36,7 +36,7 @@ func main() {
 
 // InstallDB 安装数据库
 func InstallDB() error {
-	err := orm.RunSyncdb("default", false, false)
+	err := orm.RunSyncdb("default", false, true)
 	if err != nil {
 		return err
 	}
@@ -61,5 +61,6 @@ func init() {
 	orm.RegisterModel(new(table.Watch))
 	orm.RegisterModel(new(table.Compose))
 	orm.RegisterModel(new(table.Manager))
+	orm.RegisterModel(new(table.Cart))
 	orm.RegisterDataBase("default", "sqlite3", config.Yaml.DBPath, 30)
 }
