@@ -155,3 +155,15 @@ type Prompt struct {
 // Status INT NOT NULL,
 // Utime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 // Ctime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+
+//购物车
+
+//Cart struct
+type Cart struct {
+	ID     int `orm:"column(id);auto"`
+	UID    int
+	CID    int
+	Num    int
+	Status int
+	Ctime  time.Time `orm:"auto_now_add;type(datetime)"`
+}

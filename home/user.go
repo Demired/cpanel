@@ -55,8 +55,16 @@ func loginAPI(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	if user.Status == 0 {
-		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "邮箱验证未通过"})
+	if user.Status != 1 {
+		var msg []byte
+		switch user.Status {
+		case 0:
+			msg, _ = json.Marshal(tools.Er{Ret: "e", Msg: "邮箱验证未通过"})
+			break
+		case -1:
+			msg, _ = json.Marshal(tools.Er{Ret: "e", Msg: "帐号已禁用"})
+			break
+		}
 		w.Write(msg)
 		return
 	}
@@ -159,6 +167,7 @@ func verify(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "重复验证"), http.StatusFound)
 		return
 	}
+
 	var thisVerify table.Verify
 	err = o.Raw("select * from verify where Code = ? and Email = ?", code, email).QueryRow(&thisVerify)
 	if err != nil {
@@ -179,9 +188,9 @@ func verify(w http.ResponseWriter, req *http.Request) {
 	}
 	if thisVerify.Type == "verify" {
 		thisVerify.Status = 1
-		o.Update(thisVerify)
+		o.Update(&thisVerify)
 		thisUser.Status = 1
-		o.Update(thisUser)
+		o.Update(&thisUser)
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "邮箱验证完毕，请登录", "/login.html"), http.StatusFound)
 		return
 	} else if thisVerify.Type == "forget" {

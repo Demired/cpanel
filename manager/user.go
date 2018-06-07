@@ -63,12 +63,12 @@ func downUser(w http.ResponseWriter, req *http.Request) {
 		w.Write(msg)
 		return
 	}
-	if user.Status == 0 {
+	if user.Status == -1 {
 		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "重复禁用"})
 		w.Write(msg)
 		return
 	}
-	user.Status = 0
+	user.Status = -1
 	_, err = o.Update(&user)
 	if err != nil {
 		cLog.Warn(err.Error())
@@ -78,10 +78,47 @@ func downUser(w http.ResponseWriter, req *http.Request) {
 	}
 	msg, _ := json.Marshal(tools.Er{Ret: "v", Msg: "禁用完毕"})
 	w.Write(msg)
-	return
 }
 
 //启用用户
 func upUser(w http.ResponseWriter, req *http.Request) {
-
+	sess, _ := cSession.SessionStart(w, req)
+	defer sess.SessionRelease(w)
+	_, e := sess.Get("mid").(int)
+	if !e {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "你还没有登录", Param: "login"})
+		w.Write(msg)
+		return
+	}
+	id, err := strconv.Atoi(req.PostFormValue("id"))
+	if err != nil {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "参数不全"})
+		w.Write(msg)
+		return
+	}
+	var user table.User
+	o := orm.NewOrm()
+	user.ID = id
+	err = o.Read(&user)
+	if err != nil {
+		cLog.Warn(err.Error())
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "用户不存在"})
+		w.Write(msg)
+		return
+	}
+	if user.Status == 1 {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "重复启用"})
+		w.Write(msg)
+		return
+	}
+	user.Status = 1
+	_, err = o.Update(&user)
+	if err != nil {
+		cLog.Warn(err.Error())
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "启用失败"})
+		w.Write(msg)
+		return
+	}
+	msg, _ := json.Marshal(tools.Er{Ret: "v", Msg: "启用完毕"})
+	w.Write(msg)
 }

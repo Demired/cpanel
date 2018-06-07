@@ -36,6 +36,7 @@ func Web() {
 	homeMux.HandleFunc("/edit", editAPI)
 	homeMux.HandleFunc("/list", list)
 	homeMux.HandleFunc("/login.html", login)
+	homeMux.HandleFunc("/composes", composes)
 	homeMux.HandleFunc("/login", loginAPI)
 	homeMux.HandleFunc("/forget.html", forget)
 	homeMux.HandleFunc("/forget", forgetAPI)

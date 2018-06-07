@@ -21,6 +21,8 @@ func Web() {
 	homeMux.HandleFunc("/login", loginAPI)
 	homeMux.HandleFunc("/logout", logout)
 	homeMux.HandleFunc("/compose", compose)
+	homeMux.HandleFunc("/upUser", upUser)
+	homeMux.HandleFunc("/downUser", downUser)
 	homeMux.HandleFunc("/userList", userList)
 	homeMux.HandleFunc("/login.html", login)
 	homeMux.HandleFunc("/index.html", index)

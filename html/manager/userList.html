@@ -57,7 +57,7 @@
                     {{with eq $v.Status 1}}
                     <a href="/downUser" class="ajax">停用</a>
                     {{else}}
-                    <a href="/upUser" class="ajax">启用/a>
+                    <a href="/upUser" class="ajax">启用</a>
                     {{end}}
                 </td>
             </tr>
@@ -75,26 +75,26 @@
         },"json")
         return false
     });
-    $("#down").click(function(){
-        $.post("/downUser","",function(){
-            alert(d.msg)
-            if(d.ret=="v"){
-                window.location.reload()
-            }
-        },"json")
-    })
-    $("#up").click(function(){
-        $.post("/upUser","",function(d){
-            alert(d.msg)
-            if(d.ret=="v"){
-                window.location.reload()
-            }
-        },"json")
-    })
+    // $("#down").click(function(){
+    //     $.post("/downUser","",function(){
+    //         alert(d.msg)
+    //         if(d.ret=="v"){
+    //             window.location.reload()
+    //         }
+    //     },"json")
+    // })
+    // $("#up").click(function(){
+    //     $.post("/upUser","",function(d){
+    //         alert(d.msg)
+    //         if(d.ret=="v"){
+    //             window.location.reload()
+    //         }
+    //     },"json")
+    // })
     $(".ajax").click(function(){
         var url = $(this).attr("href")
         var id = $(this).parent("td").attr("ret-id")
-        $.post(url,{id:id},function(){
+        $.post(url,{id:id},function(d){
             alert(d.msg)
             if(d.ret=="v"){
                 window.location.reload()
