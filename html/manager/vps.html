@@ -8,36 +8,7 @@
     <script src="https://cdn.bootcss.com/jquery/3.2.0/jquery.min.js"  charset="UTF-8"></script>
 </head>
 <body>
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">管理页面</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/index">控制面板</a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="/index"> 首页 </a></li>
-                <li><a href="/compose" class="action">配置列表</a></li>
-                <li class="active"><a href="/vps">虚拟机列表</a></li>
-                <li><a href="/userList">用户列表</a></li>
-                <li><a href="/">分享</a></li>
-            </ul>
-            <ul class="nav navbar-nav" style="line-height: 50px;float: right;">
-                {{with .mid}}
-                <li><a href="/userInfo.html">个人中心</a></li>
-                <li><a href="/logout" class="ajax" id="logout">注销</a></li>
-                {{else}}
-                <li><a href="/login.html">登录</a></li>
-                {{end}}
-            </ul>
-        </div>
-    </div>
-</nav>
+{{template "header" .}}
 <div class="container" style="padding: 60px 0;">
     <table class="table table-striped">		
         <thead>
@@ -84,18 +55,9 @@
         </tbody>
     </table>
 </div>
+{{template "footer" .}}
 <script>
-    $("#logout").click(function(){
-        $.post("/logout","",function(d){
-            alert(d.msg)
-            if(d.ret=="v"){
-                window.location.reload()
-            }
-        },"json")
-        return false
-    })
     $(".ajax").click(function(){
-        var Vname = $(this).parent("td").attr("ret")
         var url = $(this).attr("href")
         var id = $(this).parent("td").attr("ret-id")
         $.post(url,{id:id},function(d){

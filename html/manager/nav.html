@@ -12,15 +12,22 @@
 <div class="container" style="padding: 80px 0;">
     <table>
         <tr>
-            <th></th>
-            <th></th>
-            <th></th>
+            <th>序号</th>
+            <th>名字</th>
+            <th>链接</th>
+            <th>子导航</th>
+            <th>管理</th>
         </tr>
+        {{with .nav}}
+        {{range $index,$v := .}}
         <tr>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>{{$v.Order}}</td>
+            <td>{{$v.Name}}</td>
+            <td>{{$v.URL}}</td>
+            <td>{{$v.Ctime.Format "2006-01-02 15:04:05"}}</td>
         </tr>
+        {{end}}
+        {{end}}
     </table>
 </div>
 {{template "footer" .}}

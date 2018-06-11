@@ -25,3 +25,13 @@ yum install virtual-devel virtual
 ```sh
 go build main.go
 ```
+
+## 安装方法
+
+邮件服务器配置
+
+TDDO
+
+网络配置
+
+安装完毕客户端，自动安装一个服务器，做测试服务器

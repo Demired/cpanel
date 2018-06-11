@@ -16,17 +16,5 @@
     </div>
 </div>
 {{template "footer" .}}
-<script>
-$(".ajax").click(function(){
-    var url = $(".ajax").attr("href");
-    $.post(url,"",function(d){
-        if(d.ret == "v"){
-            alert("注销完毕")
-            window.location.reload()
-        }
-    },"json")
-    return false
-})
-</script>
 </body>
 </html>

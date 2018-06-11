@@ -21,12 +21,19 @@ func vpsList(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "你还没有登录", fmt.Sprintf("/login.html?url=%s", req.URL.String())), http.StatusFound)
 		return
 	}
-	var virtuals []table.Virtual
 	o := orm.NewOrm()
-	_, err := o.Raw("Select * from Virtual where status = ?", "1").QueryRows(&virtuals)
+
+	var manager table.Manager
+	manager.ID = mid
+	err := o.Read(&manager)
 	if err != nil {
-		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "你还没有登录", fmt.Sprintf("/login.html?url=%s", req.URL.String())), http.StatusFound)
-		fmt.Println(err.Error())
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "管理员信息查询失败"), http.StatusFound)
+		return
+	}
+	var virtuals []table.Virtual
+	_, err = o.Raw("Select * from Virtual").QueryRows(&virtuals)
+	if err != nil {
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "虚拟机查询失败"), http.StatusFound)
 		return
 	}
 	for k, v := range virtuals {
@@ -44,9 +51,8 @@ func vpsList(w http.ResponseWriter, req *http.Request) {
 		}
 		virtuals[k].Status = int(s)
 	}
-
-	t, _ := template.ParseFiles("html/manager/vps.html")
-	t.Execute(w, map[string]interface{}{"virtuals": virtuals, "mid": mid})
+	t, _ := template.ParseFiles("html/manager/vps.html", "html/manager/public/header.html", "html/manager/public/footer.html")
+	t.Execute(w, map[string]interface{}{"virtuals": virtuals, "email": manager.Email})
 }
 
 //关机

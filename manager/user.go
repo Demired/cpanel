@@ -22,16 +22,24 @@ func userList(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "你还没有登录", fmt.Sprintf("/login.html?url=%s", req.URL.String())), http.StatusFound)
 		return
 	}
+	var manager table.Manager
 	var users []table.User
 	o := orm.NewOrm()
-	_, err := o.Raw("Select * from user").QueryRows(&users)
+	manager.ID = mid
+	err := o.Read(&manager)
+	if err != nil {
+		cLog.Warn(err.Error())
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "管理员查询失败"), http.StatusFound)
+		return
+	}
+	_, err = o.Raw("Select * from user").QueryRows(&users)
 	if err != nil {
 		cLog.Warn(err.Error())
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "查询失败", fmt.Sprintf("/login.html?url=%s", req.URL.String())), http.StatusFound)
 		return
 	}
-	t, _ := template.ParseFiles("html/manager/userList.html")
-	t.Execute(w, map[string]interface{}{"users": users, "mid": mid})
+	t, _ := template.ParseFiles("html/manager/userList.html", "html/manager/public/header.html", "html/manager/public/footer.html")
+	t.Execute(w, map[string]interface{}{"users": users, "email": manager.Email})
 }
 
 //禁用用户

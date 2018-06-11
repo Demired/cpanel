@@ -2,9 +2,12 @@ package manager
 
 import (
 	"cpanel/config"
+	"cpanel/table"
 	"fmt"
 	"html/template"
 	"net/http"
+
+	"github.com/astaxie/beego/orm"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -30,6 +33,9 @@ func Web() {
 	homeMux.HandleFunc("/upVps", upVps)
 	homeMux.HandleFunc("/downVps", downVps)
 	homeMux.HandleFunc("/addCompose", addCompose)
+	homeMux.HandleFunc("/downCompose", downCompose)
+	homeMux.HandleFunc("/upCompose", upCompose)
+	homeMux.HandleFunc("/deleteCompose", deleteCompose)
 	homeMux.HandleFunc("/editCompose", editCompose)
 	homeMux.HandleFunc("/addComposeInfo", addComposeInfo)
 	http.ListenAndServe(fmt.Sprintf(":%d", config.Yaml.ManagerPort), homeMux)
@@ -37,11 +43,21 @@ func Web() {
 
 // index web template
 func index(w http.ResponseWriter, req *http.Request) {
-	t, _ := template.ParseFiles("html/manager/index.html")
 	sess, _ := cSession.SessionStart(w, req)
 	defer sess.SessionRelease(w)
-	mid, _ := sess.Get("mid").(int)
-	t.Execute(w, map[string]int{"mid": mid})
+	mid, e := sess.Get("mid").(int)
+	t, _ := template.ParseFiles("html/manager/index.html", "html/manager/public/header.html", "html/manager/public/footer.html")
+	var manager table.Manager
+	if e {
+		o := orm.NewOrm()
+		err := o.Raw("select * from manager where id = ?", mid).QueryRow(&manager)
+		if err != nil {
+			cLog.Warn("管理员信息查询失败%s", err.Error())
+			http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "管理员信息查询失败"), http.StatusFound)
+			return
+		}
+	}
+	t.Execute(w, map[string]string{"email": manager.Email})
 }
 
 //vm func

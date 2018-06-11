@@ -18,24 +18,47 @@ func compose(w http.ResponseWriter, req *http.Request) {
 	defer sess.SessionRelease(w)
 	mid, e := sess.Get("mid").(int)
 	if !e {
-		//TODO跳转登录页面
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "你还没有登录", fmt.Sprintf("/login.html?url=%s", req.URL.String())), http.StatusFound)
 		return
 	}
 	var composes []table.Compose
 	o := orm.NewOrm()
-	_, err := o.Raw("select * from compose").QueryRows(&composes)
+	_, err := o.Raw("select * from compose where status > 0").QueryRows(&composes)
 	if err != nil {
-		fmt.Println(err.Error())
+		cLog.Warn("查询套餐列表失败%s", err.Error())
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "查询失败"), http.StatusFound)
 		return
 	}
-	t, _ := template.ParseFiles("html/manager/compose.html")
-	t.Execute(w, map[string]interface{}{"composes": composes, "mid": mid})
+	var manager table.Manager
+	err = o.Raw("select * from manager where id = ?", mid).QueryRow(&manager)
+	if err != nil {
+		cLog.Warn("管理员信息查询失败%s", err.Error())
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "管理员信息查询失败"), http.StatusFound)
+		return
+	}
+	t, _ := template.ParseFiles("html/manager/compose.html", "html/manager/public/header.html", "html/manager/public/footer.html")
+	t.Execute(w, map[string]interface{}{"composes": composes, "email": manager.Email})
 }
 
+//添加套餐
 func addCompose(w http.ResponseWriter, req *http.Request) {
-	t, _ := template.ParseFiles("html/manager/addCompose.html")
-	t.Execute(w, nil)
+	sess, _ := cSession.SessionStart(w, req)
+	defer sess.SessionRelease(w)
+	mid, e := sess.Get("mid").(int)
+	if !e {
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "你还没有登录", fmt.Sprintf("/login.html?url=%s", req.URL.String())), http.StatusFound)
+		return
+	}
+	var manager table.Manager
+	o := orm.NewOrm()
+	err := o.Raw("select * from manager where id = ?", mid).QueryRow(&manager)
+	if err != nil {
+		cLog.Warn("管理员信息查询失败%s", err.Error())
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "管理员信息查询失败"), http.StatusFound)
+		return
+	}
+	t, _ := template.ParseFiles("html/manager/addCompose.html", "html/manager/public/header.html", "html/manager/public/footer.html")
+	t.Execute(w, map[string]interface{}{"email": manager.Email})
 }
 
 //添加套餐
@@ -125,5 +148,162 @@ func addComposeInfo(w http.ResponseWriter, req *http.Request) {
 
 //编辑套餐
 func editCompose(w http.ResponseWriter, req *http.Request) {
+	//判断是否登录
+	sess, _ := cSession.SessionStart(w, req)
+	defer sess.SessionRelease(w)
+	_, e := sess.Get("mid").(int)
+	if !e {
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "你还没有登录", fmt.Sprintf("/login.html?url=%s", req.URL.String())), http.StatusFound)
+		return
+	}
+	//判断提交方式
+	if req.Method != "GET" {
+		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s&url=%s", "发生错误", fmt.Sprintf("/login.html?url=%s", req.URL.String())), http.StatusFound)
+		return
+	}
+	//展示页面
 
+}
+
+//下架套餐
+func downCompose(w http.ResponseWriter, req *http.Request) {
+	//判断是否登录
+	sess, _ := cSession.SessionStart(w, req)
+	defer sess.SessionRelease(w)
+	_, e := sess.Get("mid").(int)
+	if !e {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "你还没有登录"})
+		w.Write(msg)
+		return
+	}
+	//判断提交方式
+	if req.Method != "POST" {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "提交失败"})
+		w.Write(msg)
+		return
+	}
+	id, err := strconv.Atoi(req.PostFormValue("id"))
+	if err != nil {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "参数有误"})
+		w.Write(msg)
+		return
+	}
+	var compose table.Compose
+	compose.ID = id
+	o := orm.NewOrm()
+	err = o.Read(&compose)
+	if err != nil {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "查询失败"})
+		w.Write(msg)
+		return
+	}
+	if compose.Status == 2 {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "重复下架"})
+		w.Write(msg)
+		return
+	}
+	compose.Status = 2
+	_, err = o.Update(&compose)
+	if err != nil {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "更新失败"})
+		w.Write(msg)
+		return
+	}
+	msg, _ := json.Marshal(tools.Er{Ret: "v", Msg: "下架完毕"})
+	w.Write(msg)
+}
+
+//上架套餐
+func upCompose(w http.ResponseWriter, req *http.Request) {
+	//判断是否登录
+	sess, _ := cSession.SessionStart(w, req)
+	defer sess.SessionRelease(w)
+	_, e := sess.Get("mid").(int)
+	if !e {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "你还没有登录"})
+		w.Write(msg)
+		return
+	}
+	//判断提交方式
+	if req.Method != "POST" {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "提交失败"})
+		w.Write(msg)
+		return
+	}
+	id, err := strconv.Atoi(req.PostFormValue("id"))
+	if err != nil {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "参数有误"})
+		w.Write(msg)
+		return
+	}
+	var compose table.Compose
+	compose.ID = id
+	o := orm.NewOrm()
+	err = o.Read(&compose)
+	if err != nil {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "查询失败"})
+		w.Write(msg)
+		return
+	}
+	if compose.Status == 1 {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "重复上架"})
+		w.Write(msg)
+		return
+	}
+	compose.Status = 1
+	_, err = o.Update(&compose)
+	if err != nil {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "更新失败"})
+		w.Write(msg)
+		return
+	}
+	msg, _ := json.Marshal(tools.Er{Ret: "v", Msg: "上架完毕"})
+	w.Write(msg)
+}
+
+func deleteCompose(w http.ResponseWriter, req *http.Request) {
+	//判断是否登录
+	sess, _ := cSession.SessionStart(w, req)
+	defer sess.SessionRelease(w)
+	_, e := sess.Get("mid").(int)
+	if !e {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "你还没有登录"})
+		w.Write(msg)
+		return
+	}
+	//判断提交方式
+	if req.Method != "POST" {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "提交失败"})
+		w.Write(msg)
+		return
+	}
+	id, err := strconv.Atoi(req.PostFormValue("id"))
+	if err != nil {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "参数有误"})
+		w.Write(msg)
+		return
+	}
+	var compose table.Compose
+	compose.ID = id
+	o := orm.NewOrm()
+	err = o.Read(&compose)
+	if err != nil {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "查询失败"})
+		w.Write(msg)
+		return
+	}
+	if compose.Status == -1 {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "重复删除"})
+		w.Write(msg)
+		return
+	}
+	compose.Status = -1
+	_, err = o.Update(&compose)
+	if err != nil {
+		msg, _ := json.Marshal(tools.Er{Ret: "e", Msg: "更新失败"})
+		w.Write(msg)
+		return
+	}
+	msg, _ := json.Marshal(tools.Er{Ret: "v", Msg: "删除完毕"})
+	w.Write(msg)
 }

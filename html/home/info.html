@@ -8,44 +8,25 @@
     <script src="https://img.hcharts.cn/highcharts/highcharts.js"></script>
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">网络监控</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="/">控制面板</a>
-            </div>
-            <div id="navbar" class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="/"> 首页 </a></li>
-                    <li class="active"><a href="/list">虚拟机列表</a></li>
-                    <li><a href="/create.html">创建虚拟机</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    {{template "header" .}}
     <div class="container" style="padding: 80px 0;">
         <div class="col-lg-12" style="margin-bottom: 10px;">
             <div class="btn-group">
-                <button class="btn btn-default" type="button" onclick="control.start()" {{if eq .Status 1}}disabled{{end}}>
+                <button class="btn btn-default" type="button" onclick="control.start()" {{if eq .virtual.Status 1}}disabled{{end}}>
                     开机
                 </button>
-                <button class="btn btn-default" type="button" onclick="control.shutdown()" {{if eq .Status 5}}disabled{{end}}>
+                <button class="btn btn-default" type="button" onclick="control.shutdown()" {{if eq .virtual.Status 5}}disabled{{end}}>
                     关机
                 </button>
-                <button class="btn btn-default" type="button" onclick="control.reboot()" {{if ne .Status 1}}disabled{{end}}>
+                <button class="btn btn-default" type="button" onclick="control.reboot()" {{if ne .virtual.Status 1}}disabled{{end}}>
                     重启
                 </button>
             </div>
             <div class="btn-group">
-                <button class="btn btn-default" type="button" onclick="control.repasswd()" {{if ne .Status 1}}disabled{{end}}>
+                <button class="btn btn-default" type="button" onclick="control.repasswd()" {{if ne .virtual.Status 1}}disabled{{end}}>
                     修改密码
                 </button>
-                <button class="btn btn-default" type="button" onclick="control.edit()" {{if ne .Status 1}}disabled{{end}}>
+                <button class="btn btn-default" type="button" onclick="control.edit()" {{if ne .virtual.Status 1}}disabled{{end}}>
                     修改配置
                 </button>
             </div>
@@ -61,7 +42,7 @@
                         <tbody>
                             <tr>
                                 <th>ID:</th>
-                                <td>{{.Vname}}</td>
+                                <td>{{.virtual.Vname}}</td>
                             </tr>
                             <tr>
                                 <th>机房:</th>
@@ -71,16 +52,16 @@
                             </tr>
                             <tr>
                                 <th>创建日期:</th>
-                                <td>{{.Ctime.Format "2006-01-02 15:04:05"}}</td>
+                                <td>{{.virtual.Ctime.Format "2006-01-02 15:04:05"}}</td>
                             </tr>
                             <tr>
                                 <th>初始密码:</th>
-                                <td data-val="{{.Passwd}}" id="passwd">XXXXXXXXXX</td>
+                                <td data-val="{{.virtual.Passwd}}" id="passwd">XXXXXXXXXX</td>
                             </tr>
                             <tr>
                                 <th>报警设置:</th>
                                 <td>
-                                    <a href="/alarm.html?Vname={{.Vname}}">
+                                    <a href="/alarm.html?Vname={{.virtual.Vname}}">
                                     点击设置
                                     </a>
                                 </td>
@@ -101,15 +82,15 @@
                         <tbody>
                             <tr>
                                 <th>状态:</th>
-                                <td>{{if eq .Status 1}}运行中{{else}}已关机{{end}}</td>
+                                <td>{{if eq .virtual.Status 1}}运行中{{else}}已关机{{end}}</td>
                             </tr>
                             <tr>
                                 <th>cpu:</th>
-                                <td>{{.Vcpu}}</td>
+                                <td>{{.virtual.Vcpu}}</td>
                             </tr>
                             <tr>
                                 <th>内存:</th>
-                                <td>{{.Vmemory}}G</td>
+                                <td>{{.virtual.Vmemory}}G</td>
                             </tr>
                             <tr>
                                 <th>磁盘:</th>
@@ -121,20 +102,20 @@
                             </tr>
                             <tr>
                                 <th>带宽:</th>
-                                <td>{{.Bandwidth}}M</td>
+                                <td>{{.virtual.Bandwidth}}M</td>
                             </tr>
                             <tr>
                                 <th>操作系统:</th>
-                                <td>{{.Sys}}</td>
+                                <td>{{.virtual.Sys}}</td>
                             </tr>
                             <tr>
                                 <th>IP地址:</th>
                                 <td>
-                                    {{.IPv4}}
+                                    {{.virtual.IPv4}}
                                     <br/>
-                                    {{.IPv6}}
+                                    {{.virtual.IPv6}}
                                     <br/>
-                                    {{.LocalIP}}
+                                    {{.virtual.LocalIP}}
                                 </td>
                             </tr>
                         </tbody>
@@ -156,11 +137,11 @@
                             </tr>
                             <tr>
                                 <th>计费周期:</th>
-                                <td>{{if eq .Cycle 0}}月付{{else if .Cycle 1}}季付{{else}}年付{{end}}</td>
+                                <td>{{if eq .virtual.Cycle 0}}月付{{else if .Cycle 1}}季付{{else}}年付{{end}}</td>
                             </tr>
                             <tr>
                                 <th>到期时间:</th>
-                                <td>{{.Etime.Format "2006-01-02 15:04:05"}}</td>
+                                <td>{{.virtual.Etime.Format "2006-01-02 15:04:05"}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -180,9 +161,10 @@
             </div>
         </div>
     </div>
+    {{template "footer" .}}
 </body>
 <script>
-    var Vname = "{{.Vname}}"
+    var Vname = "{{.virtual.Vname}}"
     var control = {};
     control.start = function(){
         $.post("/start",{Vname:Vname},function(d){
@@ -190,7 +172,7 @@
                 alert(d.msg)
                 location.reload('get');
             }else if(d.ret == "e"&&d.msg == "login"){
-                window.location.href="/login.html?url=/info.html?Vname={{.Vname}}"
+                window.location.href="/login.html?url=/info.html?Vname="+Vname
             }
         },"json")
     }
@@ -200,7 +182,7 @@
                 alert(d.msg)
                 setTimeout(function(){location.reload('get')},2000)
             }else if(d.ret == "e"&&d.msg == "login"){
-                window.location.href="/login.html?url=/info.html?Vname={{.Vname}}"
+                window.location.href="/login.html?url=/info.html?Vname="+Vname
             }
         },"json")
     }
@@ -209,16 +191,16 @@
             if(d.ret=="v"){
                 alert(d.msg)
             }else if(d.ret == "e"&&d.msg == "login"){
-                window.location.href="/login.html?url=/info.html?Vname={{.Vname}}"
+                window.location.href="/login.html?url=/info.html?Vname="+Vname
             }
         },"json")
     }
     control.repasswd = function(){
         //弹出密码输入框
-        location.href = "/repasswd.html?Vname={{.Vname}}"
+        location.href = "/repasswd.html?Vname="+Vname
     }
     control.edit = function(){
-        location.href = "/edit.html?Vname={{.Vname}}"
+        location.href = "/edit.html?Vname="+Vname
     }
 </script>
 <script>
@@ -235,7 +217,7 @@
     })
     var up = [];
     var down = [];
-    $.post("/load.json?Vname={{.Vname}}","",function(d){
+    $.post("/load.json?Vname="+Vname,"",function(d){
         dd = d;
         Highcharts.chart('memory',{
             credits: {

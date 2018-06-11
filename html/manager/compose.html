@@ -8,37 +8,7 @@
     <script src="https://cdn.bootcss.com/jquery/3.2.0/jquery.min.js"  charset="UTF-8"></script>
 </head>
 <body>
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">管理页面</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/index">控制面板</a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="/index"> 首页 </a></li>
-                <li class="active"><a href="/compose" class="action">配置列表</a></li>
-                <li><a href="/addCompose" class="action">添加配置</a></li>
-                <li><a href="/vps">虚拟机列表</a></li>
-                <li><a href="/userList">用户列表</a></li>
-                <li><a href="/">分享</a></li>
-            </ul>
-            <ul class="nav navbar-nav" style="line-height: 50px;float: right;">
-                {{with .mid}}
-                <li><a href="/userInfo.html">个人中心</a></li>
-                <li><a href="/logout" class="ajax" id="logout">注销</a></li>
-                {{else}}
-                <li><a href="/login.html">登录</a></li>
-                {{end}}
-            </ul>
-        </div>
-    </div>
-</nav>
+{{template "header" .}}
 <div class="container" style="padding: 60px 0;">
     <table class="table table-striped">		
         <thead>
@@ -51,7 +21,6 @@
                 <td>内存</td>
                 <td>带宽</td>
                 <td>创建时间</td>
-                <td>使用数量</td>
                 <td>操作</td>
             </tr>
         </thead>
@@ -66,14 +35,13 @@
                 <td>{{$v.Vmemory}}</td>
                 <td>{{$v.Bandwidth}}</td>
                 <td>{{$v.Ctime.Format "2006-01-02 15:04:05"}}</td>
-                <td>0</td>
-                <td>
+                <td ret-id="{{$v.ID}}">
                     {{with eq $v.Status 1}}
-                    <a href="/downCompose" id="down" class="ajax">下架</a>
+                    <a href="/downCompose" class="ajax">下架</a>
                     {{else}}
-                    <a href="/upCompose" id="up" class="ajax">上架</a>
+                    <a href="/upCompose" class="ajax">上架</a>
                     {{end}}
-                    <a href="/deleteCompose/?ID={{$v.ID}}" class="ajax">删除</a>
+                    <a href="/deleteCompose" class="ajax">删除</a>
                     <a href="/editCompose.html?ID={{$v.ID}}">修改配置</a>
                 </td>
             </tr>
@@ -81,20 +49,18 @@
         </tbody>
     </table>
 </div>
+{{template "footer" .}}
 <script>
-    $("#logout").click(function(){
-        $.post("/logout","",function(d){
-            if(d.ret=="v"){
-                alert(d.msg)
+    $(".ajax").click(function(){
+        var url = $(this).attr("href")
+        var id = $(this).parent().attr("ret-id")
+        $.post(url,{id:id},function(d){
+            alert(d.msg);
+            if(d.ret == "v"){
                 window.location.reload()
             }
         },"json")
         return false
-    });
-    $("#down").click(function(){
-        $.post("/downCompose","",function(){
-
-        },"json")
     })
 </script>
 </body>

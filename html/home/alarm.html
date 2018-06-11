@@ -7,26 +7,7 @@
     <script src="https://cdn.bootcss.com/jquery/3.2.0/jquery.min.js"  charset="UTF-8"></script>
 </head>
 <body>
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">网络监控</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/network/index">控制面板</a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="/"> 首页 </a></li>
-                <li><a href="/list">虚拟机列表</a></li>
-                <li><a href="/create.html">创建虚拟机</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
+{{template "header" .}}
 <div class="container" style="padding: 80px 0;">
     <div class="col-md-6 col-md-offset-3">
         <table class=" table table-striped table-bordered table-hover">
@@ -68,6 +49,7 @@
         <button type="button" class="btn btn-default" id="remove">取消警报</button>
     </div>
 </div>
+{{template "footer" .}}
 <script>
     //页面加载完毕
     $("#submit").click(function(){

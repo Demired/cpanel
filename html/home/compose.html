@@ -9,28 +9,67 @@
 <body>
 {{template "header" .}}
 <div class="container" style="padding: 80px 0;">
+    <div class="col-md-9">
         {{range $index,$v := .composes}}
-        <div class="col-md-6">
-            <table>
-                <tr><td>套餐名：</td><td>{{$v.Name}}</td></tr>
-                <tr><td>CPU:</td><td>{{$v.Vcpu}}</td></tr>
-                <tr><td>RAM:</td><td>{{$v.Vmemory}}GB</td></tr>
-                <tr><td>Storage:</td><td>9GB</td></tr>
-                <tr><td>Bandwidth:</td><td>{{$v.Bandwidth}}M</td></tr>
-                <tr><td>IPv4:</td><td>{{$v.IPv4}}</td></tr>
-                <tr><td>IPv6:</td><td>{{$v.IPv6}}</td></tr>
-                <tr><td>OS:</td><td>Linux</td></tr>
-                <tr><td>Traffic:</td><td>{{$v.TotalFlow}}GB</td></tr>
-            </table>
-            <button class="order" ret-id="{{$v.ID}}">订购</button>
-        </div>
+            <div class="col-md-4 col-md-offset-1" style="border: 5px solid steelblue;">
+                <table>
+                    <tr>
+                        <td>套餐名：</td>
+                        <td>{{$v.Name}}</td>
+                    </tr>
+                    <tr>
+                        <td>CPU：</td>
+                        <td>{{$v.Vcpu}}</td>
+                    </tr>
+                    <tr>
+                        <td>RAM：</td>
+                        <td>{{$v.Vmemory}}</td>
+                    </tr>
+                    <tr>
+                        <td>Storage：</td>
+                        <td>9GB</td>
+                    </tr>
+                    <tr>
+                        <td>IPv4：</td>
+                        <td>{{$v.IPv4}}</td>
+                    </tr>
+                    <tr>
+                        <td>IPv6：</td>
+                        <td>{{$v.IPv6}}</td>
+                    </tr>
+                    <tr>
+                        <td>OS：</td>
+                        <td>Linux</td>
+                    </tr>
+                    <tr>
+                        <td>Traffic：</td>
+                        <td>500GB</td>
+                    </tr>
+                    <tr>
+                        <td>Price:</td>
+                        <td>{{$v.Price}}</td>
+                    </tr>
+                </table>
+                <button class="order" ret-id="{{$v.ID}}">订购</button>
+            </div>
         {{end}}
+    </div>
+    <div class="col-md-3">
+        <h1>购物车</h1>
+        <table>
+            {{range $index,$v := .carts}}
+            <td>
+                {{$v}}
+            </td>
+            {{end}}
+        </table>
+        <button class="order" ret-id="">结账</button>
+    </div>
 </div>
 {{template "footer" .}}
 <script>
     $(".order").click(function(){
         var id = $(this).attr("ret-id");
-        console.log(id)
         $.post("/addCart",{id:id},function(d){
             alert(d.msg)
             if(d.ret == "e"){

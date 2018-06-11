@@ -235,16 +235,21 @@ func userInfo(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, fmt.Sprintf("/404.html?msg=%s", "用户不存在"), http.StatusFound)
 		return
 	}
-	t, _ := template.ParseFiles("html/home/userInfo.html")
-	t.Execute(w, userInfo)
+	t, _ := template.ParseFiles("html/home/userInfo.html", "html/home/public/header.html", "html/home/public/footer.html")
+	t.Execute(w, map[string]interface{}{"userInfo": userInfo, "userName": userInfo.Username})
 }
 
 func index(w http.ResponseWriter, req *http.Request) {
 	sess, _ := cSession.SessionStart(w, req)
 	defer sess.SessionRelease(w)
-	uid, _ := sess.Get("uid").(int)
+	uid, e := sess.Get("uid").(int)
+	var userInfo table.User
+	if e {
+		o := orm.NewOrm()
+		o.Raw("select * from user where id = ?", uid).QueryRow(&userInfo)
+	}
 	t, _ := template.ParseFiles("html/home/index.html", "html/home/public/header.html", "html/home/public/footer.html")
-	t.Execute(w, map[string]int{"uid": uid, "iii": 123})
+	t.Execute(w, map[string]interface{}{"userName": userInfo.Username})
 }
 
 func register(w http.ResponseWriter, req *http.Request) {

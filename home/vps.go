@@ -136,8 +136,10 @@ func list(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	var virtuals []table.Virtual
+	var userInfo table.User
 	o := orm.NewOrm()
 	o.Raw("select * from virtual where status = ? and uid = ?", "1", uid).QueryRows(&virtuals)
+	o.Raw("select * from user where id = ?", uid).QueryRow(&userInfo)
 	for k, v := range virtuals {
 		connect := control.Connect()
 		defer connect.Close()
@@ -153,8 +155,8 @@ func list(w http.ResponseWriter, req *http.Request) {
 		}
 		virtuals[k].Status = int(s)
 	}
-	t, _ := template.ParseFiles("html/home/list.html")
-	t.Execute(w, virtuals)
+	t, _ := template.ParseFiles("html/home/list.html", "html/home/public/header.html", "html/home/public/footer.html")
+	t.Execute(w, map[string]interface{}{"virtuals": virtuals, "userName": userInfo.Username})
 }
 
 func info(w http.ResponseWriter, req *http.Request) {
@@ -168,8 +170,10 @@ func info(w http.ResponseWriter, req *http.Request) {
 	// orm, err := control.Bdb()
 	Vname := req.URL.Query().Get("Vname")
 	var virtual table.Virtual
+	var userInfo table.User
 	// err = orm.SetTable("Virtual").Where("Vname = ? and Uid = ?", Vname, uid).Find(&vvm)
 	o := orm.NewOrm()
+	o.Raw("select * from user where id = ?", uid).QueryRow(&userInfo)
 	err := o.Raw("select * from virtual where Vname = ? and Uid = ?", Vname, uid).QueryRow(&virtual)
 	if err != nil {
 		cLog.Info(err.Error())
@@ -197,8 +201,8 @@ func info(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	virtual.Status = int(s)
-	t, _ := template.ParseFiles("html/home/info.html")
-	t.Execute(w, virtual)
+	t, _ := template.ParseFiles("html/home/info.html", "html/home/public/header.html", "html/home/public/footer.html")
+	t.Execute(w, map[string]interface{}{"virtual": virtual, "userName": userInfo.Username})
 }
 
 func loadJSON(w http.ResponseWriter, req *http.Request) {

@@ -29,85 +29,67 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">网络监控</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="/network/index">控制面板</a>
-            </div>
-            <div id="navbar" class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="/"> 首页 </a></li>
-                    <li><a href="/list">虚拟机列表</a></li>
-                    <li><a href="/create.html">创建虚拟机</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    {{template "header" .}}
     <div class="container" style="padding: 80px 0;">
-            <form class="col-md-8 col-md-offset-2" action="#">
-                <div class="form-group" id="username-box">
-                    <label for="username"><h3>用户名</h3></label>
-                    <input type="text" class="form-control" id="username" name="username" value="{{with .Username}}{{.}}{{end}}">
-                </div>
-                <div class="form-group" id="email-box">
-                    <label for="email"><h3>邮箱</h3></label>
-                    <input type="text" class="form-control" id="email" name="email" value="{{with .Email}}{{.}}{{end}}" disabled>
-                </div>
-                <div class="form-group" id="tel-box">
-                    <label for="tel"><h3>手机号</h3></label>
-                    <input type="tel" class="form-control" id="tel" name="tel" value="{{with .Tel}}{{.}}{{end}}">
-                </div>
-                <div class="form-group" id="realname-box">
-                    <label for="realname"><h3>证件姓名</h3></label>
-                    <input type="tel" class="form-control" id="realname" name="realname" value="{{with .Realname}}{{.}}{{end}}">
-                </div>
-                <div class="form-group" id="idtype-box">
-                    <label for="idtype"><h3>证件类型</h3></label>
-                    <select name="idtype" id="idtype" class="form-control">
-                        <option value="1" {{with .Idtype}}{{if eq . 1}}selected{{end}}{{end}}>
-                            身份证
-                        </option>
-                        <option value="2" {{with .Idtype}}{{if eq . 2}}selected{{end}}{{end}}>
-                            军官证
-                        </option>
-                    </select>
-                </div>
-                <div class="form-group" id="idnumber-box">
-                    <label for="idnumber"><h3>证件号</h3></label>
-                    <input type="tel" class="form-control" id="idnumber" name="idnumber" value="{{with .Idnumber}}{{.}}{{end}}">
-                </div>
-                <div class="form-group" id="sex-box">
-                    <label for="sex"><h3>性别</h3></label>
-                    <select name="sex" id="sex" class="form-control">
-                        <option value="1" {{with .Sex}}{{if eq . 1}}selected{{end}}{{end}}>
-                            男
-                        </option>
-                        <option value="0" {{with .Sex}}{{if eq . 0}}selected{{end}}{{end}}>
-                            女
-                        </option>
-                    </select>
-                </div>
-                <div class="form-group" id="city-box">
-                    <label for="city"><h3>城市</h3></label>
-                    <input type="text" class="form-control" id="city" name="city" value="{{with .City}}{{.}}{{end}}">
-                </div>
-                <div class="form-group" id="company-box">
-                    <label for="company"><h3>公司名</h3></label>
-                    <input type="text" class="form-control" id="company" name="company" value="{{with .Company}}{{.}}{{end}}">
-                </div>
-                <div class="form-group" id="address-box">
-                    <label for="address"><h3>地址</h3></label>
-                    <input type="text" class="form-control" id="address" name="address" value="{{with .Address}}{{.}}{{end}}">
-                </div>
-                <button type="button" class="btn btn-default" id="submit">修改</button>
-            </form>
-        </div>
+        <form class="col-md-8 col-md-offset-2" action="#">
+            <div class="form-group" id="username-box">
+                <label for="username"><h3>用户名</h3></label>
+                <input type="text" class="form-control" id="username" name="username" value="{{with .userInfo.Username}}{{.}}{{end}}">
+            </div>
+            <div class="form-group" id="email-box">
+                <label for="email"><h3>邮箱</h3></label>
+                <input type="text" class="form-control" id="email" name="email" value="{{with .userInfo.Email}}{{.}}{{end}}" disabled>
+            </div>
+            <div class="form-group" id="tel-box">
+                <label for="tel"><h3>手机号</h3></label>
+                <input type="tel" class="form-control" id="tel" name="tel" value="{{with .userInfo.Tel}}{{.}}{{end}}">
+            </div>
+            <div class="form-group" id="realname-box">
+                <label for="realname"><h3>证件姓名</h3></label>
+                <input type="tel" class="form-control" id="realname" name="realname" value="{{with .userInfo.Realname}}{{.}}{{end}}">
+            </div>
+            <div class="form-group" id="idtype-box">
+                <label for="idtype"><h3>证件类型</h3></label>
+                <select name="idtype" id="idtype" class="form-control">
+                    <option value="1" {{with .userInfo.Idtype}}{{if eq . 1}}selected{{end}}{{end}}>
+                        身份证
+                    </option>
+                    <option value="2" {{with .userInfo.Idtype}}{{if eq . 2}}selected{{end}}{{end}}>
+                        军官证
+                    </option>
+                </select>
+            </div>
+            <div class="form-group" id="idnumber-box">
+                <label for="idnumber"><h3>证件号</h3></label>
+                <input type="tel" class="form-control" id="idnumber" name="idnumber" value="{{with .Idnumber}}{{.}}{{end}}">
+            </div>
+            <div class="form-group" id="sex-box">
+                <label for="sex"><h3>性别</h3></label>
+                <select name="sex" id="sex" class="form-control">
+                    <option value="1" {{with .userInfo.Sex}}{{if eq . 1}}selected{{end}}{{end}}>
+                        男
+                    </option>
+                    <option value="0" {{with .userInfo.Sex}}{{if eq . 0}}selected{{end}}{{end}}>
+                        女
+                    </option>
+                </select>
+            </div>
+            <div class="form-group" id="city-box">
+                <label for="city"><h3>城市</h3></label>
+                <input type="text" class="form-control" id="city" name="city" value="{{with .userInfo.City}}{{.}}{{end}}">
+            </div>
+            <div class="form-group" id="company-box">
+                <label for="company"><h3>公司名</h3></label>
+                <input type="text" class="form-control" id="company" name="company" value="{{with .userInfo.Company}}{{.}}{{end}}">
+            </div>
+            <div class="form-group" id="address-box">
+                <label for="address"><h3>地址</h3></label>
+                <input type="text" class="form-control" id="address" name="address" value="{{with .userInfo.Address}}{{.}}{{end}}">
+            </div>
+            <button type="button" class="btn btn-default" id="submit">修改</button>
+        </form>
+    </div>
+    {{template "footer" .}}
 </body>
 <script>
     $("#submit").click(function(){

@@ -102,6 +102,7 @@ type Compose struct {
 	ID        int `orm:"column(id);auto"`
 	UID       int `orm:"column(uid)"`
 	Name      string
+	Order     int //前端显示顺序
 	IPv4      int
 	IPv6      int
 	Vcpu      int
@@ -109,7 +110,7 @@ type Compose struct {
 	Vmemory   int
 	TotalFlow int
 	Price     int
-	Status    int
+	Status    int       //1为正常 2为下架 -1为删除
 	Ctime     time.Time `orm:"auto_now;type(datetime)"`
 }
 
@@ -166,4 +167,13 @@ type Cart struct {
 	Num    int
 	Status int
 	Ctime  time.Time `orm:"auto_now_add;type(datetime)"`
+}
+
+//Nav struct
+type Nav struct {
+	ID    int `orm:"column(id);auto"`
+	Order int
+	Name  string
+	URL   string
+	Ctime time.Time `orm:"auto_now_add;type(datetime)"`
 }
