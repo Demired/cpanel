@@ -61,7 +61,7 @@
             </div>
             <div class="form-group" id="idnumber-box">
                 <label for="idnumber"><h3>证件号</h3></label>
-                <input type="tel" class="form-control" id="idnumber" name="idnumber" value="{{with .Idnumber}}{{.}}{{end}}">
+                <input type="tel" class="form-control" id="idnumber" name="idnumber" value="{{with .userInfo.Idnumber}}{{.}}{{end}}">
             </div>
             <div class="form-group" id="sex-box">
                 <label for="sex"><h3>性别</h3></label>

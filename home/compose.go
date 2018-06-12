@@ -19,15 +19,19 @@ func composes(w http.ResponseWriter, req *http.Request) {
 	}
 	//用户信息
 	var userInfo table.User
-	var carts []table.Cart
+	var cartComposes []table.CartCompose
 	sess, _ := cSession.SessionStart(w, req)
 	defer sess.SessionRelease(w)
 	uid, e := sess.Get("uid").(int)
 	if e {
 		//查找用户信息
 		o.Raw("select * from user where id = ?", uid).QueryRow(&userInfo)
-		o.Raw("select * from cart where status = 1 and uid = ?", uid).QueryRows(&carts)
+		o.Raw("select compose.id,cart.num,compose.price,compose.name from cart,compose where cart.status = 1 and cart.uid = ? and cart.cid = compose.id", uid).QueryRows(&cartComposes)
 	}
 	t, _ := template.ParseFiles("html/home/compose.html", "html/home/public/header.html", "html/home/public/footer.html")
-	t.Execute(w, map[string]interface{}{"composes": composes, "carts": carts, "userName": userInfo.Username})
+	var total = 0
+	for _, v := range cartComposes {
+		total += v.Price * v.Num
+	}
+	t.Execute(w, map[string]interface{}{"composes": composes, "carts": cartComposes, "userName": userInfo.Username, "total": total})
 }

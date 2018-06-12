@@ -114,6 +114,14 @@ type Compose struct {
 	Ctime     time.Time `orm:"auto_now;type(datetime)"`
 }
 
+// CartCompose strcut
+type CartCompose struct {
+	ID    string `orm:"column(id)"`
+	Name  string `orm:"column(name)"`
+	Price int
+	Num   int `orm:"column(num)"`
+}
+
 // CREATE TABLE IF NOT EXISTS Manager (
 // 	ID INTEGER PRIMARY KEY AUTOINCREMENT,
 // 	Email CHAR(320) NOT NULL,
@@ -162,8 +170,8 @@ type Prompt struct {
 //Cart struct
 type Cart struct {
 	ID     int `orm:"column(id);auto"`
-	UID    int
-	CID    int
+	UID    int `orm:"column(uid)"`
+	CID    int `orm:"column(cid)"`
 	Num    int
 	Status int
 	Ctime  time.Time `orm:"auto_now_add;type(datetime)"`

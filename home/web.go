@@ -61,7 +61,8 @@ func Web() {
 	homeMux.HandleFunc("/undefine", undefine)
 	homeMux.HandleFunc("/edit.html", edit)
 	homeMux.HandleFunc("/create.html", create)
-	homeMux.HandleFunc("/addCart", addCart)
+	homeMux.HandleFunc("/cart", cartAPI)
+	homeMux.HandleFunc("/cart.html", cart)
 	http.ListenAndServe(fmt.Sprintf(":%d", config.Yaml.HomePort), homeMux)
 
 }

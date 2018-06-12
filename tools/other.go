@@ -7,10 +7,10 @@ import (
 
 // Er struct
 type Er struct {
-	Ret   string `json:"ret"`
-	Msg   string `json:"msg"`
-	Data  string `json:"data"`
-	Param string `json:"param"`
+	Ret   string      `json:"ret"`
+	Msg   string      `json:"msg"`
+	Data  interface{} `json:"data"`
+	Param string      `json:"param"`
 }
 
 // SumSha1 str

@@ -56,21 +56,30 @@
     </div>
     <div class="col-md-3">
         <h1>购物车</h1>
-        <table>
+        <table id="carts">
             {{range $index,$v := .carts}}
-            <td>
-                {{$v}}
-            </td>
+            <tr>
+                <td>
+                    {{$v.Name}}
+                </td>
+                <td ret-id="{{$v.ID}}">
+                    <a href="#" ret-action="plus" class="ajax">+</a>
+                    <span id="num-{{$v.ID}}">{{$v.Num}}</span>
+                    <a href="#" ret-action="minus" class="ajax">-</a>
+                </td>
+            </tr>
             {{end}}
         </table>
-        <button class="order" ret-id="">结账</button>
+        <p id="total">总价：{{with .total}}{{.}}{{else}}0{{end}}元</p>
+        <a href="/cart.html"><button id="checkout">结账</button></a>
     </div>
 </div>
 {{template "footer" .}}
 <script>
     $(".order").click(function(){
         var id = $(this).attr("ret-id");
-        $.post("/addCart",{id:id},function(d){
+        var action = "plus"
+        $.post("/cart",{id:id,action:action},function(d){
             alert(d.msg)
             if(d.ret == "e"){
                 switch(d.param){
@@ -78,6 +87,45 @@
                         window.location.href = "/login.html?url=/composes"
                     break;
                 }
+            }else if(d.ret == "v"){
+                var doms = "";
+                var total = 0;
+                for (k in d.data)
+                {
+                    doms += "<tr>"
+                    +"<td>"+d.data[k].Name+"</td>"
+                    +"<td ret-id='"+d.data[k].ID+"'>"
+                    +"<a href='#' ret-action='plus' class='ajax'>+</a>"
+                    +"<span id='num-"+d.data[k].ID+"'>"+d.data[k].Num+"</span>"
+                    +"<a href='#' ret-action='minus' class='ajax'>-</a></td></tr>"
+                    total += d.data[k].Price*d.data[k].Num
+                }
+                $("#carts").html(doms)
+                $("#total").html("总价:"+total+"元")
+            }
+        },"json")
+    })
+    
+    $(".ajax").click(function(){
+        var action = $(this).attr("ret-action")
+        var id = $(this).parent().attr("ret-id")
+        $.post("/cart",{id:id,action:action},function(d){
+            alert(d.msg)
+            if(d.ret == "v"){
+                var doms = "";
+                var total = 0;
+                for (k in d.data)
+                {
+                    doms += "<tr>"
+                    +"<td>"+d.data[k].Name+"</td>"
+                    +"<td ret-id='"+d.data[k].ID+"'>"
+                    +"<a href='#' ret-action='plus' class='ajax'>+</a>"
+                    +"<span id='num-"+d.data[k].ID+"'>"+d.data[k].Num+"</span>"
+                    +"<a href='#' ret-action='minus' class='ajax'>-</a></td></tr>"
+                    total += d.data[k].Price*d.data[k].Num
+                }
+                $("#carts").html(doms)
+                $("#total").html("总价:"+total+"元")
             }
         },"json")
     })
